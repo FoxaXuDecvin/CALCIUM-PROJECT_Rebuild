@@ -1,7 +1,6 @@
 // Set Var in here
 
 #include"../SourceHeader/include.h"
-#include"Code/CalciumKernel.h";
 
 using namespace std;;
 

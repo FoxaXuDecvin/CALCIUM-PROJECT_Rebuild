@@ -4,7 +4,6 @@
 // Based on OpenCppLangTab
 
 #include"../shload.h"
-#include"../Code/RCapi.h"
 
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
@@ -30,12 +29,6 @@ string _mk = ".";
 string _KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
 
 //DEFINE
-void _p(string message);
-bool check_file_existence(const std::string& filename);
-string _fileapi_textread(string File, int line_number);
-string HeadSpaceCleanA(string Info);
-string _Old_VSAPI_TransVar(string Info);
-string SizeRead(string Info, int Size);
 
 //Define-Head
 string _runcode_api(string command);
@@ -173,10 +166,13 @@ string _ckapi_scriptload(string load_Script) {
 	return "ok";
 }
 
+string oldcmd;
+string _rc_varid, _rc_varinfo;
 string _runcode_api(string command) {
 	if (_gf_hsc == true) {
 		command = HeadSpaceCleanA(command);
 	}
+	oldcmd = command;
 	command = _Old_VSAPI_TransVar(command);
 	//Command Process
 
@@ -187,6 +183,31 @@ string _runcode_api(string command) {
 
 	if (SizeRead(command, 5) == "_exit") {
 		return "exit";
+	}
+
+	if (SizeRead(command, 5) == "_var ") {
+		if (checkChar(command, "=")) {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=",1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
+		}
+		else {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+			_rc_varinfo = "{null}";
+		}
+		_varspaceadd(_rc_varid, _rc_varinfo);
+
+		return "ok";
+	}
+	if (SizeRead(command, 12) == "_varapi.list") {
+		_p("VarSpace List :  ");
+		_p(VarSpace);
+		_pn();
+		return "ok";
+	}
+	if (SizeRead(command, 6) == "_free ") {
+		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", ";", 1));
+		_varspacedelete(_rc_varid);
+		return "ok";
 	}
 
 	_p("Unknown command or not a var.  Line " + to_string(_gf_line) + "  INFO --> " + command);

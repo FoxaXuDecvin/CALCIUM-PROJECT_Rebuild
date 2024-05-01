@@ -1,7 +1,8 @@
 #pragma once
 
 #include"../shload.h"
-
+#include"Code/CalciumKernel.h"
+#include"Code/RCapi.h"
 
 void TypeHelpMenu() {
 	_p("----------------------------------------------------------");
@@ -68,7 +69,7 @@ bool CK_Shell_open(void) {
 	while (true) {
 		_pn();
 		_prts("Calcium Kernel  " + _KernelVersion + "   Shell Console>");
-		_user_typebuffer = _getline_type();
+		_user_typebuffer = _getline_type() + ";";
 
 		_api_result = _runcode_api(_user_typebuffer);
 		if (_api_result == "exit") {
