@@ -4,6 +4,7 @@
 // Based on OpenCppLangTab
 
 #include"../shload.h"
+#include"../Code/RCapi.h"
 
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
@@ -33,6 +34,12 @@ void _p(string message);
 bool check_file_existence(const std::string& filename);
 string _fileapi_textread(string File, int line_number);
 string HeadSpaceCleanA(string Info);
+string _Old_VSAPI_TransVar(string Info);
+string SizeRead(string Info, int Size);
+
+//Define-Head
+string _runcode_api(string command);
+string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 
 //HeadSpaceClean .  Default = true
 bool _gf_hsc = true;
@@ -43,6 +50,7 @@ bool _gf_status;
 int _gf_line = 1;
 int _gf_cg = 0;
 int _gf_cgmax = 1;
+string _gf_FLMark = ";";
 string _gf_charget;
 string _gf_makebuffer,_gf_getbuffer;
 string _get_fullLine(string load_script) {
@@ -73,6 +81,21 @@ string _get_fullLine(string load_script) {
 				_gf_getbuffer = HeadSpaceCleanA(_gf_getbuffer);
 			}
 
+			if (SizeRead(_gf_getbuffer, 2) == "//") {
+				_gf_cg = -1;
+				_gf_cgmax = 1;
+				_gf_line++;
+				_gf_charget = "";
+				continue;
+			}
+			if (_gf_getbuffer == "") {
+				_gf_cg = -1;
+				_gf_cgmax = 1;
+				_gf_line++;
+				_gf_charget = "";
+				continue;
+			}
+
 			//GetProcess
 			_gf_cgmax = _gf_getbuffer.size();
 			//_p("   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax));
@@ -101,7 +124,7 @@ string _get_fullLine(string load_script) {
 				//_p("charget =  " + _gf_charget);
 				_gf_makebuffer = _gf_makebuffer + _gf_charget;
 				//_p("_gf_makebuffer = _gf_makebuffer + _gf_charge  ===  _gf_makebuffer  = " + _gf_makebuffer + "  + " + _gf_charget + "$");
-				if (_gf_charget == ";") {
+				if (_gf_charget == _gf_FLMark) {
 					_gf_status = true;
 					return _gf_makebuffer;
 				}
@@ -117,8 +140,9 @@ string _get_fullLine(string load_script) {
 }
 //END GETFULL API
 
-
+string _cmd_marks = "_";
 string cmdbuffer;
+string _api_result;
 string _ckapi_scriptload(string load_Script) {
 	if (!check_file_existence(load_Script)) {
 		_p("Calcium Script Run failed");
@@ -128,15 +152,43 @@ string _ckapi_scriptload(string load_Script) {
 	}
 
 	//Character Process ...
+	while (true) {
+		cmdbuffer = _get_fullLine(load_Script);
+		if (_gf_status == false) {
+			_p("Calcium Kernel Stop Running.  Return status code :  " + cmdbuffer);
+			return "ok";
+		}
+		if (_gf_status == false) return "ok";
 
-	cmdbuffer = _get_fullLine(load_Script);
-	if (_gf_status == false) {
-		_p("Calcium Kernel Stop Running.  Return status code :  " + cmdbuffer);
+		//Code Analysis
+
+		_api_result = _runcode_api(cmdbuffer);
+		if (_api_result == "exit") {
+			return "ok";
+		}
+
+		//NEXT
+	}
+
+	return "ok";
+}
+
+string _runcode_api(string command) {
+	if (_gf_hsc == true) {
+		command = HeadSpaceCleanA(command);
+	}
+	command = _Old_VSAPI_TransVar(command);
+	//Command Process
+
+	if (SizeRead(command, 4) == "_prt") {
+		_p(PartReadA(command,"\"", "\"",1));
 		return "ok";
 	}
-	if (_gf_status == false) return "ok";
 
-	//Code Analysis
+	if (SizeRead(command, 5) == "_exit") {
+		return "exit";
+	}
 
-
+	_p("Unknown command or not a var.  Line " + to_string(_gf_line) + "  INFO --> " + command);
+	return "ok";
 }

@@ -87,6 +87,9 @@
     <ClInclude Include="oclt_code\Code\CalciumKernel.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="oclt_code\Code\RCapi.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="oclt_code\launch.cpp">
