@@ -28,7 +28,95 @@ string _mk = ".";
 
 string _KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
 
+//DEFINE
+void _p(string message);
+bool check_file_existence(const std::string& filename);
+string _fileapi_textread(string File, int line_number);
+string HeadSpaceCleanA(string Info);
 
+//HeadSpaceClean .  Default = true
+bool _gf_hsc = true;
+
+
+int _gf_line_maxallow = 128;
+bool _gf_status;
+int _gf_line = 1;
+int _gf_cg = 0;
+int _gf_cgmax = 1;
+string _gf_charget;
+string _gf_makebuffer,_gf_getbuffer;
+string _get_fullLine(string load_script) {
+	if (!check_file_existence(load_script)) {
+		return "badfound";
+	}
+	//Clear Makebuffer
+	_gf_makebuffer = "";
+
+	//get and make
+	for (;true; _gf_line++) {
+		//Reset Char
+		for (;true;_gf_cg ++) {
+			_p("Road Fresh    Line :   " + to_string(_gf_line));
+			//Textread
+			_gf_getbuffer = _fileapi_textread(load_script, _gf_line);
+			//Check Status Code
+			if (_gf_getbuffer == "overline") {
+				_gf_status = false;
+				return "badread";
+			}
+			if (_gf_getbuffer == "ReadFailed") {
+				_gf_status = false;
+				return "badopen";
+			}
+
+			if (_gf_hsc == true) {
+				_gf_getbuffer = HeadSpaceCleanA(_gf_getbuffer);
+			}
+
+			//GetProcess
+			_gf_cgmax = _gf_getbuffer.size();
+			_p("   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax));
+
+			//OpenProcess
+			while (true) {
+				//Reset char get
+				if (_gf_cg == _gf_cgmax) {
+					_p("Char Reset");
+					_gf_cg = -1;
+					_gf_cgmax = 1;
+					_gf_line++;
+					_gf_charget = "";
+					break;
+				}
+
+				if (_gf_line > _gf_line_maxallow) {
+					_gf_status = false;
+					return "Over Size";
+				}
+
+				_p("line :  " + to_string(_gf_line) + "   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax) + "   charMake = " + _gf_makebuffer);
+
+				_gf_charget = _gf_getbuffer[_gf_cg];
+				_gf_cg++;
+				_p("charget =  " + _gf_charget);
+				_gf_makebuffer = _gf_makebuffer + _gf_charget;
+				_p("_gf_makebuffer = _gf_makebuffer + _gf_charge  ===  _gf_makebuffer  = " + _gf_makebuffer + "  + " + _gf_charget + "$");
+				if (_gf_charget == ";") {
+					_gf_status = true;
+					return _gf_makebuffer;
+				}
+				//EndProcess
+			}
+		}
+
+		continue;
+	}
+
+	_gf_status = false;
+	return "Kernel Exception :   _get_fullLine";
+}
+
+string cmdbuffer;
 string _ckapi_scriptload(string load_Script) {
 	if (!check_file_existence(load_Script)) {
 		_p("Calcium Script Run failed");
@@ -38,4 +126,20 @@ string _ckapi_scriptload(string load_Script) {
 	}
 
 	//Character Process ...
+
+	while (true) {
+		cmdbuffer = _get_fullLine(load_Script);
+
+		if (_gf_status == true) {
+			_p("line :  " + to_string(_gf_line) + "   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax) + "   charget : " + _gf_charget + "    throw command :  " + cmdbuffer);
+		}
+		if (_gf_status == false) {
+			_p("throw Error :      " + cmdbuffer  + "         line :  " + to_string(_gf_line) + "   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax) + "   charget : " + _gf_charget + "  ");
+		}
+
+		if (cmdbuffer == "") return "ok";
+		if (cmdbuffer == "overline") return "ok";
+		if (_gf_status == false) return "ok";
+	}
+
 }

@@ -71,7 +71,8 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	if (_runmode == _runmode_runscript) {
-
+		_ckapi_scriptload(runscript);
+		return 0;
 	}
 
 	return 0;
