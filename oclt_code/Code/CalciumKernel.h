@@ -129,19 +129,14 @@ string _ckapi_scriptload(string load_Script) {
 
 	//Character Process ...
 
-	while (true) {
-		cmdbuffer = _get_fullLine(load_Script);
-
-		if (_gf_status == true) {
-			_p("line :  " + to_string(_gf_line) + "   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax) + "   charget : " + _gf_charget + "    throw command :  " + cmdbuffer);
-		}
-		if (_gf_status == false) {
-			_p("throw Error :      " + cmdbuffer  + "         line :  " + to_string(_gf_line) + "   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax) + "   charget : " + _gf_charget + "  ");
-		}
-
-		if (cmdbuffer == "") return "ok";
-		if (cmdbuffer == "overline") return "ok";
-		if (_gf_status == false) return "ok";
+	cmdbuffer = _get_fullLine(load_Script);
+	if (_gf_status == false) {
+		_p("Calcium Kernel Stop Running.  Return status code :  " + cmdbuffer);
+		return "ok";
 	}
+	if (_gf_status == false) return "ok";
+
+	//Code Analysis
+
 
 }
