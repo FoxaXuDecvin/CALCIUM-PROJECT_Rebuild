@@ -167,6 +167,7 @@ string _ckapi_scriptload(string load_Script) {
 }
 
 string oldcmd;
+string charCutA, charCutB, CharCutC, CharCutD;
 string _rc_varid, _rc_varinfo;
 string _runcode_api(string command) {
 	if (_gf_hsc == true) {
@@ -207,6 +208,11 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 6) == "_free ") {
 		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", ";", 1));
 		_varspacedelete(_rc_varid);
+		return "ok";
+	}
+	if (SizeRead(command, 7) == "_system") {
+		charCutA = HeadSpaceCleanA(PartReadA(oldcmd, "\"", "\"", 1));
+		_str_system(charCutA);
 		return "ok";
 	}
 
