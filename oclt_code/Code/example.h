@@ -2,7 +2,6 @@
 
 #include"../shload.h"
 #include"Code/CalciumKernel.h"
-#include"Code/RCapi.h"
 
 void TypeHelpMenu() {
 	_p("----------------------------------------------------------");
@@ -11,6 +10,7 @@ void TypeHelpMenu() {
 	_p("OS Kernel £º" + _Run_SysKernel);
 	_p("----------------------------------------------------------");
 	_p("Calcium Script Core   " + _KernelVersion);
+	_p("RCapi :   " + _RCapi_Version);
 	_p("Copyright FoxaXu " + $year_message);
 	_p("Calcium Project Rebuild    .....");
 	_p("Github : https://github.com/FoxaXuDecvin/Calcium-Project");
@@ -56,6 +56,7 @@ void argsApi(string args$api) {
 
 string _user_typebuffer;
 bool CK_Shell_open(void) {
+	_CK_ShellMode = true;
 	_pn();
 	_pn();
 	_p("----------------------------------------------------------");
@@ -87,11 +88,24 @@ bool CK_Shell_open(void) {
 
 //Put Code Here
 int _HeadMainLoad() {
+	if (!_RcApiLoadConfig()) {
+		_p("Failed to Load RCapi.");
+		_p("Config file is missing :  " + buildshell);
+		_p("try to repair and try again.");
+		_pause();
+		return -1;
+	}
+
 	//main
 	if (_runmode == _runmode_null) {
 		TypeHelpMenu();
 		_pause();
-		return 0;
+		if (_rcset_aosr == true) {
+			_runmode = _runmode_openshell;
+		}
+		else {
+			return 0;
+		}
 	}
 	if (_debugMode == true) {
 		_p("Runmode ID " + _runmode);

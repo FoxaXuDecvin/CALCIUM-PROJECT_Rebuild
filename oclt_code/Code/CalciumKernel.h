@@ -4,6 +4,7 @@
 // Based on OpenCppLangTab
 
 #include"../shload.h"
+#include"Code/RCapi.h"
 
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
@@ -133,6 +134,7 @@ string _get_fullLine(string load_script) {
 }
 //END GETFULL API
 
+bool _CK_ShellMode = false;
 string _cmd_marks = "_";
 string cmdbuffer;
 string _api_result;
@@ -211,8 +213,55 @@ string _runcode_api(string command) {
 		return "ok";
 	}
 	if (SizeRead(command, 7) == "_system") {
+		if (_rcset_syscmd == false) {
+			_p("System Command is disabled on  " + buildshell);
+			_p("Your administrator won't allow you to run this command");
+			_p("Please use command :   _cfgedit EnableSystemCommand = true;");
+			return "ok";
+		}
 		charCutA = HeadSpaceCleanA(PartReadA(oldcmd, "\"", "\"", 1));
 		_str_system(charCutA);
+		return "ok";
+	}
+	if (SizeRead(command, 9) == "_cfgedit ") {
+		if (_CK_ShellMode == false) {
+			//ScriptMode
+			if (_rcset_scriptedit == false) {
+				_p("Your administrator won't allow you to run this command");
+				_p("Please set AllowScriptEdit  == true");
+				return "ok";
+			}
+		}
+		if (_CK_ShellMode == true) {
+			//ShellMode
+			if (_rcset_shelledit == false) {
+				_p("Your administrator won't allow you to run this command");
+				_p("Please set AllowShellEdit  == true");
+				return "ok";
+			}
+		}
+		if (checkChar(command, "=")) {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
+			_write_sipcfg(buildshell,_rc_varid,_rc_varinfo);
+			return "ok";
+		}
+		else {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+			_p("Config " + _rc_varid + " == " + _load_sipcfg(buildshell, _rc_varid));
+			return "ok";
+		}
+		return "falseproblem";
+	}
+	if (SizeRead(command, 7) == "_reload") {
+		if (!_RcApiLoadConfig()) {
+			_p("Failed to Load RCapi.");
+			_p("Config file is missing :  " + buildshell);
+			_p("try to repair and try again.");
+			_pause();
+			return "false";
+		}
+		_p("_Rcapi Config is reload");
 		return "ok";
 	}
 
