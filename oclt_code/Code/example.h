@@ -88,6 +88,7 @@ bool CK_Shell_open(void) {
 
 //Put Code Here
 int _HeadMainLoad() {
+	_RcApi_vp_load();
 	if (!_RcApiLoadConfig()) {
 		_p("Failed to Load RCapi.");
 		_p("Config file is missing :  " + buildshell);

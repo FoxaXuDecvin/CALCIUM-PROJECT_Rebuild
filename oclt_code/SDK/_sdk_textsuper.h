@@ -17,18 +17,19 @@ int numbuffer;
 
 //Only Support Read 1 Char Size,Read Size A"B$C "+$ = B
 bool check_file_existence(const std::string& filename) {
-    std::ifstream file(filename);
-    if (file.is_open()) {
-        return true;
-    } else {
-        return false;
-    }
+	std::ifstream file(filename);
+	if (file.is_open()) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 //Read Env NEW
 string PartRead(string Info, string StartMark, string EndMark) {
 	int MaxInfoSize = Info.size();
-	int startmarkadd, endmarkadd,readptr;
+	int startmarkadd, endmarkadd, readptr;
 	string readbufferPR;
 	readptr = 0;
 
@@ -45,10 +46,10 @@ string PartRead(string Info, string StartMark, string EndMark) {
 		}
 		readbufferPR = Info[readptr];
 	}
-	
+
 	startmarkadd = readptr;
 
-	SKIPGETMARKSTART:
+SKIPGETMARKSTART:
 	readbufferPR = "";
 	//GetEnd
 	if (EndMark == "$FROMEND$") {
@@ -65,7 +66,7 @@ string PartRead(string Info, string StartMark, string EndMark) {
 	endmarkadd = readptr;
 	endmarkadd--;
 
-	skipENDGET:
+skipENDGET:
 	//cout << "Start :  " << startmarkadd << "  End :  " << endmarkadd << endl;
 
 	//Start Process CMD
@@ -82,7 +83,7 @@ string PartRead(string Info, string StartMark, string EndMark) {
 int PartSizeA;
 //Read Env NEW PART
 //Use StartMark
-string PartReadA(string Info, string StartMark, string EndMark,int RPartSizeA) {
+string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA) {
 	//Anti Search All
 	if (RPartSizeA == 1) {
 		return PartRead(Info, StartMark, EndMark);
@@ -93,7 +94,7 @@ string PartReadA(string Info, string StartMark, string EndMark,int RPartSizeA) {
 	PartSizeA = RPartSizeA;
 	int cbuffer = 0;
 
-	int getStart, getEnd , getcurrent = 0;
+	int getStart, getEnd, getcurrent = 0;
 
 	//FindStart
 	if (StartMark == EndMark) {
@@ -111,7 +112,7 @@ string PartReadA(string Info, string StartMark, string EndMark,int RPartSizeA) {
 			//cout << "Read :  " << readptr << "Data :  " << readbufferC << endl;
 			if (readptr > MAXSIZEA)return "pra.failed mark";
 		}
-		
+
 		//cout << "A :  " << readbufferC << "  B :  " << getcurrent << endl;
 		readbufferC = "";
 	}
@@ -179,7 +180,7 @@ string EndSizeRead(string Info, int LateSize) {
 	if (EndAddress < 0) {
 		return "EndSizeRead.LateSizeOverSmall";
 	}
-	string TempInfo,ReadChar;
+	string TempInfo, ReadChar;
 
 	for (int LateRead = InfoSize; LateRead != EndAddress; LateRead--) {
 		ReadChar = Info[LateRead];
@@ -246,7 +247,8 @@ string PartReadSize(string Info, int StartSize, int EndSize) {
 //
 //      LineReader(ExampleFile,3) return FOXAXU
 string LineReader(string File, int line_number) {
-	if (check_file_existence(File)) {}else {
+	if (check_file_existence(File)) {}
+	else {
 		return "FileNotExist";
 	}
 	int lines, i = 0;
@@ -353,33 +355,10 @@ NextRollCR:
 	goto NextRollCR;
 }
 
+string readMCS, tempInfo;
 string HeadSpaceClean(string Info) {
+	readMCS = tempInfo = "";
 	int maxCSize = Info.size();
-	if (maxCSize == -1) {
-		return "";
-	}
-	string readMCS, tempInfo;
-	int currentFit;
-
-	//cout << "Max C Size :  _" << maxCSize << endl;
-	for (currentFit = 0; currentFit < maxCSize; currentFit++) {
-		readMCS = Info[currentFit];
-		//cout << "Read MCS :  _" << readMCS << endl;
-		if (readMCS == " ") {}
-		else {
-			while (currentFit < maxCSize) {
-				//cout << "Trans Add : _" << Info[currentFit] << endl;
-				tempInfo = tempInfo + Info[currentFit];
-				currentFit++;
-			}
-		}
-	}
-	return tempInfo;
-}
-
-string HeadSpaceCleanA(string Info) {
-	int maxCSize = Info.size();
-	string readMCS, tempInfo;
 	int currentFit;
 
 	//cout << "Max C Size :  _" << maxCSize << endl;
@@ -401,13 +380,41 @@ string HeadSpaceCleanA(string Info) {
 	return tempInfo;
 }
 
-int charTotal(string info,string markchar){
+//This api include clean end space
+string fullread, tempget;
+int finget;
+string HeadSpaceCleanA(string Info) {
+	tempget = fullread = "";
+	//_p("HSC Input :  " + Info);
+	Info = HeadSpaceClean(Info);
+	finget = Info.size();
+
+	while (true) {
+		finget--;
+		tempget = Info[finget];
+		if (tempget != " ") break;
+	}
+
+	finget++;
+
+	//_p("finget size ;  " + to_string(finget));
+
+	for (int rp_temp = 0; rp_temp != finget; rp_temp++) {
+		fullread = fullread + Info[rp_temp];
+		//_p("build char =  " + fullread);
+	}
+
+	//_p("HSC Return :  " + fullread);
+	return fullread;
+}
+
+int charTotal(string info, string markchar) {
 	int charsize = info.size();
 	int totalget = 0;
-	for(int readsize = 0;charsize != readsize;readsize++){
+	for (int readsize = 0; charsize != readsize; readsize++) {
 		readbuffer = info[readsize];
-		if (readbuffer == markchar){
-			totalget ++;
+		if (readbuffer == markchar) {
+			totalget++;
 			continue;
 		}
 		else {
@@ -430,15 +437,15 @@ int SpawnRandomNum(int min, int max) {
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dis(min, max); // Missing
 	int outdata = dis(gen);
-	
+
 	//string dis_str = to_string(dis(gen));
 	//MessageBox(0,dis_str.c_str(),"Bug check",MB_OK);
-	
+
 	return dis(gen);
 }
 
 // -4 == Not Found
-int FindCharLine(int startline,string file, string charData) {
+int FindCharLine(int startline, string file, string charData) {
 	//cout << "GoRoll. in " << startline << endl;
 	while (true) {
 		//cout << "A" << endl;

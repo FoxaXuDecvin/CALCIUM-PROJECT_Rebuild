@@ -180,7 +180,7 @@ string _runcode_api(string command) {
 	//Command Process
 
 	if (SizeRead(command, 4) == "_prt") {
-		_p(PartReadA(command,"\"", "\"",1));
+		_p(_Old_VSAPI_TransVar(PartReadA(oldcmd, "\"", "\"", 1)));
 		return "ok";
 	}
 
@@ -220,6 +220,7 @@ string _runcode_api(string command) {
 			return "ok";
 		}
 		charCutA = HeadSpaceCleanA(PartReadA(oldcmd, "\"", "\"", 1));
+		charCutA = _Old_VSAPI_TransVar(charCutA);
 		_str_system(charCutA);
 		return "ok";
 	}
@@ -244,6 +245,7 @@ string _runcode_api(string command) {
 			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
 			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
 			_write_sipcfg(buildshell,_rc_varid,_rc_varinfo);
+			_p("Your settings is has been modified. use \"_reload\" to Reload all configs");
 			return "ok";
 		}
 		else {

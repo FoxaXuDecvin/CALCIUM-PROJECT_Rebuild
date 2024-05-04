@@ -39,6 +39,7 @@ bool _RcLoad_TransApi(string _Rc_ID) {
 		return false;
 	}
 
+	_p("--------------------------------------------------------------------");
 	_p("Null Config Set");
 	_p("Setting :   " + _Rc_ID + "       Data :   \"" + _RcApi_TapiBuffer + "\"");
 	_p("Data is not true or false");
