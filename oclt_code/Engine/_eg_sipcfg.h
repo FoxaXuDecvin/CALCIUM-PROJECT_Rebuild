@@ -90,13 +90,16 @@ bool _spcfg_wiriteapi(string _sc_File, int _sc_Line, string _sc_header,string _s
 	}
 }
 
-bool _write_sipcfg(string _sc_File, string _sc_ID ,string _sc_writeINFO) {
+bool _write_sipcfg(string _sc_File, string _sc_ID, string _sc_writeINFO) {
 	string readbufferA;
 	int readptr = 0;
 	if (check_file_existenceA(_sc_File)) {
 		while (true) {
 			readptr++;
 			string tempptr = _fileapi_textread(_sc_File, readptr);
+			if (tempptr == "") {
+				continue;
+			}
 			if (tempptr == "ReadFailed") {
 				cout << "Failed to Write Simple Config" << endl;
 				cout << "Open File Failed :  " << _sc_File << endl;
@@ -104,7 +107,7 @@ bool _write_sipcfg(string _sc_File, string _sc_ID ,string _sc_writeINFO) {
 			}
 			if (tempptr == "overline") {
 				//WriteNewConfig
-				return _spcfg_wiriteapi(_sc_File, readptr,_sc_ID ,_sc_writeINFO);
+				return _spcfg_wiriteapi(_sc_File, readptr, _sc_ID, _sc_writeINFO);
 			}
 			readbufferA = _api_PartRead(tempptr, "$", "=");
 

@@ -4,7 +4,7 @@
 // Based on OpenCppLangTab
 
 #include"../shload.h"
-#include"Code/RCapi.h"
+#include"../Code/RCapi.h"
 
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
@@ -14,8 +14,16 @@ const string _KV_rV_Debug = "1";
 const string _KV_rV_Preview = "2";
 const string _KV_rV_preRelease = "3";
 const string _KV_rV_Release = "4";
+
+string _kv_text_debug = "Debug";
+string _kv_text_preview = "Preview";
+string _kv_text_prerelease = "Prerelease";
+string _kv_text_release = "Release";
 //rVK END
 
+//RunID
+string _KV_rV_Text;
+string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
@@ -23,13 +31,32 @@ string _KV_gen = "1";//(General)
 
 string _KV_rv = "1";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Debug;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
 string _KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
 
 //DEFINE
+
+void _KernelVersion_LoadText(void) {
+	_KV_rV_Text = "{Unknown KrV ;  " + _KV_releaseVer + " }";
+
+	if (_KV_releaseVer == _KV_rV_Debug) {
+		_KV_rV_Text = _kv_text_debug;
+	}
+	if (_KV_releaseVer == _KV_rV_Preview) {
+		_KV_rV_Text = _kv_text_preview;
+	}
+	if (_KV_releaseVer == _KV_rV_preRelease) {
+		_KV_rV_Text = _kv_text_prerelease;
+	}
+	if (_KV_releaseVer == _KV_rV_Release) {
+		_KV_rV_Text = _kv_text_release;
+	}
+
+	return;
+}
 
 //Define-Head
 string _runcode_api(string command);
@@ -171,6 +198,7 @@ string _ckapi_scriptload(string load_Script) {
 string oldcmd;
 string charCutA, charCutB, CharCutC, CharCutD;
 string _rc_varid, _rc_varinfo;
+int intCutA, intCutB, intCutC;
 string _runcode_api(string command) {
 	if (_gf_hsc == true) {
 		command = HeadSpaceCleanA(command);
@@ -179,8 +207,18 @@ string _runcode_api(string command) {
 	command = _Old_VSAPI_TransVar(command);
 	//Command Process
 
+	if (SizeRead(command, 1) == "\"") {
+		if (charTotal(command, "\"") != 2) {
+			return("Null.format(Quotation Mark not full)");
+		}
+		return PartReadA(command, "\"", "\"", 1);
+	}
+
 	if (SizeRead(command, 4) == "_prt") {
-		_p(_Old_VSAPI_TransVar(PartReadA(oldcmd, "\"", "\"", 1)));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
+		_p(charCutB);
 		return "ok";
 	}
 
@@ -190,8 +228,9 @@ string _runcode_api(string command) {
 
 	if (SizeRead(command, 5) == "_var ") {
 		if (checkChar(command, "=")) {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=",1));
-			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
+			_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=",1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(oldcmd, "=", ";", 1));
+			_rc_varinfo = _runcode_api(_rc_varinfo);
 		}
 		else {
 			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
@@ -202,6 +241,7 @@ string _runcode_api(string command) {
 		return "ok";
 	}
 	if (SizeRead(command, 12) == "_varapi.list") {
+		_p("VarSpace Size :  " + to_string(VarSpaceMax));
 		_p("VarSpace List :  ");
 		_p(VarSpace);
 		_pn();
@@ -217,7 +257,7 @@ string _runcode_api(string command) {
 			_p("System Command is disabled on  " + buildshell);
 			_p("Your administrator won't allow you to run this command");
 			_p("Please use command :   _cfgedit EnableSystemCommand = true;");
-			return "ok";
+			return "denied";
 		}
 		charCutA = HeadSpaceCleanA(PartReadA(oldcmd, "\"", "\"", 1));
 		charCutA = _Old_VSAPI_TransVar(charCutA);
@@ -230,7 +270,7 @@ string _runcode_api(string command) {
 			if (_rcset_scriptedit == false) {
 				_p("Your administrator won't allow you to run this command");
 				_p("Please set AllowScriptEdit  == true");
-				return "ok";
+				return "denied";
 			}
 		}
 		if (_CK_ShellMode == true) {
@@ -238,7 +278,7 @@ string _runcode_api(string command) {
 			if (_rcset_shelledit == false) {
 				_p("Your administrator won't allow you to run this command");
 				_p("Please set AllowShellEdit  == true");
-				return "ok";
+				return "denied";
 			}
 		}
 		if (checkChar(command, "=")) {
@@ -266,7 +306,42 @@ string _runcode_api(string command) {
 		_p("_Rcapi Config is reload");
 		return "ok";
 	}
+	if (SizeRead(command, 9) == "_getrunid") {
+		return _CK_Runid;
+	}
+	if (SizeRead(command, 6) == "_pause") {
+		_pause();
+		return"ok";
+	}
+	if (SizeRead(command, 10) == "_textprint") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
+		if (!check_file_existenceA(charCutB)) {
+			_p("file not found   " + charCutB);
+			_p("Null._textprint()");
+			return "nofile";
+		}
+
+		_textapi_typetext(charCutB);
+		return "ok";
+	}
+	if (SizeRead(command, 6) == "_sleep") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		if (charCutA == "0") {
+			_p("Error :  _sleep(0) is a Null Time");
+			return "ok";
+		}
+		intCutA = atoi(charCutA.c_str());
+		if (intCutA == 0) {
+			_p("Error :  _sleep(" + charCutA + ") is not a Digital.");
+			return "ok";
+		}
+
+		sleepapi(intCutA);
+		return "ok";
+	}
 
 	_p("Unknown command or not a var.  Line " + to_string(_gf_line) + "  INFO --> " + command);
-	return "ok";
+	return "unknown.command()";
 }

@@ -6,6 +6,9 @@
 
 #include"../shload.h"
 
+void _KernelVersion_LoadText(void);
+//Define
+
 const string _rc_false = "false";
 const string _rc_true = "true";
 
@@ -63,8 +66,9 @@ bool _RcApiLoadConfig() {
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 
-	_rcbind_runpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultRunPath"));
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
+
+	_KernelVersion_LoadText();
 
 	return true;
 }
