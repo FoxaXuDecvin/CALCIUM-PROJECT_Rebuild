@@ -7,7 +7,7 @@ void TypeHelpMenu() {
 	_p("----------------------------------------------------------");
 	_p("Based on OCLT  " + $version_title + "  Base version :   " + $version_code_str);
 	_p("OCLT CodeName :   " + $codename + "  " + $version_msg);
-	_p("OS Kernel £º" + _Run_SysKernel);
+	_p("OS Kernel :    " + _Run_SysKernel);
 	_p("----------------------------------------------------------");
 	_p("Calcium Script Core   " + _KernelVersion + "  " + _KV_rV_Text);
 	_p("RCapi :   " + _RCapi_Version);

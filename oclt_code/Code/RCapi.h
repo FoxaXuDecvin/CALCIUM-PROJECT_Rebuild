@@ -14,7 +14,7 @@ const string _rc_true = "true";
 
 //Build / Release / Prerelease   -  Release ID 
 const string _RCapi_Version = "B1D1";
-const string buildshell = _$GetSelfPath + "./Buildshell.cfg";
+const string buildshell = _$GetSelfPath + "/Buildshell.cfg";
 
 //Rc Config var
 bool _rcset_syscmd;
