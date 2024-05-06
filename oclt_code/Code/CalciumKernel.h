@@ -14,11 +14,24 @@ const string _KV_rV_Debug = "1";
 const string _KV_rV_Preview = "2";
 const string _KV_rV_preRelease = "3";
 const string _KV_rV_Release = "4";
+const string _KV_rV_Stable = "5";
 
+//Other Version
+const string _KV_rV_Custom = "6";
+const string _KV_rV_Embed = "7";
+const string _KV_rV_Demo = "8";
+
+//Main Char
 string _kv_text_debug = "Debug";
 string _kv_text_preview = "Preview";
 string _kv_text_prerelease = "Prerelease";
 string _kv_text_release = "Release";
+string _kv_text_stable = "stable";
+
+//OV
+string _kv_text_custom = "Custom";
+string _kv_text_embed = "Embed";
+string _kv_text_demo = "Demo";
 //rVK END
 
 //RunID
@@ -53,6 +66,20 @@ void _KernelVersion_LoadText(void) {
 	}
 	if (_KV_releaseVer == _KV_rV_Release) {
 		_KV_rV_Text = _kv_text_release;
+	}
+	if (_KV_releaseVer == _KV_rV_Stable) {
+		_KV_rV_Text = _kv_text_stable;
+	}
+
+	//Other
+	if (_KV_releaseVer == _KV_rV_Custom) {
+		_KV_rV_Text = _kv_text_custom;
+	}
+	if (_KV_releaseVer == _KV_rV_Embed) {
+		_KV_rV_Text = _kv_text_embed;
+	}
+	if (_KV_releaseVer == _KV_rV_Demo) {
+		_KV_rV_Text = _kv_text_demo;
 	}
 
 	return;
@@ -207,6 +234,13 @@ string _runcode_api(string command) {
 	command = _Old_VSAPI_TransVar(command);
 	//Command Process
 
+	if (command == "") {
+		return"empty";
+	}
+	if (command == ";") {
+		return"empty";
+	}
+
 	if (SizeRead(command, 1) == "\"") {
 		if (charTotal(command, "\"") != 2) {
 			return("Null.format(Quotation Mark not full)");
@@ -339,6 +373,26 @@ string _runcode_api(string command) {
 		}
 
 		sleepapi(intCutA);
+		return "ok";
+	}
+	if (SizeRead(command, 8) == "_execute") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		//_p("Execute Command :   " + _rc_varid + " " + _rc_varinfo);
+		if (!check_file_existence(_rc_varid)) {
+			_p("Execute Error :   FileNotFound");
+			_p("Please check yor type");
+			return "filenotfound";
+		}
+		intCutA = _system_autoRun(_rc_varid, _rc_varinfo);
+
+		return to_string(intCutA);
+	}
+	if (SizeRead(command, 6) == "_clear") {
+		cleanConsole();
 		return "ok";
 	}
 
