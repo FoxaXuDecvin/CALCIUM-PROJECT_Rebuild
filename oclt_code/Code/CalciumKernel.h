@@ -243,7 +243,7 @@ string _runcode_api(string command) {
 
 	if (SizeRead(command, 1) == "\"") {
 		if (charTotal(command, "\"") != 2) {
-			return("Null.format(Quotation Mark not full)");
+			return("Null.format(Quotation Mark not full) for -->  " + command);
 		}
 		return PartReadA(command, "\"", "\"", 1);
 	}
@@ -279,6 +279,11 @@ string _runcode_api(string command) {
 		_p("VarSpace List :  ");
 		_p(VarSpace);
 		_pn();
+		return "ok";
+	}
+	if (SizeRead(command, 9) == "_pathlist") {
+		_p("PluginPath =   " + _rcbind_pluginpath);
+		_p("PluginScript = " + _rcbind_pluginscript);
 		return "ok";
 	}
 	if (SizeRead(command, 6) == "_free ") {
@@ -394,6 +399,10 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 6) == "_clear") {
 		cleanConsole();
 		return "ok";
+	}
+	if (SizeRead(command, 12) == "_kernelcrash") {
+		string abcapi = NULL;
+		_p(abcapi);
 	}
 
 	_p("Unknown command or not a var.  Line " + to_string(_gf_line) + "  INFO --> " + command);

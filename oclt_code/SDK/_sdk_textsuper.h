@@ -27,7 +27,7 @@ bool check_file_existence(const std::string& filename) {
 }
 
 //Read Env NEW
-string PartRead(string Info, string StartMark, string EndMark) {
+string PartRead(string Info, string StartMark, string EndMark,bool EndSearch) {
 	int MaxInfoSize = Info.size();
 	int startmarkadd, endmarkadd, readptr;
 	string readbufferPR;
@@ -56,15 +56,29 @@ SKIPGETMARKSTART:
 		endmarkadd = MaxInfoSize;
 		goto skipENDGET;
 	}
-	for (; readbufferPR != EndMark; readptr++) {
-		if (readptr > MaxInfoSize) {
-			return "notfoundEnd :  " + Info;
+	if (EndSearch == true) {
+		for (readptr = MaxInfoSize; readbufferPR != EndMark; readptr--) {
+			if (readptr < 0) {
+				return "(EndSearch)notfoundEnd :  " + Info;
+			}
+			readbufferPR = Info[readptr];
 		}
-		readbufferPR = Info[readptr];
-	}
 
-	endmarkadd = readptr;
-	endmarkadd--;
+		endmarkadd = readptr;
+		endmarkadd++;
+	}
+	else {
+		for (; readbufferPR != EndMark; readptr++) {
+			if (readptr > MaxInfoSize) {
+				return "notfoundEnd :  " + Info;
+			}
+			readbufferPR = Info[readptr];
+		}
+
+		endmarkadd = readptr;
+		endmarkadd--;
+	}
+	
 
 skipENDGET:
 	//cout << "Start :  " << startmarkadd << "  End :  " << endmarkadd << endl;
@@ -86,7 +100,7 @@ int PartSizeA;
 string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA) {
 	//Anti Search All
 	if (RPartSizeA == 1) {
-		return PartRead(Info, StartMark, EndMark);
+		return PartRead(Info, StartMark, EndMark,true);
 	}
 
 	int MAXSIZEA = Info.size();

@@ -38,7 +38,13 @@ bool _dapi_rmdir(string dir) {
 }
 
 bool _dapi_mkdir(string dir) {
-	dir = ReplaceChar(dir, "\\", "/");
+	if (_Run_SysKernel == Win32_kernel) {
+		dir = ReplaceChar(dir, "/", "\\");
+	}
+
+	if (_Run_SysKernel == Linux_kernel) {
+		dir = ReplaceChar(dir, "\\", "/");
+	}
 
 	foldercreateapi(dir.c_str());
 

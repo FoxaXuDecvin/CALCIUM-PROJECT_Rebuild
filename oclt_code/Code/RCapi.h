@@ -26,7 +26,7 @@ bool _rcset_shelledit,_rcset_scriptedit;
 
 bool _rcset_aosr;
 
-string _rcbind_runpath, _rcbind_pluginpath;
+string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind;
 
 void _RcApi_vp_load(void) {
 	_varspaceadd("{path}", _$GetSelfPath);
@@ -66,7 +66,19 @@ bool _RcApiLoadConfig() {
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 
+	_rcbind_thirdbind = _Old_VSAPI_TransVar(_load_sipcfg(file, "ThirdBind"));
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
+	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginScript"));
+
+	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
+		_dapi_mkdir(_rcbind_thirdbind);
+	}
+	if (!_dapi_ExistFolder_check(_rcbind_pluginpath)) {
+		_dapi_mkdir(_rcbind_pluginpath);
+	}
+	if (!_dapi_ExistFolder_check(_rcbind_pluginscript)) {
+		_dapi_mkdir(_rcbind_pluginscript);
+	}
 
 	_KernelVersion_LoadText();
 
