@@ -93,11 +93,11 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 bool _gf_hsc = true;
 
 //GetFULL API
-int _gf_line_maxallow = 128;
+const int _gf_line_maxallow = 128;
 bool _gf_status;
-int _gf_line = 1;
 int _gf_cg = 0;
 int _gf_cgmax = 1;
+int _gf_line = 1;
 string _gf_FLMark = ";";
 string _gf_charget;
 string _gf_makebuffer,_gf_getbuffer;
@@ -192,7 +192,9 @@ bool _CK_ShellMode = false;
 string _cmd_marks = "_";
 string cmdbuffer;
 string _api_result;
+string _global_scriptload;
 string _ckapi_scriptload(string load_Script) {
+	_global_scriptload = load_Script;
 	if (!check_file_existence(load_Script)) {
 		_p("Calcium Script Run failed");
 		_p("return code :  nf01    FILE_NOT_FOUND");
@@ -202,6 +204,7 @@ string _ckapi_scriptload(string load_Script) {
 
 	//Character Process ...
 	while (true) {
+		_global_scriptload = load_Script;
 		cmdbuffer = _get_fullLine(load_Script);
 		if (_gf_status == false) {
 			_p("Calcium Kernel Stop Running.  Return status code :  " + cmdbuffer);
@@ -241,6 +244,13 @@ string _runcode_api(string command) {
 		return"empty";
 	}
 
+	if (command == "true") {
+		return "true";
+	}
+	if (command == "false") {
+		return "false";
+	}
+
 	if (SizeRead(command, 1) == "\"") {
 		if (charTotal(command, "\"") != 2) {
 			return("Null.format(Quotation Mark not full) for -->  " + command);
@@ -262,6 +272,15 @@ string _runcode_api(string command) {
 
 	if (SizeRead(command, 5) == "_var ") {
 		if (checkChar(command, "=")) {
+			//Add illegal Char "="
+			charCutA = PartReadA(command, "\"", "\"", 1);
+			if (checkChar(charCutA, "=")) {
+				_p("Detect illegal Character :   =");
+				_p("Varspace :  Access is Denied");
+				return "false";
+			}
+			//End Detect
+
 			_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=",1));
 			_rc_varinfo = HeadSpaceCleanA(PartReadA(oldcmd, "=", ";", 1));
 			_rc_varinfo = _runcode_api(_rc_varinfo);
@@ -404,7 +423,85 @@ string _runcode_api(string command) {
 		string abcapi = NULL;
 		_p(abcapi);
 	}
+	if (SizeRead(command, 10) == "_runscript") {
 
-	_p("Unknown command or not a var.  Line " + to_string(_gf_line) + "  INFO --> " + command);
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1));
+		charCutB = _runcode_api(charCutA);
+
+		if (!check_file_existenceA(charCutB)) {
+			charCutB = _rcbind_pluginscript + "/" + charCutB;
+			if (!check_file_existenceA(charCutB)) {
+				_p("_runscript Error:  File not Exist");
+				_p(charCutB);
+				return "filenotfound";
+			}
+		}
+
+		//Backup old GFapi data;
+
+		int _old$_gf_cg = _gf_cg;
+		int _old$_gf_cgmax = _gf_cgmax;
+		int _old$_gf_line = _gf_line;
+
+		//Create New Space
+
+		_gf_cg = 0;
+		_gf_cgmax = 1;
+		_gf_line = 1;
+		_gf_charget = "";
+
+		//Run
+
+		CharCutC = _ckapi_scriptload(charCutB);
+
+		//Recovery old GFapi Data;
+		_gf_cg = _old$_gf_cg;
+		_gf_cgmax = _old$_gf_cgmax;
+		_gf_line = _old$_gf_line;
+		_gf_charget = "";
+
+		return CharCutC;
+	}
+	if (SizeRead(command, 8) == "_compare") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		//_p("1 = " + _rc_varid);
+		//_p("2 = " + _rc_varinfo);
+
+		if (_rc_varid == _rc_varinfo) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+
+		return "FAIL";
+	}
+	if (SizeRead(command, 3) == "_if") {
+		charCutA = _Old_VSAPI_TransVar(PartRead(oldcmd, "(", ")",false));
+
+		charCutB = _runcode_api(charCutA);
+
+		if (charCutB == "true") {
+			CharCutC = _Old_VSAPI_TransVar(PartRead(command, ")", "$FROMEND$",false));
+
+			CharCutD = _runcode_api(CharCutC);
+
+			return CharCutD;
+		}
+		if (charCutB == "false") {
+			return "notrue";
+		}
+
+		_p(" $$ _if command Error");
+		_p(" $$ Command return a null result not a true or false");
+		return "NullReturn";
+	}
+
+	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command);
 	return "unknown.command()";
 }

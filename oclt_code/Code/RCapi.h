@@ -1,3 +1,7 @@
+//Warning Do not running on Visual Studio 2022 Debug mode
+//Create BuildShell.cfg will Crash
+//Please running on Normal mode to create buildshell.cfg
+
 //RC API
 // Run Code API
 
@@ -55,7 +59,23 @@ string file;
 bool _RcApiLoadConfig() {
 	file = buildshell;
 	if (!check_file_existence(file)) {
-		return false;
+		_soildwrite_open(file);
+		_soildwrite_write(" //BuildShell SipCfg  --Use  true/false");
+		_soildwrite_write("$EnableSystemCommand=false;");
+		_soildwrite_write("$AllowSuperUser=false;");
+		_soildwrite_write("$AllowDirectoryEdit=false;");
+		_soildwrite_write("$AllowThirdPartyPlugin=false;");
+		_soildwrite_write("$AllowShellEdit=false;");
+		_soildwrite_write("$AllowScriptEdit=false;");
+		_soildwrite_write("");
+		_soildwrite_write("//ShellSettings");
+		_soildwrite_write("$AutoOpenShellAfterRun=true;");
+		_soildwrite_write("");
+		_soildwrite_write("//Bind");
+		_soildwrite_write("$ThirdBind={path};");
+		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
+		_soildwrite_write("$DefaultPluginScript={path}/script;");
+		_soildwrite_close();
 	}
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
 	_rcset_allowsu = _RcLoad_TransApi("AllowSuperUser");
@@ -83,4 +103,8 @@ bool _RcApiLoadConfig() {
 	_KernelVersion_LoadText();
 
 	return true;
+}
+
+bool _RcApi_Loadscript() {
+
 }

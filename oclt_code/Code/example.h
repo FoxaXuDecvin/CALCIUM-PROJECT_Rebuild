@@ -56,6 +56,7 @@ void argsApi(string args$api) {
 
 string _user_typebuffer;
 bool CK_Shell_open(void) {
+	_global_scriptload = "{ShellMode}";
 	_CK_ShellMode = true;
 	_pn();
 	_pn();
