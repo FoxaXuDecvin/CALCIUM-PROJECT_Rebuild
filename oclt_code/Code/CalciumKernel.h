@@ -269,7 +269,11 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 5) == "_exit") {
 		return "exit";
 	}
-
+	if (SizeRead(command, 7) == "_foxaxu") {
+		_p("Thanks your support");
+		_p("https://www.foxaxu.com/fwlink?linkid=calcium_kernel_surprise");
+		return "ok";
+	}
 	if (SizeRead(command, 5) == "_var ") {
 		if (checkChar(command, "=")) {
 			//Add illegal Char "="
