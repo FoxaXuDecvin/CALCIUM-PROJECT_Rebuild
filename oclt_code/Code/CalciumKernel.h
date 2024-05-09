@@ -262,6 +262,14 @@ string _runcode_api(string command) {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		charCutB = _runcode_api(charCutA);
 
+		_prts(charCutB);
+		return "ok";
+	}
+
+	if (SizeRead(command, 5) == "_cout") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
 		_p(charCutB);
 		return "ok";
 	}
@@ -276,18 +284,24 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 5) == "_var ") {
 		if (checkChar(command, "=")) {
-			//Add illegal Char "="
-			charCutA = PartReadA(command, "\"", "\"", 1);
-			if (checkChar(charCutA, "=")) {
+			//Detecd illegal char = 
+
+			if (charTotal(command, "=") == 2) {
 				_p("Detect illegal Character :   =");
 				_p("Varspace :  Access is Denied");
 				return "false";
 			}
-			//End Detect
 
 			_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=",1));
 			_rc_varinfo = HeadSpaceCleanA(PartReadA(oldcmd, "=", ";", 1));
 			_rc_varinfo = _runcode_api(_rc_varinfo);
+
+			if (checkChar(_rc_varinfo, "=")) {
+				_p("Detect illegal Character :   =");
+				_p("Varspace :  Access is Denied");
+				return "false";
+			}
+
 		}
 		else {
 			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
@@ -504,6 +518,9 @@ string _runcode_api(string command) {
 		_p(" $$ _if command Error");
 		_p(" $$ Command return a null result not a true or false");
 		return "NullReturn";
+	}
+	if (SizeRead(command, 8) == "_getline") {
+		return _getline_type();
 	}
 
 	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command);
