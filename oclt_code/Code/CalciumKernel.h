@@ -243,7 +243,12 @@ string _runcode_api(string command) {
 	if (command == ";") {
 		return"empty";
 	}
-
+	if (command == "1") {
+		return "true";
+	}
+	if (command == "0") {
+		return "false";
+	}
 	if (command == "true") {
 		return "true";
 	}
@@ -500,12 +505,20 @@ string _runcode_api(string command) {
 		return "FAIL";
 	}
 	if (SizeRead(command, 3) == "_if") {
-		charCutA = _Old_VSAPI_TransVar(PartRead(oldcmd, "(", ")",false));
+
+		//_p("LaoDeng");
+		CharCutD = "(" + PartRead(oldcmd, "(", "|", true);
+
+		charCutA = _Old_VSAPI_TransVar(PartRead(CharCutD, "(", ")",true));
+
+		//_p("Ready to XinDeng");
 
 		charCutB = _runcode_api(charCutA);
 
+		//_p("XinDeng");
+
 		if (charCutB == "true") {
-			CharCutC = _Old_VSAPI_TransVar(PartRead(command, ")", "$FROMEND$",false));
+			CharCutC = _Old_VSAPI_TransVar(PartRead(command, "|", "$FROMEND$",true));
 
 			CharCutD = _runcode_api(CharCutC);
 
