@@ -14,7 +14,8 @@ string runscript = "{null}";
 
 bool _setnextargs_runscript = false;
 
-
+string _$quo = "\"";
+string native_argument;
 
 bool _debugMode = false;
 
@@ -28,3 +29,5 @@ const string _runmode_autoexit = "r0cl";
 const string _runmode_openshell = "r3se";
 
 string _runmode = _runmode_null;
+
+bool _anticrash_services = false;

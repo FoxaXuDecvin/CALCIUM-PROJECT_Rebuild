@@ -522,6 +522,81 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 8) == "_getline") {
 		return _getline_type();
 	}
+	//calculator
+	if (SizeRead(command, 7) == "_calc.+") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		intCutA = atoi(_rc_varid.c_str());
+		intCutB = atoi(_rc_varinfo.c_str());
+
+		intCutC = intCutA + intCutB;
+
+		charCutA = to_string(intCutC);
+		return charCutA;
+	}
+	if (SizeRead(command, 7) == "_calc.-") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		intCutA = atoi(_rc_varid.c_str());
+		intCutB = atoi(_rc_varinfo.c_str());
+
+		intCutC = intCutA - intCutB;
+
+		charCutA = to_string(intCutC);
+		return charCutA;
+	}
+	if (SizeRead(command, 7) == "_calc.*") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		intCutA = atoi(_rc_varid.c_str());
+		intCutB = atoi(_rc_varinfo.c_str());
+
+		intCutC = intCutA * intCutB;
+
+		charCutA = to_string(intCutC);
+		return charCutA;
+	}
+	if (SizeRead(command, 7) == "_calc./") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		if (_rc_varinfo == "0") {
+			_p("Calcium calculator Warning");
+			_p("command :    _calc./    ");
+			_p("The divisor cannot be 0");
+			return "0";
+		}
+
+		intCutA = atoi(_rc_varid.c_str());
+		intCutB = atoi(_rc_varinfo.c_str());
+
+		intCutC = intCutA / intCutB;
+
+		charCutA = to_string(intCutC);
+		return charCutA;
+	}
+
+	//Other
+	if (SizeRead(command, 8) == "_getrand") {
+		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+
+		intCutA = atoi(_rc_varid.c_str());
+		intCutB = atoi(_rc_varinfo.c_str());
+
+		intCutC = _get_random(intCutA, intCutB);
+
+		charCutA = to_string(intCutC);
+		return charCutA;
+	}
 
 	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command);
 	return "unknown.command()";

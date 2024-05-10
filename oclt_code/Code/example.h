@@ -44,6 +44,10 @@ void argsApi(string args$api) {
 		return;
 	}
 
+	if (args$api == "-anticrash_ok") {
+		_anticrash_services = true;
+	}
+
 	//auto set args
 	if (_setnextargs_runscript == true) {
 		runscript = args$api;
@@ -87,6 +91,7 @@ bool CK_Shell_open(void) {
 	return true;
 }
 
+int AntiCrash_Return_Code;
 //Put Code Here
 int _HeadMainLoad() {
 	_RcApi_vp_load();
@@ -96,6 +101,34 @@ int _HeadMainLoad() {
 		_p("try to repair and try again.");
 		_pause();
 		return -1;
+	}
+
+	if (_rcset_anticrash == true) {
+		if (_anticrash_services == false) {
+			AntiCrash_Return_Code = _system_autoRun(_$GetSelfFull, native_argument + " -anticrash_ok");
+			if (AntiCrash_Return_Code == 0) {
+				return 0;
+			}
+			cleanConsole();
+			_p("oh.  oops.");
+			_pn();
+			_p("   :(  Calcium Kernel is Crash");
+			_pn();
+			_p("We are unable to analyze the cause of the error");
+			_p("If this issue affects your use");
+			_p("Report it to us on https://www.foxaxu.com/contact");
+			_p("Kernel return status code :  " + to_string(AntiCrash_Return_Code));
+			_pn();
+			_p("Press Enter to Close this report");
+			_p("Please include the repro method with the report");
+			_pn();
+			_pn();
+			_pause();
+			return 0;
+		}
+	}
+	else {
+		//_p("Anti Crash Services is " + to_string(_rcset_anticrash));
 	}
 
 	//main

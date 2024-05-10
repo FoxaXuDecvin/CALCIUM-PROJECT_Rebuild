@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
         _argslonger++;
 
         readbuffer = argv[readargc];
+        native_argument = native_argument + " " + _$quo + readbuffer + _$quo;
         if (readbuffer == "--oclt-version") {
             printmsgoclt();
             return 0;

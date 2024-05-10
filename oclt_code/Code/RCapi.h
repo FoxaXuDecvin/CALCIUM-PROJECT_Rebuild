@@ -25,6 +25,7 @@ bool _rcset_syscmd;
 bool _rcset_allowsu;
 bool _rcset_allowdiredit;
 bool _rcset_allowtp;
+bool _rcset_anticrash;
 
 bool _rcset_shelledit,_rcset_scriptedit;
 
@@ -39,6 +40,7 @@ void _RcApi_vp_load(void) {
 string _RcApi_TapiBuffer;
 bool _RcLoad_TransApi(string _Rc_ID) {
 	_RcApi_TapiBuffer = _load_sipcfg(buildshell, _Rc_ID);
+	//_p("tapi Buffer :  " + _Rc_ID + "  " + _RcApi_TapiBuffer);
 	if (_RcApi_TapiBuffer == _rc_true) {
 		return true;
 	}
@@ -62,6 +64,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_open(file);
 		_soildwrite_write(" //BuildShell SipCfg  --Use  true/false");
 		_soildwrite_write("$EnableSystemCommand=false;");
+		_soildwrite_write("$EnableAntiCrash=true;");
 		_soildwrite_write("$AllowSuperUser=false;");
 		_soildwrite_write("$AllowDirectoryEdit=false;");
 		_soildwrite_write("$AllowThirdPartyPlugin=false;");
@@ -78,6 +81,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_close();
 	}
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
+	_rcset_anticrash = _RcLoad_TransApi("EnableAntiCrash");
 	_rcset_allowsu = _RcLoad_TransApi("AllowSuperUser");
 	_rcset_allowdiredit = _RcLoad_TransApi("AllowDirectoryEdit");
 	_rcset_allowtp = _RcLoad_TransApi("AllowThirdPartyPlugin");
