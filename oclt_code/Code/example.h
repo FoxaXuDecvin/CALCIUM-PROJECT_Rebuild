@@ -44,6 +44,11 @@ void argsApi(string args$api) {
 		return;
 	}
 
+	if (args$api == "-version") {
+		_runmode = _runmode_listversion;
+		return;
+	}
+
 	if (args$api == "-anticrash_ok") {
 		_anticrash_services = true;
 	}
@@ -162,6 +167,25 @@ int _HeadMainLoad() {
 	}
 	if (_runmode == _runmode_openshell) {
 		CK_Shell_open();
+		return 0;
+	}
+	if (_runmode == _runmode_listversion) {
+		_pn();
+		_p("Calcium Project   " + _KernelVersion + "(" + _KV_rV_Text + ")");
+		_p("RCapi Version :   " + _RCapi_Version);
+		_p("Inside Version :   " + InsideVersion);
+		_pn();
+		_p("OpenCppLangTab Version :  " + $version_code_str + "  (" + $codename + ")");
+		_p("OCLT Timestamp :   " + $buildtime);
+		_p("Operating system :   " + _Run_SysKernel);
+		_p("Run Command Argument :  " + native_argument);
+		_p("File Path :  " + _$GetSelfFull);
+		_p("Local Config :   " + buildshell);
+		_pn();
+		_p("Copyright FoxaXu");
+		_p($year_message);
+		_p("All rights reserved.");
+		_pause();
 		return 0;
 	}
 

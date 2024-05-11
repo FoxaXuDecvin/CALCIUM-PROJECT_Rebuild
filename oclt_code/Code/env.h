@@ -27,7 +27,10 @@ const string _runmode_runscript = "r1md";
 const string _runmode_typehelp = "r2hp";
 const string _runmode_autoexit = "r0cl";
 const string _runmode_openshell = "r3se";
+const string _runmode_listversion = "r4ve";
 
 string _runmode = _runmode_null;
 
 bool _anticrash_services = false;
+
+string InsideVersion = "1000";

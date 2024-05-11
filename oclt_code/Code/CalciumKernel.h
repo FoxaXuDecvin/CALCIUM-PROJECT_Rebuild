@@ -42,7 +42,7 @@ string _KV_softwareVersion = "110"; //(Software Version)
 
 string _KV_gen = "1";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -609,6 +609,9 @@ string _runcode_api(string command) {
 
 		charCutA = to_string(intCutC);
 		return charCutA;
+	}
+	if (SizeRead(command, 7) == "_getknl") {
+		return InsideVersion;
 	}
 
 	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command);
