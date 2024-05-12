@@ -147,6 +147,11 @@ int _HeadMainLoad() {
 		//_p("Anti Crash Services is " + to_string(_rcset_anticrash));
 	}
 
+	if (_rcbind_autorun != "null") {
+		_runmode = _runmode_runscript;
+		runscript = _rcbind_autorun;
+	}
+
 	//main
 	if (_runmode == _runmode_null) {
 		TypeHelpMenu();

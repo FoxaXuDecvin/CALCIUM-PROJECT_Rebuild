@@ -31,7 +31,7 @@ bool _rcset_shelledit,_rcset_scriptedit;
 
 bool _rcset_aosr;
 
-string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind;
+string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun;
 
 void _RcApi_vp_load(void) {
 	_varspaceadd("{path}", _$GetSelfPath);
@@ -75,6 +75,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AutoOpenShellAfterRun=true;");
 		_soildwrite_write("");
 		_soildwrite_write("//Bind");
+		_soildwrite_write("$AutoRun=null;");
 		_soildwrite_write("$ThirdBind={path};");
 		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
 		_soildwrite_write("$DefaultPluginScript={path}/script;");
@@ -93,6 +94,7 @@ bool _RcApiLoadConfig() {
 	_rcbind_thirdbind = _Old_VSAPI_TransVar(_load_sipcfg(file, "ThirdBind"));
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
 	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginScript"));
+	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRun"));
 
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
 		_dapi_mkdir(_rcbind_thirdbind);
