@@ -40,9 +40,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
-string _KV_gen = "1";//(General)
+string _KV_gen = "2";//(General)
 
-string _KV_rv = "2";//(Release Version)
+string _KV_rv = "1";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -193,6 +193,7 @@ string _cmd_marks = "_";
 string cmdbuffer;
 string _api_result;
 string _global_scriptload;
+bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script) {
 	_global_scriptload = load_Script;
 	if (!check_file_existence(load_Script)) {
@@ -203,6 +204,7 @@ string _ckapi_scriptload(string load_Script) {
 	}
 
 	//Character Process ...
+	_api_result = "scriptloadfailed";
 	while (true) {
 		_global_scriptload = load_Script;
 		cmdbuffer = _get_fullLine(load_Script);
@@ -213,34 +215,50 @@ string _ckapi_scriptload(string load_Script) {
 		if (_gf_status == false) return "ok";
 
 		//Code Analysis
-
-		_api_result = _runcode_api(cmdbuffer);
+		if (_stop_exec_script == true) {
+			_stop_exec_script = false;
+		}
+		last_return = _api_result = _runcode_api(cmdbuffer);
 		if (_api_result == "exit") {
 			return "ok";
+		}
+		if (_stop_exec_script == true) {
+			return _api_result;
 		}
 
 		//NEXT
 	}
 
-	return "ok";
+	return _api_result;
 }
 
 string oldcmd;
 string charCutA, charCutB, CharCutC, CharCutD;
 string _rc_varid, _rc_varinfo;
 int intCutA, intCutB, intCutC;
+bool _debug_type_detected = false;
 string _runcode_api(string command) {
 	if (_gf_hsc == true) {
 		command = HeadSpaceCleanA(command);
 	}
 	oldcmd = command;
 	command = _Old_VSAPI_TransVar(command);
+	if (_debug_type_detected == true) {
+		_p("Detect command :   " + command);
+		_p("Detect Resource   :   " + oldcmd);
+	}
 	//Command Process
 
 	if (command == "") {
+		if (_debug_type_detected == true) {
+			_p("command is empty");
+		}
 		return"empty";
 	}
 	if (command == ";") {
+		if (_debug_type_detected == true) {
+			_p("command is empty with ;(EndMark)");
+		}
 		return"empty";
 	}
 	if (command == "1") {
@@ -268,7 +286,7 @@ string _runcode_api(string command) {
 		charCutB = _runcode_api(charCutA);
 
 		_prts(charCutB);
-		return "ok";
+		return "ok.print:<" + charCutB + ">";
 	}
 
 	if (SizeRead(command, 5) == "_cout") {
@@ -276,11 +294,18 @@ string _runcode_api(string command) {
 		charCutB = _runcode_api(charCutA);
 
 		_p(charCutB);
-		return "ok";
+		return "ok.print:<" + charCutB + ">";
 	}
 
 	if (SizeRead(command, 5) == "_exit") {
 		return "exit";
+	}
+	if (SizeRead(command, 7) == "_return") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
+		_stop_exec_script = true;
+		return charCutB;
 	}
 	if (SizeRead(command, 7) == "_foxaxu") {
 		_p("Thanks your support");
@@ -477,6 +502,10 @@ string _runcode_api(string command) {
 
 		CharCutC = _ckapi_scriptload(charCutB);
 
+		if (_stop_exec_script == true) {
+			_stop_exec_script = false;
+		}
+
 		//Recovery old GFapi Data;
 		_gf_cg = _old$_gf_cg;
 		_gf_cgmax = _old$_gf_cgmax;
@@ -535,6 +564,27 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 8) == "_getline") {
 		return _getline_type();
 	}
+
+	//Debug
+	if (SizeRead(command, 12) == "_detect.mode") {
+		if (_debug_type_detected == true) {
+			_p("Detect Mode is Disabled");
+			_debug_type_detected = false;
+			return "ok";
+		}
+		if (_debug_type_detected == false) {
+			_p("Detect Mode is Enabled");
+			_debug_type_detected = true;
+			return "ok";
+		}
+
+		return " BadEffect";
+	}
+	if (SizeRead(command, 13) == "_get.lastcode") {
+		_p("Last Return is :   <" + last_return + ">");
+		return "ok";
+	}
+
 	//calculator
 	if (SizeRead(command, 7) == "_calc.+") {
 		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
@@ -610,10 +660,10 @@ string _runcode_api(string command) {
 		charCutA = to_string(intCutC);
 		return charCutA;
 	}
-	if (SizeRead(command, 7) == "_getknl") {
+	if (SizeRead(command, 7) == "_getkernel") {
 		return InsideVersion;
 	}
 
-	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command);
+	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command + "    (Resource -->  " + oldcmd +  ")");
 	return "unknown.command()";
 }

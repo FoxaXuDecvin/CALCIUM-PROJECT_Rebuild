@@ -34,3 +34,5 @@ string _runmode = _runmode_null;
 bool _anticrash_services = false;
 
 string InsideVersion = "1000";
+
+string last_return;

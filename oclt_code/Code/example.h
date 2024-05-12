@@ -82,11 +82,17 @@ bool CK_Shell_open(void) {
 		_prts("Calcium Kernel  " + _KernelVersion + "   Shell Console>");
 		_user_typebuffer = _getline_type() + ";";
 
-		_api_result = _runcode_api(_user_typebuffer);
+		last_return = _api_result = _runcode_api(_user_typebuffer);
 		if (_api_result == "exit") {
 			_pn();
 			_p("Exit Calcium Shell Console");
 			return true;
+		}
+
+		if (_stop_exec_script == true) {
+			_pn();
+			_p("  -Shell Closed :   return data = " + _api_result);
+			return 0;
 		}
 
 		continue;
