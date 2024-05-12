@@ -83,10 +83,14 @@ bool CK_Shell_open(void) {
 		_user_typebuffer = _getline_type() + ";";
 
 		last_return = _api_result = _runcode_api(_user_typebuffer);
-		if (_api_result == "exit") {
+		if (_api_result == "runid.exit") {
 			_pn();
 			_p("Exit Calcium Shell Console");
 			return true;
+		}
+
+		if (_api_result == "runid.entershell") {
+			_p("The current environment is in Shell Mode");
 		}
 
 		if (_stop_exec_script == true) {
@@ -103,6 +107,7 @@ bool CK_Shell_open(void) {
 }
 
 int AntiCrash_Return_Code;
+string ckapi_result;
 //Put Code Here
 int _HeadMainLoad() {
 	_RcApi_vp_load();
@@ -168,8 +173,14 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	if (_runmode == _runmode_runscript) {
-		_ckapi_scriptload(runscript);
-		return 0;
+		ckapi_result = _ckapi_scriptload(runscript);
+		if (ckapi_result == "runid.entershell") {
+			_runmode = _runmode_openshell;
+		}
+		else {
+			return 0;
+		}
+		
 	}
 	if (_runmode == _runmode_openshell) {
 		CK_Shell_open();

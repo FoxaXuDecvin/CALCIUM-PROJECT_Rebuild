@@ -219,9 +219,13 @@ string _ckapi_scriptload(string load_Script) {
 			_stop_exec_script = false;
 		}
 		last_return = _api_result = _runcode_api(cmdbuffer);
-		if (_api_result == "exit") {
+		if (_api_result == "runid.exit") {
 			return "ok";
 		}
+		if (_api_result == "runid.entershell") {
+			return "runid.entershell";
+		}
+
 		if (_stop_exec_script == true) {
 			return _api_result;
 		}
@@ -298,7 +302,7 @@ string _runcode_api(string command) {
 	}
 
 	if (SizeRead(command, 5) == "_exit") {
-		return "exit";
+		return "runid.exit";
 	}
 	if (SizeRead(command, 7) == "_return") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
@@ -583,6 +587,9 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 13) == "_get.lastcode") {
 		_p("Last Return is :   <" + last_return + ">");
 		return "ok";
+	}
+	if (SizeRead(command, 11) == "_entershell") {
+		return"runid.entershell";
 	}
 
 	//calculator
