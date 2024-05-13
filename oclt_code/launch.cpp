@@ -11,6 +11,9 @@
 
 //Other Main
 #include"Code/launchscreen.h"
+//For Windows API
+//Use #pragma comment( linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
+
 
 using namespace std;
 
