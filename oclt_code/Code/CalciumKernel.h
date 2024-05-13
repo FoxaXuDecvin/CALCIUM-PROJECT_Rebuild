@@ -259,6 +259,12 @@ string _runcode_api(string command) {
 		}
 		return"empty";
 	}
+	if (SizeRead(command,1) == ":") {
+		if (_debug_type_detected == true) {
+			_p("command is goto mark");
+		}
+		return"empty";
+	}
 	if (command == ";") {
 		if (_debug_type_detected == true) {
 			_p("command is empty with ;(EndMark)");
@@ -467,6 +473,41 @@ string _runcode_api(string command) {
 
 		return to_string(intCutA);
 	}
+	if (SizeRead(command, 6) == "_goto ") {
+		if (_CK_ShellMode == true) {
+			_p("Calcium Kernel is running on Shell Mode");
+			_p("Please use this command on script");
+			return "false";
+		}
+		charCutA = PartReadA(oldcmd, " ", ";", 1);
+		intCutA = FindCharLine(1, _global_scriptload, charCutA);
+		if (intCutA == _gf_line) {
+			intCutB = _gf_line;
+
+			intCutB++;
+
+			intCutA = FindCharLine(intCutB, _global_scriptload, charCutA);
+		}
+		if (intCutA == -4) {
+			_p("_goto Command Error");
+			_p("Cannot Find Head :   ---> " + charCutA);
+			_p("Execution termination");
+			return "runid.exit";
+		}
+
+		if (_debug_type_detected == true) {
+			_p("Find char mark in " + to_string(intCutA));
+		}
+
+		intCutA++;
+
+		_gf_cg = 0;
+		_gf_cgmax = 1;
+		_gf_line = intCutA;
+		_gf_charget = "";
+
+		return "runid.line_reset";
+	}
 	if (SizeRead(command, 6) == "_clear") {
 		cleanConsole();
 		return "ok";
@@ -590,6 +631,9 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 11) == "_entershell") {
 		return"runid.entershell";
+	}
+	if (SizeRead(command, 7) == "_getrow") {
+		return to_string(_gf_line);
 	}
 
 	//calculator
