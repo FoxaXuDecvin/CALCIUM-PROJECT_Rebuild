@@ -224,7 +224,7 @@ string _ckapi_scriptload(string load_Script) {
 		if (_stop_exec_script == true) {
 			_stop_exec_script = false;
 		}
-		_logrec_write("-start Running -------------------------------------------");
+		_logrec_write("-start Running -- <Line " + to_string(_gf_line) + " /File " + _global_scriptload + "> -----------------------------------------");
 		last_return = _api_result = _runcode_api(cmdbuffer);
 		_logrec_write("Command Execute End, Result -->  " +_api_result);
 		_logrec_write("-end -----------------------------------------------------");

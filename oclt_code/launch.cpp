@@ -18,13 +18,17 @@
 using namespace std;
 
 void printmsgoclt() {
-    _prtendl();
-    _prtoutmsg("Build By OpenCLT");
-    _prtoutmsg($version_title + "   " + to_string($version_code));
-    _prtoutmsg("OpenCLT " + $version_msg);
-    _prtoutmsg("Code Name :   " + $codename);
-    _prtoutmsg("    Copyright FoxaXu " + $year_message);
-    _prtoutmsg(" Github :  " + $github_website);
+    cleanConsole();
+    _pn();
+    _p("OpenCppLangTab Version :  " + $version_code_str + "  (" + $codename + ")");
+    _p("OCLT Timestamp :   " + $buildtime);
+    _p("Operating system :   " + _Run_SysKernel);
+    _p("Run Command Argument :  " + native_argument);
+    _p("File Path :  " + _$GetSelfFull);
+    _pn();
+    _p("Copyright FoxaXu ");
+    _p($year_message);
+    _p("All rights reserved.");
     _pause();
     return;
 

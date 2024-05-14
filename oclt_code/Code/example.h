@@ -117,6 +117,7 @@ bool CK_Shell_open(void) {
 
 int AntiCrash_Return_Code;
 string ckapi_result;
+string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
 	_RcApi_vp_load();
@@ -130,19 +131,33 @@ int _HeadMainLoad() {
 
 	if (_rcset_anticrash == true) {
 		if (_anticrash_services == false) {
-			AntiCrash_Return_Code = _system_autoRun(_$GetSelfFull, native_argument + " -anticrash_ok");
+			AntiCrash_Return_Code = _system_autoRun(_$GetSelfFull, native_argument + " \"-anticrash_ok\"");
 			if (AntiCrash_Return_Code == 0) {
 				return 0;
 			}
+			if (AntiCrash_Return_Code == 1) {
+				AC_FAILCODE = "SYSTEM_NULL_COMMAND";
+			}
+			if (AntiCrash_Return_Code == -1001) {
+				AC_FAILCODE = "SYSTEM_API_EXCEPTION";
+			}
+			if (AntiCrash_Return_Code == -1073741819) {
+				AC_FAILCODE = "WIN_KERNEL_CONFLICT";
+			}
+			if (AntiCrash_Return_Code == 34304) {
+				AC_FAILCODE = "LINUX_KERNEL_CONFLICT";
+			}
+
 			cleanConsole();
-			_p("oh.  oops.");
 			_pn();
 			_p("   :(  Calcium Kernel crashed");
 			_pn();
 			_p("     We are unable to analyze the cause of the error");
 			_p("     If this issue affects your use");
 			_p("     Report it to us on https://www.foxaxu.com/contact");
+			_p("     Error Code :  " + AC_FAILCODE);
 			_p("     Kernel return status code :  " + to_string(AntiCrash_Return_Code));
+			_p("     Run Args :  " + native_argument);
 			_pn();
 			_p("  Press Enter to Close this report");
 			_p("  Please include the repro method with the report");
