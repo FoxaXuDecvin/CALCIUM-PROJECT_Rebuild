@@ -196,6 +196,8 @@ string _global_scriptload;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script) {
 	_global_scriptload = load_Script;
+	_$logfile = _rcbind_logrec + "/" + load_Script + "_LogRec.log";
+	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	if (!check_file_existence(load_Script)) {
 		_p("Calcium Script Run failed");
 		_p("return code :  nf01    FILE_NOT_FOUND");
@@ -206,10 +208,14 @@ string _ckapi_scriptload(string load_Script) {
 	//Character Process ...
 	_api_result = "scriptloadfailed";
 	while (true) {
+		_logrec_write("[Notice]Start to Execute script :  " + load_Script);
 		_global_scriptload = load_Script;
+		_logrec_write("[Exec]Complete Read Script");
 		cmdbuffer = _get_fullLine(load_Script);
+		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer);
 		if (_gf_status == false) {
 			_p("Calcium Kernel Stop Running.  Return status code :  " + cmdbuffer);
+			_logrec_write("[ERROR]Kernel stop Running");
 			return "ok";
 		}
 		if (_gf_status == false) return "ok";
@@ -218,7 +224,10 @@ string _ckapi_scriptload(string load_Script) {
 		if (_stop_exec_script == true) {
 			_stop_exec_script = false;
 		}
+		_logrec_write("-start Running -------------------------------------------");
 		last_return = _api_result = _runcode_api(cmdbuffer);
+		_logrec_write("Command Execute End, Result -->  " +_api_result);
+		_logrec_write("-end -----------------------------------------------------");
 		if (_api_result == "runid.exit") {
 			return "ok";
 		}
@@ -247,6 +256,7 @@ string _runcode_api(string command) {
 	}
 	oldcmd = command;
 	command = _Old_VSAPI_TransVar(command);
+	_logrec_write("[INFO] _var api :   --> " + oldcmd + " | to |  " + command);
 	if (_debug_type_detected == true) {
 		_p("Detect command :   " + command);
 		_p("Detect Resource   :   " + oldcmd);
@@ -288,13 +298,17 @@ string _runcode_api(string command) {
 		if (charTotal(command, "\"") != 2) {
 			return("Null.format(Quotation Mark not full) for -->  " + command);
 		}
-		return PartReadA(command, "\"", "\"", 1);
+		charCutA = PartReadA(command, "\"", "\"", 1);
+		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
+		return charCutA;
 	}
 
 	if (SizeRead(command, 4) == "_prt") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		charCutB = _runcode_api(charCutA);
-
+		
+		_logrec_write("[Exec] PRINT :  " + _$quo + charCutB + _$quo);
+		
 		_prts(charCutB);
 		return "ok.print:<" + charCutB + ">";
 	}
@@ -303,21 +317,25 @@ string _runcode_api(string command) {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		charCutB = _runcode_api(charCutA);
 
+		_logrec_write("[Exec] COUT :  " + _$quo + charCutB + _$quo);
 		_p(charCutB);
 		return "ok.print:<" + charCutB + ">";
 	}
 
 	if (SizeRead(command, 5) == "_exit") {
+		_logrec_write("[Shutdown] Execute _Exit");
 		return "runid.exit";
 	}
 	if (SizeRead(command, 7) == "_return") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		charCutB = _runcode_api(charCutA);
 
+		_logrec_write("_Exec Return Data :  " + charCutB);
 		_stop_exec_script = true;
 		return charCutB;
 	}
 	if (SizeRead(command, 7) == "_foxaxu") {
+		_logrec_write("[Exec] owo  pwp wow");
 		_p("Thanks your support");
 		_p("https://www.foxaxu.com/fwlink?linkid=calcium_kernel_surprise");
 		return "ok";
@@ -347,25 +365,17 @@ string _runcode_api(string command) {
 			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
 			_rc_varinfo = "{null}";
 		}
+		_logrec_write("[Exec] Create VarSpace");
 		_varspaceadd(_rc_varid, _rc_varinfo);
+		_logrec_write("[INFO]  varid --> " + _rc_varid + "   varinfo --> " + _rc_varinfo);
 
-		return "ok";
-	}
-	if (SizeRead(command, 12) == "_varapi.list") {
-		_p("VarSpace Size :  " + to_string(VarSpaceMax));
-		_p("VarSpace List :  ");
-		_p(VarSpace);
-		_pn();
-		return "ok";
-	}
-	if (SizeRead(command, 9) == "_pathlist") {
-		_p("PluginPath =   " + _rcbind_pluginpath);
-		_p("PluginScript = " + _rcbind_pluginscript);
 		return "ok";
 	}
 	if (SizeRead(command, 6) == "_free ") {
 		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", ";", 1));
 		_varspacedelete(_rc_varid);
+		_logrec_write("VarSpace Delete  --> " + _rc_varid);
+
 		return "ok";
 	}
 	if (SizeRead(command, 7) == "_system") {
@@ -373,19 +383,26 @@ string _runcode_api(string command) {
 			_p("System Command is disabled on  " + buildshell);
 			_p("Your administrator won't allow you to run this command");
 			_p("Please use command :   _cfgedit EnableSystemCommand = true;");
+			_logrec_write("[WARNING] System Command Disabled");
+
 			return "denied";
 		}
 		charCutA = HeadSpaceCleanA(PartReadA(oldcmd, "\"", "\"", 1));
 		charCutA = _Old_VSAPI_TransVar(charCutA);
 		_str_system(charCutA);
+		_logrec_write("[Exec] Run System Command   --> " + charCutA);
+
 		return "ok";
 	}
 	if (SizeRead(command, 9) == "_cfgedit ") {
+		_logrec_write("[KernelManager] CFGEDIT");
+
 		if (_CK_ShellMode == false) {
 			//ScriptMode
 			if (_rcset_scriptedit == false) {
 				_p("Your administrator won't allow you to run this command");
 				_p("Please set AllowScriptEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
 				return "denied";
 			}
 		}
@@ -394,6 +411,7 @@ string _runcode_api(string command) {
 			if (_rcset_shelledit == false) {
 				_p("Your administrator won't allow you to run this command");
 				_p("Please set AllowShellEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
 				return "denied";
 			}
 		}
@@ -401,6 +419,7 @@ string _runcode_api(string command) {
 			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
 			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
 			_write_sipcfg(buildshell,_rc_varid,_rc_varinfo);
+			_logrec_write("[KernelManager] Set :  " + _rc_varid + " = " + _rc_varinfo);
 			_p("Your settings is has been modified. use \"_reload\" to Reload all configs");
 			return "ok";
 		}
@@ -412,6 +431,7 @@ string _runcode_api(string command) {
 		return "falseproblem";
 	}
 	if (SizeRead(command, 7) == "_reload") {
+		_logrec_write("[KernelManager] RCapi Reload");
 		if (!_RcApiLoadConfig()) {
 			_p("Failed to Load RCapi.");
 			_p("Config file is missing :  " + buildshell);
@@ -432,6 +452,8 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 10) == "_textprint") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		charCutB = _runcode_api(charCutA);
+
+		_logrec_write("[Exec] Print Text File   " + charCutB);
 
 		if (!check_file_existenceA(charCutB)) {
 			_p("file not found   " + charCutB);
@@ -454,6 +476,7 @@ string _runcode_api(string command) {
 			return "ok";
 		}
 
+		_logrec_write("_Program Sleep " + charCutA);
 		sleepapi(intCutA);
 		return "ok";
 	}
@@ -469,6 +492,7 @@ string _runcode_api(string command) {
 			_p("Please check yor type");
 			return "filenotfound";
 		}
+		_logrec_write("[Exec] Run Application :   " + _rc_varid +"  Argument :  " + _rc_varinfo);
 		intCutA = _system_autoRun(_rc_varid, _rc_varinfo);
 
 		return to_string(intCutA);
@@ -635,6 +659,22 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 7) == "_getrow") {
 		return to_string(_gf_line);
 	}
+	if (SizeRead(command, 12) == "_varapi.list") {
+		_logrec_write("[Debug] List VarSpace");
+
+		_p("VarSpace Size :  " + to_string(VarSpaceMax));
+		_p("VarSpace List :  ");
+		_p(VarSpace);
+		_pn();
+		return "ok";
+	}
+	if (SizeRead(command, 9) == "_pathlist") {
+		_logrec_write("[Debug] List Path");
+
+		_p("PluginPath =   " + _rcbind_pluginpath);
+		_p("PluginScript = " + _rcbind_pluginscript);
+		return "ok";
+	}
 
 	//calculator
 	if (SizeRead(command, 7) == "_calc.+") {
@@ -715,6 +755,7 @@ string _runcode_api(string command) {
 		return InsideVersion;
 	}
 
+	_logrec_write("[ERROR]Unknown COMMAND");
 	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command + "    (Resource -->  " + oldcmd +  ")");
 	return "unknown.command()";
 }

@@ -65,8 +65,11 @@ void argsApi(string args$api) {
 
 string _user_typebuffer;
 bool CK_Shell_open(void) {
+	_$logfile = _rcbind_logrec + "/ShellLog.log";
+	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	_global_scriptload = "{ShellMode}";
 	_CK_ShellMode = true;
+	_logrec_write("[Notice]Calcium Kernel is Running on Shell Mode :  ");
 	_pn();
 	_pn();
 	_p("----------------------------------------------------------");
@@ -82,7 +85,13 @@ bool CK_Shell_open(void) {
 		_prts("Calcium Kernel  " + _KernelVersion + "   Shell Console>");
 		_user_typebuffer = _getline_type() + ";";
 
+		_logrec_write("[Exec]Get Full Command :  -->  " + _user_typebuffer);
+
+		_logrec_write("-start Running -------------------------------------------");
 		last_return = _api_result = _runcode_api(_user_typebuffer);
+		_logrec_write("Command Execute End, Result -->  " + _api_result);
+		_logrec_write("-end -----------------------------------------------------");
+		
 		if (_api_result == "runid.exit") {
 			_pn();
 			_p("Exit Calcium Shell Console");

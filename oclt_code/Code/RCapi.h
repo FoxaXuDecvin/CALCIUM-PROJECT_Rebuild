@@ -26,12 +26,14 @@ bool _rcset_allowsu;
 bool _rcset_allowdiredit;
 bool _rcset_allowtp;
 bool _rcset_anticrash;
+bool _rcset_logrec;
 
 bool _rcset_shelledit,_rcset_scriptedit;
 
 bool _rcset_aosr;
 
 string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun;
+string _rcbind_logrec;
 
 void _RcApi_vp_load(void) {
 	_varspaceadd("{path}", _$GetSelfPath);
@@ -65,6 +67,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write(" //BuildShell SipCfg  --Use  true/false");
 		_soildwrite_write("$EnableSystemCommand=false;");
 		_soildwrite_write("$EnableAntiCrash=true;");
+		_soildwrite_write("$EnableLogRecord=true;");
 		_soildwrite_write("$AllowSuperUser=false;");
 		_soildwrite_write("$AllowDirectoryEdit=false;");
 		_soildwrite_write("$AllowThirdPartyPlugin=false;");
@@ -79,10 +82,12 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$ThirdBind={path};");
 		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
 		_soildwrite_write("$DefaultPluginScript={path}/script;");
+		_soildwrite_write("$DefaultLogRecord={path}/logs;");
 		_soildwrite_close();
 	}
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
 	_rcset_anticrash = _RcLoad_TransApi("EnableAntiCrash");
+	_rcset_logrec = _RcLoad_TransApi("EnableLogRecord");
 	_rcset_allowsu = _RcLoad_TransApi("AllowSuperUser");
 	_rcset_allowdiredit = _RcLoad_TransApi("AllowDirectoryEdit");
 	_rcset_allowtp = _RcLoad_TransApi("AllowThirdPartyPlugin");
@@ -95,7 +100,9 @@ bool _RcApiLoadConfig() {
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
 	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginScript"));
 	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRun"));
+	_rcbind_logrec = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLogRecord"));
 
+	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
 		_dapi_mkdir(_rcbind_thirdbind);
 	}
@@ -105,8 +112,24 @@ bool _RcApiLoadConfig() {
 	if (!_dapi_ExistFolder_check(_rcbind_pluginscript)) {
 		_dapi_mkdir(_rcbind_pluginscript);
 	}
+	if (!_dapi_ExistFolder_check(_rcbind_logrec)) {
+		_dapi_mkdir(_rcbind_logrec);
+	}
 
 	_KernelVersion_LoadText();
+
+	return true;
+}
+
+string _$logfile;
+bool _logrec_write(string INFO) {
+	if (_rcset_logrec == false) {
+		return false;
+	}
+	if (!check_file_existence(_$logfile)) {
+		_fileapi_createmark(_$logfile, "//Calcium Kernel LogFile");
+	}
+	_fileapi_write(_$logfile,INFO);
 
 	return true;
 }
