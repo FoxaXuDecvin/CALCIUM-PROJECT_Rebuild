@@ -43,7 +43,7 @@ string PartRead(string Info, string StartMark, string EndMark,bool EndSearch) {
 	for (; readbufferPR != StartMark; readptr++) {
 		if (readptr > MaxInfoSize) {
 			//cout << "Message :  " << Info << endl;
-			return "notfoundstart :  " + Info;
+			return "notfoundstart :  " + Info + "     FULL :  (" +Info + ")";
 		}
 		readbufferPR = Info[readptr];
 	}

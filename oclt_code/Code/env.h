@@ -11,8 +11,10 @@ int aaa = 1;
 const string Program_Creater = "FoxaXu Developer";
 
 string runscript = "{null}";
+string script_args = "{null}";
 
 bool _setnextargs_runscript = false;
+bool _setnextargs_addargs = false;
 
 string _$quo = "\"";
 string native_argument;

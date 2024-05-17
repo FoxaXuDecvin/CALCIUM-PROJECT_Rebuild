@@ -40,11 +40,11 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
-string _KV_gen = "2";//(General)
+string _KV_gen = "3";//(General)
 
 string _KV_rv = "1";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_preRelease;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -194,8 +194,9 @@ string cmdbuffer;
 string _api_result;
 string _global_scriptload;
 bool _stop_exec_script = false;
-string _ckapi_scriptload(string load_Script) {
+string _ckapi_scriptload(string load_Script,string Sargs) {
 	_global_scriptload = load_Script;
+	script_args = Sargs;
 	_$logfile = _rcbind_logrec + "/" + load_Script + "_LogRec.log";
 	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	if (!check_file_existence(load_Script)) {
@@ -246,9 +247,12 @@ string _ckapi_scriptload(string load_Script) {
 }
 
 string oldcmd;
+string varbufA;
 string charCutA, charCutB, CharCutC, CharCutD;
+string chartempA, chartempB, chartempC, chartempD;
 string _rc_varid, _rc_varinfo;
 int intCutA, intCutB, intCutC;
+double dbA, dbB, dbC, dbD;
 bool _debug_type_detected = false;
 string _runcode_api(string command) {
 	if (_gf_hsc == true) {
@@ -542,8 +546,10 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 10) == "_runscript") {
 
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ",", 1));
+		CharCutD = _Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ">", 1));
 		charCutB = _runcode_api(charCutA);
+		chartempA = _runcode_api(CharCutD);
 
 		if (!check_file_existenceA(charCutB)) {
 			charCutB = _rcbind_pluginscript + "/" + charCutB;
@@ -559,6 +565,7 @@ string _runcode_api(string command) {
 		int _old$_gf_cg = _gf_cg;
 		int _old$_gf_cgmax = _gf_cgmax;
 		int _old$_gf_line = _gf_line;
+		string _old$_args = script_args;
 
 		//Create New Space
 
@@ -569,7 +576,7 @@ string _runcode_api(string command) {
 
 		//Run
 
-		CharCutC = _ckapi_scriptload(charCutB);
+		CharCutC = _ckapi_scriptload(charCutB,chartempA);
 
 		if (_stop_exec_script == true) {
 			_stop_exec_script = false;
@@ -580,6 +587,7 @@ string _runcode_api(string command) {
 		_gf_cgmax = _old$_gf_cgmax;
 		_gf_line = _old$_gf_line;
 		_gf_charget = "";
+		script_args = _old$_args;
 
 		return CharCutC;
 	}
@@ -633,6 +641,9 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 8) == "_getline") {
 		return _getline_type();
 	}
+	if (SizeRead(command, 8) == "_getargs") {
+		return script_args;
+	}
 
 	//Debug
 	if (SizeRead(command, 12) == "_detect.mode") {
@@ -678,48 +689,65 @@ string _runcode_api(string command) {
 
 	//calculator
 	if (SizeRead(command, 7) == "_calc.+") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_logrec_write("Calculator Function +");
+		_logrec_write("full line data:  -->  " + varbufA);
 
-		intCutA = atoi(_rc_varid.c_str());
-		intCutB = atoi(_rc_varinfo.c_str());
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
+		_logrec_write("Get Part A :   " + _rc_varid);
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
+		_logrec_write("Get Part B :   " + _rc_varid);
 
-		intCutC = intCutA + intCutB;
+		dbA = atoi(_rc_varid.c_str());
+		dbB = atoi(_rc_varinfo.c_str());
 
-		charCutA = to_string(intCutC);
+		dbC = dbA + dbB;
+
+		charCutA = to_string(dbC);
+		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
 	if (SizeRead(command, 7) == "_calc.-") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_logrec_write("Calculator Function -");
+		_logrec_write("full line data:  -->  " + varbufA);
 
-		intCutA = atoi(_rc_varid.c_str());
-		intCutB = atoi(_rc_varinfo.c_str());
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
 
-		intCutC = intCutA - intCutB;
+		dbA = atoi(_rc_varid.c_str());
+		dbB = atoi(_rc_varinfo.c_str());
 
-		charCutA = to_string(intCutC);
+		dbC = dbA - dbB;
+
+		charCutA = to_string(dbC);
+		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
 	if (SizeRead(command, 7) == "_calc.*") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_logrec_write("Calculator Function +");
+		_logrec_write("full line data:  -->  " + varbufA);
 
-		intCutA = atoi(_rc_varid.c_str());
-		intCutB = atoi(_rc_varinfo.c_str());
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
 
-		intCutC = intCutA * intCutB;
+		dbA = atoi(_rc_varid.c_str());
+		dbB = atoi(_rc_varinfo.c_str());
 
-		charCutA = to_string(intCutC);
+		dbC = dbA * dbB;
+
+		charCutA = to_string(dbC);
+		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
 	if (SizeRead(command, 7) == "_calc./") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		_logrec_write("Calculator Function /");
+		_logrec_write("full line data:  -->  " + varbufA);
+
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
 
 		if (_rc_varinfo == "0") {
 			_p("Calcium calculator Warning");
@@ -728,12 +756,13 @@ string _runcode_api(string command) {
 			return "0";
 		}
 
-		intCutA = atoi(_rc_varid.c_str());
-		intCutB = atoi(_rc_varinfo.c_str());
+		dbA = atoi(_rc_varid.c_str());
+		dbB = atoi(_rc_varinfo.c_str());
 
-		intCutC = intCutA / intCutB;
+		dbC = dbA / dbB;
 
-		charCutA = to_string(intCutC);
+		charCutA = to_string(dbC);
+		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
 

@@ -53,11 +53,21 @@ void argsApi(string args$api) {
 		_anticrash_services = true;
 	}
 
+	if (args$api == "-args") {
+		_setnextargs_addargs = true;
+		return;
+	}
+
 	//auto set args
 	if (_setnextargs_runscript == true) {
 		runscript = args$api;
 		_setnextargs_runscript = false;
 		_runmode = _runmode_runscript;
+	}
+
+	if (_setnextargs_addargs == true) {
+		script_args = args$api;
+		_setnextargs_addargs = false;
 	}
 
 	return;
@@ -202,7 +212,7 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	if (_runmode == _runmode_runscript) {
-		ckapi_result = _ckapi_scriptload(runscript);
+		ckapi_result = _ckapi_scriptload(runscript,script_args);
 		if (ckapi_result == "runid.entershell") {
 			_runmode = _runmode_openshell;
 		}
