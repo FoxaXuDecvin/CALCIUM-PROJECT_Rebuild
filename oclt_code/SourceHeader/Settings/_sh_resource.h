@@ -13,6 +13,10 @@ string $github_website = "https://github.com/FoxaXuDecvin/OpenCppLangTab";
 
 string readbuffer;
 
+string Program_Producer = "{Edit on env.h/Program_Creater}";
+string _$quo = "\"";
+
+string native_argument;
 //Do not delete these var
 
 int _argslonger = 1;

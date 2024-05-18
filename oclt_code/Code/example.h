@@ -5,16 +5,15 @@
 
 void TypeHelpMenu() {
 	_p("----------------------------------------------------------");
-	_p("Based on OCLT  " + $version_title + "  Base version :   " + $version_code_str);
-	_p("OCLT CodeName :   " + $codename + "  " + $version_msg);
+	_p("OCLT Version   " + $version_title + "  Base version : " + $version_code_str);
 	_p("OS Kernel :    " + _Run_SysKernel);
 	_p("----------------------------------------------------------");
-	_p("Calcium Script Core   " + _KernelVersion + "  " + _KV_rV_Text);
-	_p("RCapi :   " + _RCapi_Version);
+	_p("Kernel Version :    " + _KernelVersion + "  " + _KV_rV_Text);
+	_p("RCapi Version :     " + _RCapi_Version);
 	_p("Copyright FoxaXu " + $year_message);
 	_p("Calcium Project Rebuild    .....");
 	_p("Github : https://github.com/FoxaXuDecvin/Calcium-Project");
-	_p("Args Size :   " + _get_argslonger());
+	_p("Language   " + _rcset_lang);
 }
 
 //Args API
@@ -85,9 +84,7 @@ bool CK_Shell_open(void) {
 	_p("----------------------------------------------------------");
 	_p("Calcium Shell Console");
 	_p("----------------------------------------------------------");
-	_p("Calcium Script Core   " + _KernelVersion);
-	_p("Copyright FoxaXu " + $year_message);
-	_p("Calcium Project Rebuild    .....");
+	_pv("_$lang.language :  _$lang.about .....  " + _rcset_lang);
 	_p("type command,   use \"_exit\" to exit.");
 
 	while (true) {
@@ -125,6 +122,17 @@ bool CK_Shell_open(void) {
 	return true;
 }
 
+string langfile;
+bool LanguageLoad() {
+	langfile = _rcbind_langpath + "/" + _rcset_lang;
+	if (!check_file_existence(langfile)) {
+		return false;
+	}
+	_logrec_write("Loading  Language :   " + langfile);
+	_ckapi_scriptload(langfile,"langmode");
+	return true;
+}
+
 int AntiCrash_Return_Code;
 string ckapi_result;
 string AC_FAILCODE = "{Null}";
@@ -135,6 +143,13 @@ int _HeadMainLoad() {
 		_p("Failed to Load RCapi.");
 		_p("Config file is missing :  " + buildshell);
 		_p("try to repair and try again.");
+		_pause();
+		return -1;
+	}
+	if (!LanguageLoad()) {
+		_p("Failed to Load Language File.");
+		_p("Try to reset config. or fix this file :  " + langfile);
+		_pn();
 		_pause();
 		return -1;
 	}
@@ -160,17 +175,17 @@ int _HeadMainLoad() {
 
 			cleanConsole();
 			_pn();
-			_p("   :(  Calcium Kernel crashed");
+			_pv("_$lang.crash.title");
 			_pn();
-			_p("     We are unable to analyze the cause of the error");
-			_p("     If this issue affects your use");
-			_p("     Report it to us on https://www.foxaxu.com/contact");
-			_p("     Error Code :  " + AC_FAILCODE);
-			_p("     Kernel return status code :  " + to_string(AntiCrash_Return_Code));
-			_p("     Run Args :  " + native_argument);
+			_pv("     _$lang.crash.t1");
+			_pv("     _$lang.crash.t2");
+			_pv("     _$lang.crash.t3");
+			_pv("     _$lang.crash.errcode" + AC_FAILCODE);
+			_pv("      _$lang.crash.kcode :  " + to_string(AntiCrash_Return_Code));
+			_pv("     Run Args :  " + native_argument);
 			_pn();
-			_p("  Press Enter to Close this report");
-			_p("  Please include the repro method with the report");
+			_pv("  _$lang.presskey");
+			_pv("  _$lang.crash.report");
 			_pn();
 			_pn();
 			_pause();

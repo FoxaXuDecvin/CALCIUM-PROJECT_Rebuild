@@ -200,9 +200,8 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 	_$logfile = _rcbind_logrec + "/" + load_Script + "_LogRec.log";
 	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	if (!check_file_existence(load_Script)) {
-		_p("Calcium Script Run failed");
-		_p("return code :  nf01    FILE_NOT_FOUND");
-		_p("Error :  File Not Found");
+		_pv("_$lang.runfail");
+		_pv("Error :  _$lang.filenotfound");
 		return "nf01";
 	}
 
@@ -215,7 +214,7 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 		cmdbuffer = _get_fullLine(load_Script);
 		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer);
 		if (_gf_status == false) {
-			_p("Calcium Kernel Stop Running.  Return status code :  " + cmdbuffer);
+			_pv("_$lang.stoprun.  Return status code :  " + cmdbuffer);
 			_logrec_write("[ERROR]Kernel stop Running");
 			return "ok";
 		}
@@ -246,27 +245,36 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 	return _api_result;
 }
 
-string oldcmd;
 string varbufA;
 string charCutA, charCutB, CharCutC, CharCutD;
 string chartempA, chartempB, chartempC, chartempD;
 string _rc_varid, _rc_varinfo;
 int intCutA, intCutB, intCutC;
-double dbA, dbB, dbC, dbD;
+int dbA, dbB, dbC, dbD;
 bool _debug_type_detected = false;
+bool _var_auto_void = false;
 string _runcode_api(string command) {
 	if (_gf_hsc == true) {
 		command = HeadSpaceCleanA(command);
 	}
-	oldcmd = command;
+	string oldcmd = command;
 	command = _Old_VSAPI_TransVar(command);
 	_logrec_write("[INFO] _var api :   --> " + oldcmd + " | to |  " + command);
+	if (oldcmd == command) {
+		_var_auto_void = false;
+	}
+	else {
+		_var_auto_void = true;
+	}
 	if (_debug_type_detected == true) {
 		_p("Detect command :   " + command);
 		_p("Detect Resource   :   " + oldcmd);
 	}
 	//Command Process
 
+	if (atoi(command.c_str()) != 0) {
+		return command;
+	}
 	if (command == "") {
 		if (_debug_type_detected == true) {
 			_p("command is empty");
@@ -309,6 +317,7 @@ string _runcode_api(string command) {
 
 	if (SizeRead(command, 4) == "_prt") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 		
 		_logrec_write("[Exec] PRINT :  " + _$quo + charCutB + _$quo);
@@ -319,6 +328,7 @@ string _runcode_api(string command) {
 
 	if (SizeRead(command, 5) == "_cout") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 
 		_logrec_write("[Exec] COUT :  " + _$quo + charCutB + _$quo);
@@ -340,7 +350,7 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 7) == "_foxaxu") {
 		_logrec_write("[Exec] owo  pwp wow");
-		_p("Thanks your support");
+		_pv("_$lang.foxaxu.t1");
 		_p("https://www.foxaxu.com/fwlink?linkid=calcium_kernel_surprise");
 		return "ok";
 	}
@@ -384,9 +394,9 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 7) == "_system") {
 		if (_rcset_syscmd == false) {
-			_p("System Command is disabled on  " + buildshell);
-			_p("Your administrator won't allow you to run this command");
-			_p("Please use command :   _cfgedit EnableSystemCommand = true;");
+			_pv("_$lang.sys.t1  " + buildshell);
+			_pv("_$lang.sys.t2");
+			_pv("_$lang.sys.t3 :   _cfgedit EnableSystemCommand = true;");
 			_logrec_write("[WARNING] System Command Disabled");
 
 			return "denied";
@@ -404,7 +414,7 @@ string _runcode_api(string command) {
 		if (_CK_ShellMode == false) {
 			//ScriptMode
 			if (_rcset_scriptedit == false) {
-				_p("Your administrator won't allow you to run this command");
+				_pv("_$lang.sys.t1  " + buildshell);
 				_p("Please set AllowScriptEdit  == true");
 				_logrec_write("[KernelManager][WARNING] Access is Denied");
 				return "denied";
@@ -413,7 +423,7 @@ string _runcode_api(string command) {
 		if (_CK_ShellMode == true) {
 			//ShellMode
 			if (_rcset_shelledit == false) {
-				_p("Your administrator won't allow you to run this command");
+				_pv("_$lang.sys.t1  " + buildshell);
 				_p("Please set AllowShellEdit  == true");
 				_logrec_write("[KernelManager][WARNING] Access is Denied");
 				return "denied";
@@ -424,7 +434,7 @@ string _runcode_api(string command) {
 			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
 			_write_sipcfg(buildshell,_rc_varid,_rc_varinfo);
 			_logrec_write("[KernelManager] Set :  " + _rc_varid + " = " + _rc_varinfo);
-			_p("Your settings is has been modified. use \"_reload\" to Reload all configs");
+			_pv("_$lang.cfgedit.r");
 			return "ok";
 		}
 		else {
@@ -443,13 +453,14 @@ string _runcode_api(string command) {
 			_pause();
 			return "false";
 		}
-		_p("_Rcapi Config is reload");
+		_pv("_$lang.reload");
 		return "ok";
 	}
 	if (SizeRead(command, 9) == "_getrunid") {
 		return _CK_Runid;
 	}
 	if (SizeRead(command, 6) == "_pause") {
+		$_pause = _Old_VSAPI_TransVar("_$lang.reload");
 		_pause();
 		return"ok";
 	}
@@ -460,7 +471,7 @@ string _runcode_api(string command) {
 		_logrec_write("[Exec] Print Text File   " + charCutB);
 
 		if (!check_file_existenceA(charCutB)) {
-			_p("file not found   " + charCutB);
+			_pv("_$lang.filenotfound   " + charCutB);
 			_p("Null._textprint()");
 			return "nofile";
 		}
@@ -471,12 +482,12 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 6) == "_sleep") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		if (charCutA == "0") {
-			_p("Error :  _sleep(0) is a Null Time");
+			_pv("Error :  _sleep(0) _$lang.notNum");
 			return "ok";
 		}
 		intCutA = atoi(charCutA.c_str());
 		if (intCutA == 0) {
-			_p("Error :  _sleep(" + charCutA + ") is not a Digital.");
+			_pv("Error :  _sleep(" + charCutA + ") _$lang.notNum.");
 			return "ok";
 		}
 
@@ -485,15 +496,14 @@ string _runcode_api(string command) {
 		return "ok";
 	}
 	if (SizeRead(command, 8) == "_execute") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+		string tempbase = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
 
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(tempbase, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(tempbase, ",", ")", 1)));
 
 		//_p("Execute Command :   " + _rc_varid + " " + _rc_varinfo);
 		if (!check_file_existence(_rc_varid)) {
-			_p("Execute Error :   FileNotFound");
-			_p("Please check yor type");
+			_pv("Execute Error :   _$lang.filenotfound");
 			return "filenotfound";
 		}
 		_logrec_write("[Exec] Run Application :   " + _rc_varid +"  Argument :  " + _rc_varinfo);
@@ -546,10 +556,8 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 10) == "_runscript") {
 
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ",", 1));
-		CharCutD = _Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ">", 1));
-		charCutB = _runcode_api(charCutA);
-		chartempA = _runcode_api(CharCutD);
+		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ",", 1)));
+		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ">", 1)));
 
 		if (!check_file_existenceA(charCutB)) {
 			charCutB = _rcbind_pluginscript + "/" + charCutB;
@@ -592,11 +600,10 @@ string _runcode_api(string command) {
 		return CharCutC;
 	}
 	if (SizeRead(command, 8) == "_compare") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
 
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
 
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", ",", ")", 1)));
 
 		//_p("1 = " + _rc_varid);
 		//_p("2 = " + _rc_varinfo);
@@ -634,8 +641,8 @@ string _runcode_api(string command) {
 			return "notrue";
 		}
 
-		_p(" $$ _if command Error");
-		_p(" $$ Command return a null result not a true or false");
+		_pv("_$lang.if.err.t1");
+		_pv("_$lang.if.err.t2");
 		return "NullReturn";
 	}
 	if (SizeRead(command, 8) == "_getline") {
@@ -688,18 +695,18 @@ string _runcode_api(string command) {
 	}
 
 	//calculator
-	if (SizeRead(command, 7) == "_calc.+") {
-		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+	if (SizeRead(command, 2) == "_+") {
+		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
 		_logrec_write("Calculator Function +");
-		_logrec_write("full line data:  -->  " + varbufA);
+		_logrec_write("full line data:  -->   " + tempbase);
 
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
-		_logrec_write("Get Part A :   " + _rc_varid);
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
-		_logrec_write("Get Part B :   " + _rc_varid);
+		string calc_A = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, "(", ",", false)));
+		_logrec_write("Get Part A :   " + calc_A);
+		string calc_B = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, ",", ")", true)));
+		_logrec_write("Get Part B :   " + calc_B);
 
-		dbA = atoi(_rc_varid.c_str());
-		dbB = atoi(_rc_varinfo.c_str());
+		dbA = atoi(calc_A.c_str());
+		dbB = atoi(calc_B.c_str());
 
 		dbC = dbA + dbB;
 
@@ -707,16 +714,18 @@ string _runcode_api(string command) {
 		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
-	if (SizeRead(command, 7) == "_calc.-") {
-		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+	if (SizeRead(command, 2) == "_-") {
+		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
 		_logrec_write("Calculator Function -");
-		_logrec_write("full line data:  -->  " + varbufA);
+		_logrec_write("full line data:  -->   " + tempbase);
 
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
+		string calc_A = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, "(", ",", false)));
+		_logrec_write("Get Part A :   " + calc_A);
+		string calc_B = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, ",", ")", true)));
+		_logrec_write("Get Part B :   " + calc_B);
 
-		dbA = atoi(_rc_varid.c_str());
-		dbB = atoi(_rc_varinfo.c_str());
+		dbA = atoi(calc_A.c_str());
+		dbB = atoi(calc_B.c_str());
 
 		dbC = dbA - dbB;
 
@@ -724,16 +733,18 @@ string _runcode_api(string command) {
 		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
-	if (SizeRead(command, 7) == "_calc.*") {
-		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-		_logrec_write("Calculator Function +");
-		_logrec_write("full line data:  -->  " + varbufA);
+	if (SizeRead(command, 2) == "_*") {
+		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
+		_logrec_write("Calculator Function *");
+		_logrec_write("full line data:  -->   " + tempbase);
 
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
+		string calc_A = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, "(", ",", false)));
+		_logrec_write("Get Part A :   " + calc_A);
+		string calc_B = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, ",", ")", true)));
+		_logrec_write("Get Part B :   " + calc_B);
 
-		dbA = atoi(_rc_varid.c_str());
-		dbB = atoi(_rc_varinfo.c_str());
+		dbA = atoi(calc_A.c_str());
+		dbB = atoi(calc_B.c_str());
 
 		dbC = dbA * dbB;
 
@@ -741,23 +752,23 @@ string _runcode_api(string command) {
 		_logrec_write("return result :  _" + charCutA);
 		return charCutA;
 	}
-	if (SizeRead(command, 7) == "_calc./") {
-		varbufA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
+	if (SizeRead(command, 2) == "_/") {
+		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
 		_logrec_write("Calculator Function /");
-		_logrec_write("full line data:  -->  " + varbufA);
+		_logrec_write("full line data:  -->   " + tempbase);
 
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(varbufA, ",", ")", 1)));
+		string calc_A = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, "(", ",", false)));
+		_logrec_write("Get Part A :   " + calc_A);
+		string calc_B = _runcode_api(_Old_VSAPI_TransVar(PartRead(tempbase, ",", ")", true)));
+		_logrec_write("Get Part B :   " + calc_B);
 
-		if (_rc_varinfo == "0") {
-			_p("Calcium calculator Warning");
-			_p("command :    _calc./    ");
-			_p("The divisor cannot be 0");
+		dbA = atoi(calc_A.c_str());
+		dbB = atoi(calc_B.c_str());
+
+		if (dbB == 0) {
+			_pv("_$lang.calc.zero");
 			return "0";
 		}
-
-		dbA = atoi(_rc_varid.c_str());
-		dbB = atoi(_rc_varinfo.c_str());
 
 		dbC = dbA / dbB;
 
@@ -768,9 +779,8 @@ string _runcode_api(string command) {
 
 	//Other
 	if (SizeRead(command, 8) == "_getrand") {
-		charCutA = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(charCutA, ",", ")", 1)));
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", ",", ")", 1)));
 
 		intCutA = atoi(_rc_varid.c_str());
 		intCutB = atoi(_rc_varinfo.c_str());
@@ -785,6 +795,6 @@ string _runcode_api(string command) {
 	}
 
 	_logrec_write("[ERROR]Unknown COMMAND");
-	_p(" $$$ Unknown command or not a var. File :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command + "    (Resource -->  " + oldcmd +  ")");
-	return "unknown.command()";
+	_pv("_$lang.nullcmd   :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command + "    (Resource -->  " + oldcmd +  ")");
+	return "unknown.command(" + command + ")";
 }

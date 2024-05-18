@@ -34,6 +34,13 @@ bool _rcset_aosr;
 
 string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun;
 string _rcbind_logrec;
+string _rcbind_langpath;
+string _rcset_lang;
+
+void _pv(string info) {
+	_p(_Old_VSAPI_TransVar(info));
+	return;
+}
 
 void _RcApi_vp_load(void) {
 	_varspaceadd("{path}", _$GetSelfPath);
@@ -83,6 +90,10 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
 		_soildwrite_write("$DefaultPluginScript={path}/script;");
 		_soildwrite_write("$DefaultLogRecord={path}/logs;");
+		_soildwrite_write("$DefaultLanguagePath={path}/lang;");
+		_soildwrite_write("");
+		_soildwrite_write("//Global Settings");
+		_soildwrite_write("$Language=en-us;");
 		_soildwrite_close();
 	}
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
@@ -96,11 +107,15 @@ bool _RcApiLoadConfig() {
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 
+	//String
+	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg(file, "Language"));
+
 	_rcbind_thirdbind = _Old_VSAPI_TransVar(_load_sipcfg(file, "ThirdBind"));
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
 	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginScript"));
 	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRun"));
 	_rcbind_logrec = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLogRecord"));
+	_rcbind_langpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLanguagePath"));
 
 	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
@@ -114,6 +129,9 @@ bool _RcApiLoadConfig() {
 	}
 	if (!_dapi_ExistFolder_check(_rcbind_logrec)) {
 		_dapi_mkdir(_rcbind_logrec);
+	}
+	if (!_dapi_ExistFolder_check(_rcbind_langpath)) {
+		_dapi_mkdir(_rcbind_langpath);
 	}
 
 	_KernelVersion_LoadText();

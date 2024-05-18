@@ -67,8 +67,8 @@ int main(int argc, char* argv[]) {
             _soildwrite_write(" Github :  " + $github_website);
             _soildwrite_close();
 
-            _soildwrite_open("auther-oclt.txt");
-            _soildwrite_write("Creator :  " + Program_Creater);
+            _soildwrite_open("produce-oclt.txt");
+            _soildwrite_write("Creator :  " + Program_Producer);
             _soildwrite_write("OpenCLT " + $version_msg);
             _soildwrite_write("Code Name :   " + $codename);
             _soildwrite_close();
