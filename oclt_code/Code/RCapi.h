@@ -32,7 +32,7 @@ bool _rcset_shelledit,_rcset_scriptedit;
 
 bool _rcset_aosr;
 
-string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun;
+string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun,_rcbind_autorunargs;
 string _rcbind_logrec;
 string _rcbind_langpath;
 string _rcset_lang;
@@ -86,13 +86,16 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_write("//Bind");
 		_soildwrite_write("$AutoRun=null;");
+		_soildwrite_write("$AutoRunArgs=null;");
+		_soildwrite_write("");
+		_soildwrite_write("//PathBind");
 		_soildwrite_write("$ThirdBind={path};");
 		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
 		_soildwrite_write("$DefaultPluginScript={path}/script;");
 		_soildwrite_write("$DefaultLogRecord={path}/logs;");
 		_soildwrite_write("$DefaultLanguagePath={path}/lang;");
 		_soildwrite_write("");
-		_soildwrite_write("//Global Settings");
+		_soildwrite_write("//Display Settings");
 		_soildwrite_write("$Language=en-us;");
 		_soildwrite_close();
 	}
@@ -114,6 +117,7 @@ bool _RcApiLoadConfig() {
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
 	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginScript"));
 	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRun"));
+	_rcbind_autorunargs = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRunArgs"));
 	_rcbind_logrec = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLogRecord"));
 	_rcbind_langpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLanguagePath"));
 
@@ -152,6 +156,21 @@ bool _logrec_write(string INFO) {
 	return true;
 }
 
-bool _RcApi_Loadscript() {
+string fitback,fitbuffer;
+string _Char_Filter_EndFileName(string fitchar) {
+	fitchar = ReplaceChar(fitchar, "\\", "/");
+	fitback = "";
 
+	for (int fullsize = fitchar.size(); true; fullsize--) {
+		fitbuffer = fitchar[fullsize];
+		if (fitbuffer == "/") {
+			fitback = cutendchar(fitback);
+			return fitback;
+		}
+
+		fitback = fitbuffer + fitback;
+
+	}
+
+	return "LineError";
 }

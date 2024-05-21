@@ -42,6 +42,9 @@ add _$lang.calc.zero = "[Calc] 0 不被允许";
 
 add _$lang.nullcmd = "  [Error] 未知指令或变量，请检查你的输入是否正确";
 
+add _$lang.logfail = "  [WARNING] 日志文件创建失败，可能会影响调试环境，文件路径 : ";
+
+add _$lang.pause = "按Enter键继续 ";
 
 //Exit
 _exit;

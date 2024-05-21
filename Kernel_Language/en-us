@@ -42,6 +42,9 @@ add _$lang.calc.zero = "[Calc] 0 is not allow";
 
 add _$lang.nullcmd = "  [Error] Unknown command or not a var. File";
 
+add _$lang.logfail = "  [WARNING] Log File Create failed. this error maybe affect your operations. File Path :  ";
+
+add _$lang.pause = "Press Enter to continue ";
 
 //Exit
 _exit;

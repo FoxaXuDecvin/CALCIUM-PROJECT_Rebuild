@@ -154,6 +154,11 @@ int _HeadMainLoad() {
 		return -1;
 	}
 
+	_gf_cg = 0;
+	_gf_cgmax = 1;
+	_gf_line = 1;
+	_gf_charget = "";
+
 	if (_rcset_anticrash == true) {
 		if (_anticrash_services == false) {
 			AntiCrash_Return_Code = _system_autoRun(_$GetSelfFull, native_argument + " \"-anticrash_ok\"");
@@ -199,6 +204,15 @@ int _HeadMainLoad() {
 	if (_rcbind_autorun != "null") {
 		_runmode = _runmode_runscript;
 		runscript = _rcbind_autorun;
+		script_args = _rcbind_autorunargs;
+		
+		ckapi_result = _ckapi_scriptload(runscript, script_args);
+		if (ckapi_result == "runid.entershell") {
+			_runmode = _runmode_openshell;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	//main

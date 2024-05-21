@@ -40,9 +40,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
-string _KV_gen = "3";//(General)
+string _KV_gen = "4";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_preRelease;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -93,7 +93,7 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 bool _gf_hsc = true;
 
 //GetFULL API
-const int _gf_line_maxallow = 128;
+const int _gf_line_maxallow = 512;
 bool _gf_status;
 int _gf_cg = 0;
 int _gf_cgmax = 1;
@@ -195,9 +195,10 @@ string _api_result;
 string _global_scriptload;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script,string Sargs) {
+
 	_global_scriptload = load_Script;
 	script_args = Sargs;
-	_$logfile = _rcbind_logrec + "/" + load_Script + "_LogRec.log";
+	_$logfile = _rcbind_logrec + "/" + _Char_Filter_EndFileName(load_Script) + "_LogRec.log";
 	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	if (!check_file_existence(load_Script)) {
 		_pv("_$lang.runfail");
@@ -207,6 +208,14 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 
 	//Character Process ...
 	_api_result = "scriptloadfailed";
+
+	_logrec_write("[Start] PreCheck Script Run Environment");
+	_logrec_write("[Log] Log file is Bind :  " + _$logfile);
+
+	if (!check_file_existence(_$logfile)) {
+		_pv("_$lang.logfail " + _$logfile);
+	}
+
 	while (true) {
 		_logrec_write("[Notice]Start to Execute script :  " + load_Script);
 		_global_scriptload = load_Script;
@@ -214,7 +223,7 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 		cmdbuffer = _get_fullLine(load_Script);
 		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer);
 		if (_gf_status == false) {
-			_pv("_$lang.stoprun.  Return status code :  " + cmdbuffer);
+			_pv("_$lang.stoprun.  Return status code :  " + cmdbuffer + "  . Args :  " + _global_scriptload + "   Line :  " + to_string(_gf_line) + " + " + to_string(_gf_cg));
 			_logrec_write("[ERROR]Kernel stop Running");
 			return "ok";
 		}
@@ -460,7 +469,7 @@ string _runcode_api(string command) {
 		return _CK_Runid;
 	}
 	if (SizeRead(command, 6) == "_pause") {
-		$_pause = _Old_VSAPI_TransVar("_$lang.reload");
+		$_pause = _Old_VSAPI_TransVar("_$lang.pause");
 		_pause();
 		return"ok";
 	}
