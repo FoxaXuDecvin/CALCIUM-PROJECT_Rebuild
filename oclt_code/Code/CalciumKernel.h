@@ -677,6 +677,7 @@ string _runcode_api(string command) {
 		int _old$_gf_cgmax = _gf_cgmax;
 		int _old$_gf_line = _gf_line;
 		bool _old$_direct_read_script = _direct_read_script;
+		bool _old$_rcset_logrec = _rcset_logrec;
 		string _old$_args = script_args;
 
 		//Create New Space
@@ -702,6 +703,7 @@ string _runcode_api(string command) {
 		_gf_charget = "";
 		script_args = _old$_args;
 		_direct_read_script = _old$_direct_read_script;
+		_rcset_logrec = _old$_rcset_logrec;
 
 		return CharCutC;
 	}
@@ -918,7 +920,7 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 7) == "_$nolog") {
 		_logrec_write("[Close] Script Closed Log Record");
 		_logrec_write("-----------------------------------------------Closed");
-		_rcset_logrec = true;
+		_rcset_logrec = false;
 		return "ok";
 	}
 
