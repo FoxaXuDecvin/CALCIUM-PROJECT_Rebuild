@@ -267,8 +267,3 @@ string _getvarspace(string VarHead) {
 
 	return backinfo;
 }
-
-void _clear_varspace(void) {
-	VarSpace = "varspace;";
-	VarSpaceMax = 0;
-}

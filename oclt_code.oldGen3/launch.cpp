@@ -35,8 +35,6 @@ void printmsgoclt() {
 }
 
 int main(int argc, char* argv[]) {
-
-    PreLaunchLoad();
     
     if (__settings_displaylaunchscreen) {
         _LaunchScreen();

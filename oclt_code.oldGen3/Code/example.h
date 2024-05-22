@@ -3,16 +3,6 @@
 #include"../shload.h"
 #include"../Code/CalciumKernel.h"
 
-bool PreLaunchLoad(void) {
-	//Put Preload code here
-	//
-
-	__settings_displaylaunchscreen = false;
-
-	//End
-	return true;
-}
-
 void TypeHelpMenu() {
 	_p("----------------------------------------------------------");
 	_p("OCLT Version   " + $version_title + "  Base version : " + $version_code_str);
@@ -25,7 +15,6 @@ void TypeHelpMenu() {
 	_p("Github : https://github.com/FoxaXuDecvin/Calcium-Project");
 	_p("Language   " + _rcset_lang);
 }
-
 
 //Args API
 void argsApi(string args$api) {
@@ -109,7 +98,7 @@ bool CK_Shell_open(void) {
 		last_return = _api_result = _runcode_api(_user_typebuffer);
 		_logrec_write("Command Execute End, Result -->  " + _api_result);
 		_logrec_write("-end -----------------------------------------------------");
-
+		
 		if (_api_result == "runid.exit") {
 			_pn();
 			_p("Exit Calcium Shell Console");
@@ -140,7 +129,7 @@ bool LanguageLoad() {
 		return false;
 	}
 	_logrec_write("Loading  Language :   " + langfile);
-	_ckapi_scriptload(langfile, "langmode");
+	_ckapi_scriptload(langfile,"langmode");
 	return true;
 }
 
@@ -159,7 +148,7 @@ int _HeadMainLoad() {
 	}
 	if (!LanguageLoad()) {
 		_p("Missing Language File... calcium running on no lang mode :  " + langfile);
-
+		
 		_soildwrite_open(langfile);
 		_soildwrite_write("//Missing language file");
 		_soildwrite_write("_var add = \"_var\"; ");
@@ -221,7 +210,7 @@ int _HeadMainLoad() {
 		_runmode = _runmode_runscript;
 		runscript = _rcbind_autorun;
 		script_args = _rcbind_autorunargs;
-
+		
 		ckapi_result = _ckapi_scriptload(runscript, script_args);
 		if (ckapi_result == "runid.entershell") {
 			_runmode = _runmode_openshell;
@@ -257,14 +246,14 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	if (_runmode == _runmode_runscript) {
-		ckapi_result = _ckapi_scriptload(runscript, script_args);
+		ckapi_result = _ckapi_scriptload(runscript,script_args);
 		if (ckapi_result == "runid.entershell") {
 			_runmode = _runmode_openshell;
 		}
 		else {
 			return 0;
 		}
-
+		
 	}
 	if (_runmode == _runmode_openshell) {
 		CK_Shell_open();

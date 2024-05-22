@@ -101,8 +101,7 @@ int _gf_line = 1;
 string _gf_FLMark = ";";
 string _gf_charget;
 string _gf_makebuffer,_gf_getbuffer;
-string _get_fullLine(string load_script,string EndMark) {
-	_gf_FLMark = EndMark;
+string _get_fullLine(string load_script) {
 	if (!check_file_existence(load_script)) {
 		return "badfound";
 	}

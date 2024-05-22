@@ -48,7 +48,7 @@ void _RcApi_vp_load(void) {
 
 string _RcApi_TapiBuffer;
 bool _RcLoad_TransApi(string _Rc_ID) {
-	_RcApi_TapiBuffer = _load_sipcfg_noreturn(buildshell, _Rc_ID);
+	_RcApi_TapiBuffer = _load_sipcfg(buildshell, _Rc_ID);
 	//_p("tapi Buffer :  " + _Rc_ID + "  " + _RcApi_TapiBuffer);
 	if (_RcApi_TapiBuffer == _rc_true) {
 		return true;
@@ -111,15 +111,15 @@ bool _RcApiLoadConfig() {
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 
 	//String
-	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "AutoRun"));
-	_rcbind_autorunargs = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "AutoRunArgs"));
-	_rcbind_thirdbind = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "ThirdBind"));
-	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultPluginPath"));
-	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultPluginScript"));
-	_rcbind_logrec = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultLogRecord"));
-	_rcbind_langpath = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultLanguagePath"));
+	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg(file, "Language"));
 
-	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Language"));
+	_rcbind_thirdbind = _Old_VSAPI_TransVar(_load_sipcfg(file, "ThirdBind"));
+	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginPath"));
+	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultPluginScript"));
+	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRun"));
+	_rcbind_autorunargs = _Old_VSAPI_TransVar(_load_sipcfg(file, "AutoRunArgs"));
+	_rcbind_logrec = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLogRecord"));
+	_rcbind_langpath = _Old_VSAPI_TransVar(_load_sipcfg(file, "DefaultLanguagePath"));
 
 	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {

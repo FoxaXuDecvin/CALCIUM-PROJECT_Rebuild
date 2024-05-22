@@ -7,15 +7,14 @@
 string tempreadbuffEr_;
 
 //Design On Calcium Project
-string tempptr,readcacheA;
-int readptr_glo = 0;
 
 string _load_sipcfg(string _sc_File,string _sc_ID) {
+	string readbufferA;
 	int readptr = 0;
 	if (check_file_existenceA(_sc_File)) {
 		while (true) {
 			readptr++;
-			tempptr = _fileapi_textread(_sc_File, readptr);
+			string tempptr = _fileapi_textread(_sc_File, readptr);
 			if (tempptr == "") {
 				continue;
 			}
@@ -28,11 +27,11 @@ string _load_sipcfg(string _sc_File,string _sc_ID) {
 				_sh_throw_error("Load Simple Config Error :  Unknown Config :  Not Found  --(" + _sc_ID + ")--  On File :    _" + _sc_File + "_");
 				return "";
 			}
-			readcacheA = _api_PartRead(tempptr, "$", "=");
+			readbufferA = _api_PartRead(tempptr, "$", "=");
 
 			//cout << "Read Up :  Line " << readptr << "   INFO :  _" << tempptr << "_" << endl;
 
-			if (readcacheA == _sc_ID) {
+			if (readbufferA == _sc_ID) {
 				return _api_PartRead(tempptr, "=", ";");
 			}
 
@@ -46,48 +45,6 @@ string _load_sipcfg(string _sc_File,string _sc_ID) {
 		_sh_throw_error("Load Simple Config Error :  File Not Found   _" + _sc_File + "_");
 		return "";
 	}
-}
-
-string _load_sipcfg_noreturn(string _sc_File, string _sc_ID) {
-	if (check_file_existenceA(_sc_File)) {
-		while (true) {
-			readptr_glo++;
-			 tempptr = _fileapi_textread(_sc_File, readptr_glo);
-			if (tempptr == "") {
-				continue;
-			}
-			if (tempptr == "ReadFailed") {
-				cout << "Failed to Load Simple Config" << endl;
-				cout << "Open File Failed :  " << _sc_File << endl;
-				break;
-			}
-			if (tempptr == "overline") {
-				_sh_throw_error("Load Simple Config Error :  Unknown Config :  Not Found  --(" + _sc_ID + ")--  On File :    _" + _sc_File + "_");
-				return "";
-			}
-			readcacheA = _api_PartRead(tempptr, "$", "=");
-
-			//cout << "Read Up :  Line " << readptr << "   INFO :  _" << tempptr << "_" << endl;
-
-			if (readcacheA == _sc_ID) {
-				return _api_PartRead(tempptr, "=", ";");
-			}
-
-			if (tempptr == "")break;
-
-			continue;
-		}
-		return "";
-	}
-	else {
-		_sh_throw_error("Load Simple Config Error :  File Not Found   _" + _sc_File + "_");
-		return "";
-	}
-}
-
-void _sipcfg_reset(void) {
-	readptr_glo = 0;
-	return;
 }
 
 bool _spcfg_wiriteapi(string _sc_File, int _sc_Line, string _sc_header,string _sc_winfo) {
