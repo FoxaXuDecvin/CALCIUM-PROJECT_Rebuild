@@ -68,6 +68,10 @@ void argsApi(string args$api) {
 		return;
 	}
 
+	if (args$api == "-direct") {
+		_direct_read_script = true;
+	}
+
 	//auto set args
 	if (_setnextargs_runscript == true) {
 		runscript = args$api;

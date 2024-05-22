@@ -27,6 +27,7 @@ bool _rcset_allowdiredit;
 bool _rcset_allowtp;
 bool _rcset_anticrash;
 bool _rcset_logrec;
+bool _rcset_directmode;
 
 bool _rcset_shelledit,_rcset_scriptedit;
 
@@ -67,6 +68,7 @@ bool _RcLoad_TransApi(string _Rc_ID) {
 }
 
 string file;
+bool _direct_read_script = false;
 bool _RcApiLoadConfig() {
 	file = buildshell;
 	if (!check_file_existence(file)) {
@@ -80,6 +82,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AllowThirdPartyPlugin=false;");
 		_soildwrite_write("$AllowShellEdit=true;");
 		_soildwrite_write("$AllowScriptEdit=false;");
+		_soildwrite_write("$UseDirectRead=false;");
 		_soildwrite_write("");
 		_soildwrite_write("//ShellSettings");
 		_soildwrite_write("$AutoOpenShellAfterRun=true;");
@@ -107,6 +110,7 @@ bool _RcApiLoadConfig() {
 	_rcset_allowtp = _RcLoad_TransApi("AllowThirdPartyPlugin");
 	_rcset_shelledit = _RcLoad_TransApi("AllowShellEdit");
 	_rcset_scriptedit = _RcLoad_TransApi("AllowScriptEdit");
+	_rcset_directmode = _RcLoad_TransApi("UseDirectRead");
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 
@@ -137,6 +141,12 @@ bool _RcApiLoadConfig() {
 	if (!_dapi_ExistFolder_check(_rcbind_langpath)) {
 		_dapi_mkdir(_rcbind_langpath);
 	}
+
+	//Auto Set
+	_direct_read_script = _rcset_directmode;
+
+
+	//End
 
 	_KernelVersion_LoadText();
 

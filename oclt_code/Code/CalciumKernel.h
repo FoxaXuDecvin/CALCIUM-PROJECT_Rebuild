@@ -195,6 +195,56 @@ string _get_fullLine(string load_script,string EndMark) {
 }
 //END GETFULL API
 
+//Direct read
+string _get_direct_read(string load_script) {;
+	if (!check_file_existence(load_script)) {
+		return "badfound";
+	}
+	//Clear Makebuffer
+	_gf_getbuffer = "";
+
+	//get and make
+
+	while (true) {
+		//_p("D START");
+		_gf_getbuffer = LineReader(load_script, _gf_line);
+		//_p("DATA :   " + _gf_getbuffer + "    " + to_string(_gf_line));
+
+		if (_gf_getbuffer == "overline") {
+			_gf_status = false;
+			return "badread";
+		}
+		if (_gf_getbuffer == "ReadFailed") {
+			_gf_status = false;
+			return "badopen";
+		}
+
+		if (_gf_hsc == true) {
+			_gf_getbuffer = HeadSpaceCleanA(_gf_getbuffer);
+		}
+
+		if (_gf_getbuffer == "") {
+			_gf_line++;
+			continue;
+		}
+
+		if (SizeRead(_gf_getbuffer, 2) == "//") {
+			_gf_line++;
+			continue;
+		}
+
+		break;
+	}
+
+	_gf_line++;
+
+	_gf_status = true;
+	//_p("D STOP");
+	return _gf_getbuffer;
+}
+
+
+//Main Script Load
 bool _CK_ShellMode = false;
 string _cmd_marks = "_";
 string cmdbuffer;
@@ -202,32 +252,43 @@ string _api_result;
 string _global_scriptload;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script,string Sargs) {
-
+	//_p("Speed check point 1");
 	_global_scriptload = load_Script;
 	script_args = Sargs;
 	_$logfile = _rcbind_logrec + "/" + _Char_Filter_EndFileName(load_Script) + "_LogRec.log";
+	//_p("Speed check point 2");
 	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	if (!check_file_existence(load_Script)) {
 		_pv("_$lang.runfail");
 		_pv("Error :  _$lang.filenotfound");
 		return "nf01";
 	}
-
+	//_p("Speed check point 3");
 	//Character Process ...
 	_api_result = "scriptloadfailed";
 
 	_logrec_write("[Start] PreCheck Script Run Environment");
 	_logrec_write("[Log] Log file is Bind :  " + _$logfile);
 
+	//_p("Speed check point 4");
+
 	if (!check_file_existence(_$logfile)) {
 		_pv("_$lang.logfail " + _$logfile);
 	}
+
+	//_p("Speed check point 5");
 
 	while (true) {
 		_logrec_write("[Notice]Start to Execute script :  " + load_Script);
 		_global_scriptload = load_Script;
 		_logrec_write("[Exec]Complete Read Script");
-		cmdbuffer = _get_fullLine(load_Script,";");
+		//_p("Speed check point 6");
+		if (_direct_read_script == false) {
+			cmdbuffer = _get_fullLine(load_Script, ";");
+		}
+		else {
+			cmdbuffer = _get_direct_read(load_Script);
+		}
 		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer);
 		if (_gf_status == false) {
 			_pv("_$lang.stoprun.  Return status code :  " + cmdbuffer + "  . Args :  " + _global_scriptload + "   Line :  " + to_string(_gf_line) + " + " + to_string(_gf_cg));
@@ -236,12 +297,15 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 		}
 		if (_gf_status == false) return "ok";
 
+		//_p("Speed check point 7");
+
 		//Code Analysis
 		if (_stop_exec_script == true) {
 			_stop_exec_script = false;
 		}
 		_logrec_write("-start Running -- <Line " + to_string(_gf_line) + " /File " + _global_scriptload + "> -----------------------------------------");
 		last_return = _api_result = _runcode_api(cmdbuffer);
+		//_p("Speed check point 8");
 		_logrec_write("Command Execute End, Result -->  " +_api_result);
 		_logrec_write("-end -----------------------------------------------------");
 		if (_api_result == "runid.exit") {
@@ -254,6 +318,8 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 		if (_stop_exec_script == true) {
 			return _api_result;
 		}
+
+		//_p("Speed check point 9");
 
 		//NEXT
 	}
@@ -591,10 +657,10 @@ string _runcode_api(string command) {
 		string abcapi = NULL;
 		_p(abcapi);
 	}
-	if (SizeRead(command, 10) == "_runscript") {
+	if (SizeRead(command, 7) == "_script") {
 
-		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ",", 1)));
-		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ">", 1)));
+		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1)));
+		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ">", "$FROMEND$", 1)));
 
 		if (!check_file_existenceA(charCutB)) {
 			charCutB = _rcbind_pluginscript + "/" + charCutB;
@@ -610,6 +676,7 @@ string _runcode_api(string command) {
 		int _old$_gf_cg = _gf_cg;
 		int _old$_gf_cgmax = _gf_cgmax;
 		int _old$_gf_line = _gf_line;
+		bool _old$_direct_read_script = _direct_read_script;
 		string _old$_args = script_args;
 
 		//Create New Space
@@ -618,6 +685,7 @@ string _runcode_api(string command) {
 		_gf_cgmax = 1;
 		_gf_line = 1;
 		_gf_charget = "";
+		_direct_read_script = false;
 
 		//Run
 
@@ -633,6 +701,7 @@ string _runcode_api(string command) {
 		_gf_line = _old$_gf_line;
 		_gf_charget = "";
 		script_args = _old$_args;
+		_direct_read_script = _old$_direct_read_script;
 
 		return CharCutC;
 	}
@@ -838,6 +907,19 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 7) == "_getkernel") {
 		return InsideVersion;
+	}
+
+	//Settings
+	if (SizeRead(command, 12) == "_$directmode") {
+		_logrec_write("[Settings] Script using direct mode to read");
+		_direct_read_script = true;
+		return "ok";
+	}
+	if (SizeRead(command, 7) == "_$nolog") {
+		_logrec_write("[Close] Script Closed Log Record");
+		_logrec_write("-----------------------------------------------Closed");
+		_rcset_logrec = true;
+		return "ok";
 	}
 
 	if (_var_auto_void == true) {
