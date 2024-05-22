@@ -188,10 +188,13 @@ int _HeadMainLoad() {
 				AC_FAILCODE = "SYSTEM_API_EXCEPTION";
 			}
 			if (AntiCrash_Return_Code == -1073741819) {
-				AC_FAILCODE = "WIN_KERNEL_CONFLICT";
+				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
 			}
 			if (AntiCrash_Return_Code == 34304) {
-				AC_FAILCODE = "LINUX_KERNEL_CONFLICT";
+				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
+			}
+			if (AntiCrash_Return_Code == -1073740791) {
+				AC_FAILCODE = "MEMORY_ACCESS_CRASH";
 			}
 
 			cleanConsole();
@@ -199,11 +202,11 @@ int _HeadMainLoad() {
 			_pv("_$lang.crash.title");
 			_pn();
 			_pv("     _$lang.crash.t1");
-			_pv("     _$lang.crash.t2");
-			_pv("     _$lang.crash.t3");
-			_pv("     _$lang.crash.errcode" + AC_FAILCODE);
-			_pv("      _$lang.crash.kcode :  " + to_string(AntiCrash_Return_Code));
-			_pv("     Run Args :  " + native_argument);
+			_pv("       _$lang.crash.t2");
+			_pv("       _$lang.crash.t3");
+			_pv("       _$lang.crash.errcode" + AC_FAILCODE);
+			_pv("       _$lang.crash.kcode :  " + to_string(AntiCrash_Return_Code));
+			_pv("     _$lang.runargs :  " + native_argument);
 			_pn();
 			_pv("  _$lang.presskey");
 			_pv("  _$lang.crash.report");

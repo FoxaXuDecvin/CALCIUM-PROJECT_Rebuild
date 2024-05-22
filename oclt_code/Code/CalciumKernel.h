@@ -169,6 +169,12 @@ string _get_fullLine(string load_script,string EndMark) {
 				//_p("line :  " + to_string(_gf_line) + "   cg :   " + to_string(_gf_cg) + " cgmax :  " + to_string(_gf_cgmax) + "   charMake = " + _gf_makebuffer);
 
 				_gf_charget = _gf_getbuffer[_gf_cg];
+				if (_gf_charget == "\\") {
+					_gf_cg++;
+					_gf_charget = _gf_charget + _gf_getbuffer[_gf_cg];
+					_gf_cg++;
+					_gf_charget = _gf_charget + _gf_getbuffer[_gf_cg];
+				}
 				_gf_cg++;
 				//_p("charget =  " + _gf_charget);
 				_gf_makebuffer = _gf_makebuffer + _gf_charget;
@@ -221,7 +227,7 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 		_logrec_write("[Notice]Start to Execute script :  " + load_Script);
 		_global_scriptload = load_Script;
 		_logrec_write("[Exec]Complete Read Script");
-		cmdbuffer = _get_fullLine(load_Script);
+		cmdbuffer = _get_fullLine(load_Script,";");
 		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer);
 		if (_gf_status == false) {
 			_pv("_$lang.stoprun.  Return status code :  " + cmdbuffer + "  . Args :  " + _global_scriptload + "   Line :  " + to_string(_gf_line) + " + " + to_string(_gf_cg));
