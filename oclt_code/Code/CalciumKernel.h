@@ -261,6 +261,17 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 	return _api_result;
 }
 
+string langfile;
+bool LanguageLoad() {
+	langfile = _rcbind_langpath + "/" + _rcset_lang;
+	if (!check_file_existence(langfile)) {
+		return false;
+	}
+	_logrec_write("Loading  Language :   " + langfile);
+	_ckapi_scriptload(langfile, "langmode");
+	return true;
+}
+
 string varbufA;
 string charCutA, charCutB, CharCutC, CharCutD;
 string chartempA, chartempB, chartempC, chartempD;
@@ -270,6 +281,7 @@ int dbA, dbB, dbC, dbD;
 bool _debug_type_detected = false;
 bool _var_auto_void = false;
 string _runcode_api(string command) {
+	_logrec_write("[Reset] --------------------------------New Command---------------------------------------------------------");
 	if (_gf_hsc == true) {
 		command = HeadSpaceCleanA(command);
 	}
@@ -288,6 +300,7 @@ string _runcode_api(string command) {
 	}
 	//Command Process
 
+	_logrec_write("[Parsing] Command :   " + command);
 	if (atoi(command.c_str()) != 0) {
 		return command;
 	}
@@ -321,6 +334,49 @@ string _runcode_api(string command) {
 	if (command == "false") {
 		return "false";
 	}
+
+	//Memory Control
+	if (SizeRead(command, 5) == "_var ") {
+		if (checkChar(command, "=")) {
+			//Detecd illegal char = 
+
+			if (charTotal(command, "=") == 2) {
+				_p("Detect illegal Character :   =");
+				_p("Varspace :  Access is Denied");
+				return "false";
+			}
+
+			_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=", 1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(oldcmd, "=", ";", 1));
+			_rc_varinfo = _runcode_api(_rc_varinfo);
+
+			if (checkChar(_rc_varinfo, "=")) {
+				_p("Detect illegal Character :   =");
+				_p("Varspace :  Access is Denied");
+				return "false";
+			}
+
+		}
+		else {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+			_rc_varinfo = "{null}";
+		}
+		_logrec_write("[Exec] Create VarSpace");
+		_varspaceadd(_rc_varid, _rc_varinfo);
+		_logrec_write("[INFO]  varid --> " + _rc_varid + "   varinfo --> " + _rc_varinfo);
+
+		return "ok";
+	}
+	if (SizeRead(command, 6) == "_free ") {
+		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", ";", 1));
+		_varspacedelete(_rc_varid);
+		_logrec_write("VarSpace Delete  --> " + _rc_varid);
+
+		return "ok";
+	}
+
+	//Open Command
+	oldcmd = command;
 
 	if (SizeRead(command, 1) == "\"") {
 		charCutA = PartReadA(command, "\"", "\"", 1);
@@ -365,44 +421,6 @@ string _runcode_api(string command) {
 		_logrec_write("[Exec] owo  pwp wow");
 		_pv("_$lang.foxaxu.t1");
 		_p("https://www.foxaxu.com/fwlink?linkid=calcium_kernel_surprise");
-		return "ok";
-	}
-	if (SizeRead(command, 5) == "_var ") {
-		if (checkChar(command, "=")) {
-			//Detecd illegal char = 
-
-			if (charTotal(command, "=") == 2) {
-				_p("Detect illegal Character :   =");
-				_p("Varspace :  Access is Denied");
-				return "false";
-			}
-
-			_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=",1));
-			_rc_varinfo = HeadSpaceCleanA(PartReadA(oldcmd, "=", ";", 1));
-			_rc_varinfo = _runcode_api(_rc_varinfo);
-
-			if (checkChar(_rc_varinfo, "=")) {
-				_p("Detect illegal Character :   =");
-				_p("Varspace :  Access is Denied");
-				return "false";
-			}
-
-		}
-		else {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
-			_rc_varinfo = "{null}";
-		}
-		_logrec_write("[Exec] Create VarSpace");
-		_varspaceadd(_rc_varid, _rc_varinfo);
-		_logrec_write("[INFO]  varid --> " + _rc_varid + "   varinfo --> " + _rc_varinfo);
-
-		return "ok";
-	}
-	if (SizeRead(command, 6) == "_free ") {
-		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", ";", 1));
-		_varspacedelete(_rc_varid);
-		_logrec_write("VarSpace Delete  --> " + _rc_varid);
-
 		return "ok";
 	}
 	if (SizeRead(command, 7) == "_system") {
@@ -459,6 +477,11 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 7) == "_reload") {
 		_logrec_write("[KernelManager] RCapi Reload");
+		_pv("_$lang.reloading");
+		_gf_cg = 0;
+		_gf_cgmax = 1;
+		_gf_line = 1;
+		_sipcfg_reset();
 		if (!_RcApiLoadConfig()) {
 			_p("Failed to Load RCapi.");
 			_p("Config file is missing :  " + buildshell);
@@ -466,6 +489,7 @@ string _runcode_api(string command) {
 			_pause();
 			return "false";
 		}
+		LanguageLoad();
 		_pv("_$lang.reload");
 		return "ok";
 	}
@@ -704,6 +728,10 @@ string _runcode_api(string command) {
 
 		_p("PluginPath =   " + _rcbind_pluginpath);
 		_p("PluginScript = " + _rcbind_pluginscript);
+		return "ok";
+	}
+	if (SizeRead(command, 10) == "_var.reset") {
+		_clear_varspace();
 		return "ok";
 	}
 

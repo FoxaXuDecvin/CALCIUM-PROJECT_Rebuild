@@ -18,7 +18,7 @@ const string _rc_true = "true";
 
 //Build / Release / Prerelease   -  Release ID 
 const string _RCapi_Version = "B1D1";
-const string buildshell = _$GetSelfPath + "/Buildshell.cfg";
+const string buildshell = _$GetSelfPath + "/calcium_settings.cfg";
 
 //Rc Config var
 bool _rcset_syscmd;
@@ -78,7 +78,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AllowSuperUser=false;");
 		_soildwrite_write("$AllowDirectoryEdit=false;");
 		_soildwrite_write("$AllowThirdPartyPlugin=false;");
-		_soildwrite_write("$AllowShellEdit=false;");
+		_soildwrite_write("$AllowShellEdit=true;");
 		_soildwrite_write("$AllowScriptEdit=false;");
 		_soildwrite_write("");
 		_soildwrite_write("//ShellSettings");

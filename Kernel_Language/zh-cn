@@ -28,11 +28,12 @@ add _$lang.runfail = "Calcium Script 运行失败";
 add _$lang.filenotfound = "文件未找到";
 add _$lang.stoprun = "Calcium 内核终止运行";
 
-add _$lang.sys.t1 = "系统指令调用被禁止";
+add _$lang.sys.t1 = "已禁止程序调用系统指令";
 add _$lang.sys.t2 = "你的管理员不允许使用此命令";
 add _$lang.sys.t3 = "请使用指令";
 
 add _$lang.cfgedit.r = "你的设置已经更改，使用 _reload 以重新加载所有配置";
+add _$lang.reloading = "请稍等...  正在重新加载Calcium";
 add _$lang.reload = "_Rcapi 配置已重新加载";
 add _$lang.notNum = "不是个有效的数字";
 
@@ -45,6 +46,8 @@ add _$lang.nullcmd = "  [Error] 未知指令或变量，请检查你的输入是否正确";
 add _$lang.logfail = "  [WARNING] 日志文件创建失败，可能会影响调试环境，文件路径 : ";
 
 add _$lang.pause = "按Enter键继续 ";
+
+add _$lang.runargs = "运行参数 ";
 
 //Exit
 _exit;

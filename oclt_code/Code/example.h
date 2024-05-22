@@ -133,22 +133,14 @@ bool CK_Shell_open(void) {
 	return true;
 }
 
-string langfile;
-bool LanguageLoad() {
-	langfile = _rcbind_langpath + "/" + _rcset_lang;
-	if (!check_file_existence(langfile)) {
-		return false;
-	}
-	_logrec_write("Loading  Language :   " + langfile);
-	_ckapi_scriptload(langfile, "langmode");
-	return true;
-}
-
 int AntiCrash_Return_Code;
 string ckapi_result;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
+	if (_anticrash_services == false) {
+		_p("Calcium Script " + _KernelVersion + "...   Startup");
+	}
 	_RcApi_vp_load();
 	if (!_RcApiLoadConfig()) {
 		_p("Failed to Load RCapi.");
