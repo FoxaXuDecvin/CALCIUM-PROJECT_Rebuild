@@ -323,9 +323,6 @@ string _runcode_api(string command) {
 	}
 
 	if (SizeRead(command, 1) == "\"") {
-		if (charTotal(command, "\"") != 2) {
-			return("Null.format(Quotation Mark not full) for -->  " + command);
-		}
 		charCutA = PartReadA(command, "\"", "\"", 1);
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
 		return charCutA;
@@ -810,6 +807,10 @@ string _runcode_api(string command) {
 		return InsideVersion;
 	}
 
+	if (_var_auto_void == true) {
+		_logrec_write("[WARNING] Return Value :  -->  " + command);
+		return command;
+	}
 	_logrec_write("[ERROR]Unknown COMMAND");
 	_pv("_$lang.nullcmd   :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command + "    (Resource -->  " + oldcmd +  ")");
 	return "unknown.command(" + command + ")";

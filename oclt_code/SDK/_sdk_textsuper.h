@@ -171,6 +171,78 @@ SKIPGETMARKSTART:
 
 }
 
+string PartRead_A(string Info, string StartMark, string EndMark, int RPartSizeA) {
+	//Anti Search All
+	if (RPartSizeA == 1) {
+		return PartRead(Info, StartMark, EndMark, false);
+	}
+
+	int MAXSIZEA = Info.size();
+	int readptr = 0;
+	PartSizeA = RPartSizeA;
+	int cbuffer = 0;
+
+	int getStart, getEnd, getcurrent = 0;
+
+	//FindStart
+	if (StartMark == EndMark) {
+		PartSizeA = PartSizeA * 2;
+		PartSizeA--;
+		PartSizeA--;
+	}
+
+	while (PartSizeA != getcurrent) {
+		for (; readbufferC != StartMark; readptr++) {
+			readbufferC = Info[readptr];
+			if (readbufferC == StartMark) {
+				getcurrent++;
+			}
+			//cout << "Read :  " << readptr << "Data :  " << readbufferC << endl;
+			if (readptr > MAXSIZEA)return "pra.failed mark";
+		}
+
+		//cout << "A :  " << readbufferC << "  B :  " << getcurrent << endl;
+		readbufferC = "";
+	}
+	//cout << "Start :  " << readptr << "  PartSA :  " << PartSizeA << endl;
+
+	//GetStart
+	for (; readbufferD != StartMark; readptr++) {
+		if (readptr > MAXSIZEA) {
+			return "sizeoutStart";
+		}
+		readbufferD = Info[readptr];
+	}
+
+	getStart = readptr;
+	//cout << "Start Mark : " << getStart << endl;
+
+SKIPGETMARKSTART:
+	readbufferD = "";
+	//GetEnd
+	for (; readbufferD != EndMark; readptr++) {
+		if (readptr > MAXSIZEA) {
+			return "sizeoutEnd";
+		}
+		readbufferD = Info[readptr];
+	}
+
+	getEnd = readptr;
+
+	//cout << "Start :  " << getStart<< "  End :  " << getEnd << endl;
+
+	//Start Process CMD
+
+	//ReadPTR
+	readbufferD = "";
+	getEnd--;
+	for (readptr = getStart; readptr != getEnd; readptr++) {
+		readbufferD = readbufferD + Info[readptr];
+	}
+
+	return readbufferD;
+
+}
 
 //ReadSize
 // FoxaXu good work 3 = Fox

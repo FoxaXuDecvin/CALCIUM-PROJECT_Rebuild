@@ -4,14 +4,14 @@
 #include "../../SourceHeader/include.h"
 using namespace std;
 
-string $version_title = "OCLT _ 4 (Build)";
-string $version_msg = "New_Project";
+string $version_title = "OCLT _ 4 (Release)";
+string $version_msg = "Release 1";
 
 string $codename = "Pluto";
 
-int $version_code = 4012;
+int $version_code = 4021;
 
-string $buildtime = "207701010000";
+string $buildtime = "2024/05/22/17:55";
 
 string $version_code_str = to_string($version_code);
 
