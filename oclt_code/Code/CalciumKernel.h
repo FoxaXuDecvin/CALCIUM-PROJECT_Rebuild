@@ -682,11 +682,16 @@ string _runcode_api(string command) {
 		_pv("_$lang.if.err.t2");
 		return "NullReturn";
 	}
+
+	//Get
 	if (SizeRead(command, 8) == "_getline") {
 		return _getline_type();
 	}
 	if (SizeRead(command, 8) == "_getargs") {
 		return script_args;
+	}
+	if (SizeRead(command, 8) == "_getfile") {
+		return _global_scriptload;
 	}
 
 	//Debug
