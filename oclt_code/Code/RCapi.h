@@ -291,6 +291,6 @@ bool _cstp_unpack(string unpack_path, string file) {
 		}
 		continue;
 	}
-	_p("cstp unpack _$lang.complete");
+	_pv("cstp unpack _$lang.complete");
 	return true;
 }
