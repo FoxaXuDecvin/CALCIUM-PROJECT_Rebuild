@@ -21,7 +21,7 @@ void TypeHelpMenu() {
 	_p("Kernel Version :    " + _KernelVersion + "  " + _KV_rV_Text);
 	_p("RCapi Version :     " + _RCapi_Version);
 	_p("Copyright FoxaXu " + $year_message);
-	_p("Calcium Project Rebuild    .....");
+	_p("Calcium Script    .....");
 	_p("Github : https://github.com/FoxaXuDecvin/Calcium-Project");
 	_p("Language   " + _rcset_lang);
 }

@@ -152,9 +152,16 @@
     <ClInclude Include="oclt_code\SourceHeader\_sh_random.h" />
     <ClInclude Include="oclt_code\SourceHeader\_sh_runcore.h" />
     <ClInclude Include="oclt_code\SourceHeader\_sh_switch.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="oclt_code\launch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CALCIUM-PROJECT_Rebuild.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Logo Design.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

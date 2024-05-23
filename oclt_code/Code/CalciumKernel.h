@@ -42,9 +42,9 @@ string _KV_softwareVersion = "110"; //(Software Version)
 
 string _KV_gen = "4";//(General)
 
-string _KV_rv = "2";//(Release Version)
+string _KV_rv = "3";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_preRelease;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -598,15 +598,18 @@ string _runcode_api(string command) {
 		return "ok";
 	}
 	if (SizeRead(command, 8) == "_execute") {
-		string tempbase = "(" + PartReadA(oldcmd, "(", ")", 1) + ")";
-
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(tempbase, "(", ",", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(tempbase, ",", ")", 1)));
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ")", "$FROMEND$", 1)));
 
 		//_p("Execute Command :   " + _rc_varid + " " + _rc_varinfo);
 		if (!check_file_existence(_rc_varid)) {
-			_pv("Execute Error :   _$lang.filenotfound");
-			return "filenotfound";
+			if (check_file_existence(_rcbind_pluginpath + "/" + _rc_varid)) {
+				_rc_varid = _rcbind_pluginpath + "/" + _rc_varid;
+			}
+			else {
+				_pv("Execute Error :   _$lang.filenotfound");
+				return "filenotfound";
+			}
 		}
 		_logrec_write("[Exec] Run Application :   " + _rc_varid +"  Argument :  " + _rc_varinfo);
 		intCutA = _system_autoRun(_rc_varid, _rc_varinfo);
