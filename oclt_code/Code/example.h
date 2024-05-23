@@ -46,6 +46,23 @@ void argsApi(string args$api) {
 		return;
 	}
 
+	if (args$api == "-pack") {
+		_setnextargs_runscript = true;
+		_runmode = _runmode_cstpmake;
+		return;
+	}
+
+	if (args$api == "-unpack") {
+		_setnextargs_runscript = true;
+		_runmode = _runmode_cstpunpack;
+		return;
+	}
+
+	if (args$api == "-to") {
+		_setnextargs_addo = true;
+		return;
+	}
+
 	if (args$api == "-debug") {
 		_debugMode = true;
 		return;
@@ -88,6 +105,11 @@ void argsApi(string args$api) {
 	if (_setnextargs_addargs == true) {
 		script_args = args$api;
 		_setnextargs_addargs = false;
+	}
+
+	if (_setnextargs_addo == true) {
+		o_info = args$api;
+		_setnextargs_addo = false;
 	}
 
 	return;
@@ -240,6 +262,14 @@ int _HeadMainLoad() {
 		}
 	}
 
+	if (_debugMode == true) {
+		_p("Runmode ID " + _runmode);
+		_p("runscript :  " + runscript);
+		_p("Argument :  " + script_args);
+		_p("o info :  " + o_info);
+		_pause();
+		return 0;
+	}
 	//main
 	if (_runmode == _runmode_null) {
 		TypeHelpMenu();
@@ -250,12 +280,6 @@ int _HeadMainLoad() {
 		else {
 			return 0;
 		}
-	}
-	if (_debugMode == true) {
-		_p("Runmode ID " + _runmode);
-		_p("runscript :  " + runscript);
-		_pause();
-		return 0;
 	}
 	if (_runmode == _runmode_optimi) {
 		readbufferA = runscript + "_optimi.ca";
@@ -282,6 +306,16 @@ int _HeadMainLoad() {
 		_soildwrite_close();
 
 		_p("Optimi Complete");
+		return 0;
+	}
+	if (_runmode == _runmode_cstpmake) {
+		_cstp_maker(runscript, o_info);
+
+		return 0;
+	}
+	if (_runmode == _runmode_cstpunpack) {
+		_cstp_unpack(o_info,runscript);
+
 		return 0;
 	}
 	if (_runmode == _runmode_typehelp) {

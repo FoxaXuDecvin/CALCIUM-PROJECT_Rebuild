@@ -6,9 +6,11 @@
 //Here
 string runscript = "{null}";
 string script_args = "{null}";
+string o_info = "{null}";
 
 bool _setnextargs_runscript = false;
 bool _setnextargs_addargs = false;
+bool _setnextargs_addo = false;
 
 bool _debugMode = false;
 
@@ -22,6 +24,8 @@ const string _runmode_autoexit = "r0cl";
 const string _runmode_openshell = "r3se";
 const string _runmode_listversion = "r4ve";
 const string _runmode_optimi = "r5op";
+const string _runmode_cstpmake = "r661";
+const string _runmode_cstpunpack = "r662";
 
 string _runmode = _runmode_null;
 

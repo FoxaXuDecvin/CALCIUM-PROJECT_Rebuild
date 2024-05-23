@@ -132,6 +132,7 @@
     <ClInclude Include="oclt_code\Code\example.h" />
     <ClInclude Include="oclt_code\Code\launchscreen.h" />
     <ClInclude Include="oclt_code\Code\RCapi.h" />
+    <ClInclude Include="oclt_code\Code\ThirdPartyCode.h" />
     <ClInclude Include="oclt_code\Engine\_eg_efc_api.h" />
     <ClInclude Include="oclt_code\Engine\_eg_sipcfg.h" />
     <ClInclude Include="oclt_code\SDK\_sdk_textapi.h" />

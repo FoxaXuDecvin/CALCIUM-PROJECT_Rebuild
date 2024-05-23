@@ -5,6 +5,7 @@
 // Based on OpenCppLangTab
 
 #include"../shload.h"
+#include"../Code/ThirdPartyCode.h"
 
 void _KernelVersion_LoadText(void);
 //Define
@@ -183,4 +184,113 @@ string _Char_Filter_EndFileName(string fitchar) {
 	}
 
 	return "LineError";
+}
+
+
+string cachecstp;
+string _cstp_file_write = "a.cstp";
+bool _$cstp_writeapi(string file) {
+	if (!check_file_existence(file)) {
+		_pv("Cstp _$lang.loadfail :  _$lang.filenotfound");
+		return false;
+	}
+	_soildwrite_write("$sign_file_output(" + file + ");");
+
+	for (int readptr = 1; true; readptr++) {
+		cachecstp = LineReader(file, readptr);
+		if (cachecstp == "overline") {
+			_p("End LoadScript. Total :  " + to_string(readptr));
+			break;
+		}
+		if (cachecstp == "ReadFailed") {
+			return false;
+		}
+		_soildwrite_write(cachecstp);
+	}
+	_soildwrite_write("$sign_file_close;");
+	return true;
+}
+
+string getfile;
+bool _cstp_maker(string make_file_header,string file) {
+	_cstp_file_write = file;
+	_p("Execute to " + _cstp_file_write);
+	if (check_file_existence(_cstp_file_write)) {
+		_fileapi_del(_cstp_file_write);
+	}
+	_soildwrite_open(_cstp_file_write);
+	if (!check_file_existence(make_file_header)) {
+		_pv("Cstp Make failed :   _$lang.filenotfound");
+		return false;
+	}
+	_soildwrite_write("calcium_script_text_package");
+	_soildwrite_write("//Text Package");
+	for (int readptr = 1; true; readptr++) {
+		getfile = cachecstp = LineReader(make_file_header, readptr);
+		if (cachecstp == "overline") {
+			break;
+		}
+		if (cachecstp == "ReadFailed") {
+			break;
+		}
+		_p("Add File :   " + cachecstp);
+		if (_$cstp_writeapi(cachecstp)) {
+			_pv("Cstp File :  " + getfile);
+		}
+		else {
+			_pv("Failed :  " + getfile);
+		}
+		continue;
+	}
+	_pv("cstp make _$lang.complete");
+
+	return true;
+}
+
+int readptr = 1;
+bool _$cstp_unpackapi(string file,string resourcefile,int startline) {
+	readptr++;
+	_p("Create File :  " + file);
+	creatpath(file);
+	_soildwrite_open(file);
+	for (; true; readptr++) {
+		cachecstp = LineReader(resourcefile, readptr);
+		if (cachecstp == "overline") {
+			break;
+		}
+		if (cachecstp == "ReadFailed") {
+			return false;
+		}
+		if (SizeRead(cachecstp, 16) == "$sign_file_close") {
+			break;
+		}
+		_soildwrite_write(cachecstp);
+	}
+	_soildwrite_close();
+}
+
+bool _cstp_unpack(string unpack_path, string file) {
+	_p("Execute to " + file);
+	if (!check_file_existence(file)) {
+		_pv("Cstp Unpack failed :   _$lang.filenotfound " + file);
+		return false;
+	}
+	for (; true; readptr++) {
+		getfile = cachecstp = LineReader(file, readptr);
+		if (cachecstp == "overline") {
+			break;
+		}
+		if (cachecstp == "ReadFailed") {
+			break;
+		}
+		if (SizeRead(cachecstp,17) == "$sign_file_output") {
+			getfile = PartReadA(cachecstp, "(", ")", 1);
+			if (!_$cstp_unpackapi(getfile,file, readptr)) {
+				_pv("Failed :  " + getfile);
+			}
+		}
+		continue;
+	}
+	_p("cstp unpack _$lang.complete");
+	return true;
 }
