@@ -1,9 +1,5 @@
-//Warning Do not running on Visual Studio 2022 Debug mode
-//Create BuildShell.cfg will Crash
-//Please running on Normal mode to create buildshell.cfg
-
 //RC API
-// Run Code API
+// Run Config API
 
 //Copyright FoxaXu 2024
 // Based on OpenCppLangTab
@@ -32,6 +28,8 @@ bool _rcset_directmode;
 bool _rcset_shelledit,_rcset_scriptedit;
 
 bool _rcset_aosr;
+
+bool _rcset_shell_log;
 
 string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun,_rcbind_autorunargs;
 string _rcbind_logrec;
@@ -86,6 +84,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_write("//ShellSettings");
 		_soildwrite_write("$AutoOpenShellAfterRun=true;");
+		_soildwrite_write("$EnableShellLog=true;");
 		_soildwrite_write("");
 		_soildwrite_write("//Bind");
 		_soildwrite_write("$AutoRun=null;");
@@ -113,6 +112,7 @@ bool _RcApiLoadConfig() {
 	_rcset_directmode = _RcLoad_TransApi("UseDirectRead");
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
+	_rcset_shell_log = _RcLoad_TransApi("EnableShellLog");
 
 	//String
 	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "AutoRun"));

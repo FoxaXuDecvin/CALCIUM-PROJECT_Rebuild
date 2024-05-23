@@ -272,8 +272,10 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 
 	//_p("Speed check point 4");
 
-	if (!check_file_existence(_$logfile)) {
-		_pv("_$lang.logfail " + _$logfile);
+	if (_rcset_logrec == true) {
+		if (!check_file_existence(_$logfile)) {
+			_pv("_$lang.logfail " + _$logfile);
+		}
 	}
 
 	//_p("Speed check point 5");
@@ -449,7 +451,6 @@ string _runcode_api(string command) {
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
 		return charCutA;
 	}
-
 	if (SizeRead(command, 4) == "_prt") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
@@ -460,7 +461,6 @@ string _runcode_api(string command) {
 		_prts(charCutB);
 		return "ok.print:<" + charCutB + ">";
 	}
-
 	if (SizeRead(command, 5) == "_cout") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
@@ -470,7 +470,6 @@ string _runcode_api(string command) {
 		_p(charCutB);
 		return "ok.print:<" + charCutB + ">";
 	}
-
 	if (SizeRead(command, 5) == "_exit") {
 		_logrec_write("[Shutdown] Execute _Exit");
 		return "runid.exit";
@@ -679,6 +678,7 @@ string _runcode_api(string command) {
 		bool _old$_direct_read_script = _direct_read_script;
 		bool _old$_rcset_logrec = _rcset_logrec;
 		string _old$_args = script_args;
+		string _old$_logfile = _$logfile;
 
 		//Create New Space
 
@@ -704,6 +704,7 @@ string _runcode_api(string command) {
 		script_args = _old$_args;
 		_direct_read_script = _old$_direct_read_script;
 		_rcset_logrec = _old$_rcset_logrec;
+		_$logfile = _old$_logfile;
 
 		return CharCutC;
 	}

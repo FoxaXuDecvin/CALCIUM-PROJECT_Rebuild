@@ -28,13 +28,6 @@ int _system_autoRun(string file, string arguments) {
 		resultCode = system(araBuffer.c_str());
 	}
 
-	if (resultCode == 1) {
-		_p("_system_autoRun API Exception");
-		_p("Return  1");
-		_p("Use Command :    -->  " + araBuffer);
-		_pause();
-	}
-
 	return resultCode;
 }
 

@@ -1,14 +1,11 @@
 //Launch
 // Main Cpp
 
-//NET Loader
-
+//Code
 #include"Code/example.h"
 
-//EDIT ON ANY_H
-
-
-
+//EDIT ON Example_H
+// 
 //Other Main
 #include"Code/launchscreen.h"
 //For Windows API
@@ -24,7 +21,7 @@ void printmsgoclt() {
     _p("OCLT Timestamp :   " + $buildtime);
     _p("Operating system :   " + _Run_SysKernel);
     _p("Run Command Argument :  " + native_argument);
-    _p("File Path :  " + _$GetSelfFull);
+    _p("Execute File Path :  " + _$GetSelfFull);
     _pn();
     _p("Copyright FoxaXu ");
     _p($year_message);

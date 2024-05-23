@@ -89,6 +89,9 @@ void argsApi(string args$api) {
 
 string _user_typebuffer;
 bool CK_Shell_open(void) {
+	if (_rcset_shell_log == true) {
+		_rcset_logrec = true;
+	}
 	_$logfile = _rcbind_logrec + "/ShellLog.log";
 	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	_global_scriptload = "{ShellMode}";
@@ -103,6 +106,7 @@ bool CK_Shell_open(void) {
 	_p("type command,   use \"_exit\" to exit.");
 
 	while (true) {
+		
 		_pn();
 		_prts("Calcium Kernel  " + _KernelVersion + "   Shell Console>");
 		_user_typebuffer = _getline_type() + ";";
