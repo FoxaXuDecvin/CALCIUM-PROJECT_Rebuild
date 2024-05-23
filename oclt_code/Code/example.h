@@ -36,6 +36,13 @@ void argsApi(string args$api) {
 	//Args Switch
 	if (args$api == "-run") {
 		_setnextargs_runscript = true;
+		_runmode = _runmode_runscript;
+		return;
+	}
+
+	if (args$api == "-optimi") {
+		_setnextargs_runscript = true;
+		_runmode = _runmode_optimi;
 		return;
 	}
 
@@ -76,7 +83,6 @@ void argsApi(string args$api) {
 	if (_setnextargs_runscript == true) {
 		runscript = args$api;
 		_setnextargs_runscript = false;
-		_runmode = _runmode_runscript;
 	}
 
 	if (_setnextargs_addargs == true) {
@@ -249,6 +255,33 @@ int _HeadMainLoad() {
 		_p("Runmode ID " + _runmode);
 		_p("runscript :  " + runscript);
 		_pause();
+		return 0;
+	}
+	if (_runmode == _runmode_optimi) {
+		readbufferA = runscript + "_optimi.ca";
+		_p("Optimi Mode");
+		if (runscript == "{null}") {
+			_p("Command :  <program.exe> -optimi <file>");
+			return 0;
+		}
+		_p("Optimi Script :  " + runscript);
+		_p("Output Script :  " + readbufferA);
+		if (!check_file_existence(runscript)) {
+			_p("File Not Found :  " + runscript);
+			_p("Command :  <program.exe> -optimi <file>");
+			return 0;
+		}
+		_soildwrite_open(readbufferA);
+		_soildwrite_write("_$directmode;");
+		_soildwrite_write("_$nolog;");
+		while(true) {
+			charCutA = _get_fullLine(runscript, ";");
+			if (_gf_status == false) break;
+			_soildwrite_write(charCutA);
+		}
+		_soildwrite_close();
+
+		_p("Optimi Complete");
 		return 0;
 	}
 	if (_runmode == _runmode_typehelp) {

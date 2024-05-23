@@ -21,6 +21,7 @@ const string _runmode_typehelp = "r2hp";
 const string _runmode_autoexit = "r0cl";
 const string _runmode_openshell = "r3se";
 const string _runmode_listversion = "r4ve";
+const string _runmode_optimi = "r5op";
 
 string _runmode = _runmode_null;
 

@@ -297,7 +297,6 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 			_logrec_write("[ERROR]Kernel stop Running");
 			return "ok";
 		}
-		if (_gf_status == false) return "ok";
 
 		//_p("Speed check point 7");
 
@@ -311,10 +310,10 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 		_logrec_write("Command Execute End, Result -->  " +_api_result);
 		_logrec_write("-end -----------------------------------------------------");
 		if (_api_result == "runid.exit") {
-			return "ok";
+			return "runid.exit";
 		}
 		if (_api_result == "runid.entershell") {
-			return "runid.entershell";
+			return "runid.exit";
 		}
 
 		if (_stop_exec_script == true) {
@@ -540,6 +539,33 @@ string _runcode_api(string command) {
 		}
 		return "falseproblem";
 	}
+	if(SizeRead(command,9) == "_cfgread ") {
+		_logrec_write("[KernelManager] Config Read");
+
+		if (_CK_ShellMode == false) {
+			//ScriptMode
+			if (_rcset_scriptedit == false) {
+				_pv("_$lang.sys.t1  " + buildshell);
+				_p("Please set AllowScriptEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
+				return "denied";
+			}
+		}
+		if (_CK_ShellMode == true) {
+			//ShellMode
+			if (_rcset_shelledit == false) {
+				_pv("_$lang.sys.t1  " + buildshell);
+				_p("Please set AllowShellEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
+				return "denied";
+			}
+		}
+		_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+		_logrec_write("[KernelManager] Read Settings :  " + _rc_varid);
+		charCutA = _load_sipcfg(buildshell, _rc_varid);
+		_logrec_write("[KernelManager] Return Value -->  " + charCutA);
+		return charCutA;
+	}
 	if (SizeRead(command, 7) == "_reload") {
 		_logrec_write("[KernelManager] RCapi Reload");
 		_pv("_$lang.reloading");
@@ -599,7 +625,7 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 8) == "_execute") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ")", "$FROMEND$", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ")", ";", 1)));
 
 		//_p("Execute Command :   " + _rc_varid + " " + _rc_varinfo);
 		if (!check_file_existence(_rc_varid)) {
@@ -662,7 +688,7 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 7) == "_script") {
 
 		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1)));
-		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ">", "$FROMEND$", 1)));
+		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ">", ";", 1)));
 
 		if (!check_file_existenceA(charCutB)) {
 			charCutB = _rcbind_pluginscript + "/" + charCutB;
@@ -709,6 +735,13 @@ string _runcode_api(string command) {
 		_rcset_logrec = _old$_rcset_logrec;
 		_$logfile = _old$_logfile;
 
+
+		if (CharCutC == "runid.exit") {
+			return CharCutC;
+		}
+		if (CharCutC == "runid.entershell") {
+			return CharCutC;
+		}
 		return CharCutC;
 	}
 	if (SizeRead(command, 8) == "_compare") {
@@ -914,6 +947,9 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 7) == "_getkernel") {
 		return InsideVersion;
 	}
+	if (SizeRead(command, 8) == "_getpath") {
+		return _$GetSelfPath;
+	}
 
 	//Settings
 	if (SizeRead(command, 12) == "_$directmode") {
@@ -926,6 +962,60 @@ string _runcode_api(string command) {
 		_logrec_write("-----------------------------------------------Closed");
 		_rcset_logrec = false;
 		return "ok";
+	}
+
+	//System
+	if (SizeRead(command, 11) == "_file_exist") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		_logrec_write("[File] Check File Exist..  command -->  " + charCutA);
+		charCutB = _runcode_api(charCutA);
+		_logrec_write("[File] check file :  " + charCutB);
+
+		if (check_file_existence(charCutB)) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}
+	if (SizeRead(command, 9) == "_dir_make") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		_logrec_write("[Dir] Create Directory ..  command -->  " + charCutA);
+		charCutB = _runcode_api(charCutA);
+		_logrec_write("[Dir] Directory :  " + charCutB);
+
+		if (_dapi_mkdir(charCutB)) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}
+	if (SizeRead(command, 11) == "_dir_remove") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		_logrec_write("[Dir] Remove Directory ..  command -->  " + charCutA);
+		charCutB = _runcode_api(charCutA);
+		_logrec_write("[Dir] Directory :  " + charCutB);
+
+		if (_dapi_rmdir(charCutB)) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}
+	if (SizeRead(command, 10) == "_dir_exist") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		_logrec_write("[Dir] Check Directory Exist..  command -->  " + charCutA);
+		charCutB = _runcode_api(charCutA);
+		_logrec_write("[Dir] check directory :  " + charCutB);
+
+		if (_dapi_ExistFolder_check(charCutB)) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
 	}
 
 	if (_var_auto_void == true) {
