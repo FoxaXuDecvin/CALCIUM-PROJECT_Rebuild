@@ -108,7 +108,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Logo Design.ico">
+    <Image Include="..\NewLogo.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

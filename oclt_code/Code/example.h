@@ -8,6 +8,7 @@ bool PreLaunchLoad(void) {
 	//
 
 	__settings_displaylaunchscreen = false;
+	_windows_active_65001 = true;
 
 	//End
 	return true;
@@ -224,6 +225,7 @@ int _HeadMainLoad() {
 
 	if (_rcset_anticrash == true) {
 		if (_anticrash_services == false) {
+			Crash_Reload_service:
 			AntiCrash_Return_Code = _system_autoRun(_$GetSelfFull, native_argument + " \"-anticrash_ok\"");
 			if (AntiCrash_Return_Code == 0) {
 				return 0;
@@ -260,7 +262,13 @@ int _HeadMainLoad() {
 			_pn();
 			_pn();
 			_pause();
-			return 0;
+			if (_rcset_crash_reload) {
+				cleanConsole();
+				goto Crash_Reload_service;
+			}
+			else {
+				return 0;
+			}
 		}
 	}
 	else {

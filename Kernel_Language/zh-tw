@@ -5,56 +5,56 @@ _$nolog;
 
 _var add = "_var";
 
-add _$lang.about="·±ówÖĞÎÄ £¨ÖĞ‡ø£© GB2312";
-add _$lang.language= "ÕZÑÔ";
+add _$lang.about="ç¹é«”ä¸­æ–‡ ï¼ˆä¸­åœ‹ï¼‰";
+add _$lang.language= "èªè¨€";
 
 //Public Char
-add _$lang.presskey = "°´ Enter";
+add _$lang.presskey = "æŒ‰ Enter";
 
 //Crash Info
 
-add _$lang.crash.title = "   :(  Calcium ƒÈºË±À¢ÁË";
-add _$lang.crash.t1 = "ÎÒ‚ƒ•º•rŸo·¨·ÖÎöÔì³É´Ë†–î}µÄÔ­Òò";
-add _$lang.crash.t2 = "Èç¹ûß@‚€†–î}Ó°í‘ÁËÄãµÄÊ¹ÓÃ";
-add _$lang.crash.t3 = "ÕˆÏòÎÒ‚ƒˆó¸æ https://www.foxaxu.com/contact";
-add _$lang.crash.errcode = "åeÕ`´ú´a £º ";
-add _$lang.crash.kcode = "ƒÈºË·µ»ØÖµ";
-add _$lang.crash.report = "ÕˆÔÚˆó¸æÖĞ°üº¬ÖØ¬F´ËåeÕ`µÄ·½Ê½";
+add _$lang.crash.title = "   :(  Calcium å…§æ ¸å´©æ½°äº†";
+add _$lang.crash.t1 = "æˆ‘å€‘æš«æ™‚ç„¡æ³•åˆ†æé€ æˆæ­¤å•é¡Œçš„åŸå› ";
+add _$lang.crash.t2 = "å¦‚æœé€™å€‹å•é¡Œå½±éŸ¿äº†ä½ çš„ä½¿ç”¨";
+add _$lang.crash.t3 = "è«‹å‘æˆ‘å€‘å ±å‘Š https://www.foxaxu.com/contact";
+add _$lang.crash.errcode = "éŒ¯èª¤ä»£ç¢¼ ï¼š ";
+add _$lang.crash.kcode = "å…§æ ¸è¿”å›å€¼";
+add _$lang.crash.report = "è«‹åœ¨å ±å‘Šä¸­åŒ…å«é‡ç¾æ­¤éŒ¯èª¤çš„æ–¹å¼";
 
 //FoxaXu
-add _$lang.foxaxu.t1 = "¸ĞÖxÄãµÄÖ§Ô®";
+add _$lang.foxaxu.t1 = "æ„Ÿè¬ä½ çš„æ”¯æ´";
 
 //Kernel
 
-add _$lang.runfail = "Calcium Script ß\ĞĞÊ§”¡";
-add _$lang.filenotfound = "™nÎ´ÕÒµ½";
-add _$lang.stoprun = "Calcium ƒÈºË½KÖ¹ß\ĞĞ";
+add _$lang.runfail = "Calcium Script é‹è¡Œå¤±æ•—";
+add _$lang.filenotfound = "æª”æœªæ‰¾åˆ°";
+add _$lang.stoprun = "Calcium å…§æ ¸çµ‚æ­¢é‹è¡Œ";
 
-add _$lang.sys.t1 = "ÒÑ½ûÖ¹³ÌĞòÕ{ÓÃÏµ½yÖ¸Áî";
-add _$lang.sys.t2 = "ÄãµÄ¹ÜÀí†T²»ÔÊÔSÊ¹ÓÃ´ËÃüÁî";
-add _$lang.sys.t3 = "ÕˆÊ¹ÓÃÖ¸Áî";
+add _$lang.sys.t1 = "å·²ç¦æ­¢ç¨‹åºèª¿ç”¨ç³»çµ±æŒ‡ä»¤";
+add _$lang.sys.t2 = "ä½ çš„ç®¡ç†å“¡ä¸å…è¨±ä½¿ç”¨æ­¤å‘½ä»¤";
+add _$lang.sys.t3 = "è«‹ä½¿ç”¨æŒ‡ä»¤";
 
-add _$lang.cfgedit.r = "ÄãµÄÔOÖÃÒÑ½›¸ü¸Ä£¬Ê¹ÓÃ _reload ÒÔÖØĞÂİdÈëËùÓĞÅäÖÃ";
-add _$lang.reloading = "ÕˆÉÔµÈ...  ÕıÔÚÖØĞÂİdÈëCalcium¡¹";
-add _$lang.reload = "_Rcapi ÅäÖÃÒÑÖØĞÂİdÈë";
-add _$lang.notNum = "²»ÊÇ‚€ÓĞĞ§µÄ”µÎ»";
+add _$lang.cfgedit.r = "ä½ çš„è¨­ç½®å·²ç¶“æ›´æ”¹ï¼Œä½¿ç”¨ _reload ä»¥é‡æ–°è¼‰å…¥æ‰€æœ‰é…ç½®";
+add _$lang.reloading = "è«‹ç¨ç­‰...  æ­£åœ¨é‡æ–°è¼‰å…¥Calciumã€";
+add _$lang.reload = "_Rcapi é…ç½®å·²é‡æ–°è¼‰å…¥";
+add _$lang.notNum = "ä¸æ˜¯å€‹æœ‰æ•ˆçš„æ•¸ä½";
 
-add _$lang.if.err.t1 = "[Warning] _if Ö¸ÁîåeÕ`";
-add _$lang.if.err.t2 = "[Warning] Ô“Ö¸Áî·µ»ØÁËÒ»‚€Ÿo·¨ÓÃì¶ÅĞ”àtrue»òfalseµÄÖµ";
-add _$lang.calc.zero = "[Calc] 0 ²»±»ÔÊÔS";
+add _$lang.if.err.t1 = "[Warning] _if æŒ‡ä»¤éŒ¯èª¤";
+add _$lang.if.err.t2 = "[Warning] è©²æŒ‡ä»¤è¿”å›äº†ä¸€å€‹ç„¡æ³•ç”¨æ–¼åˆ¤æ–·trueæˆ–falseçš„å€¼";
+add _$lang.calc.zero = "[Calc] 0 ä¸è¢«å…è¨±";
 
-add _$lang.nullcmd = " [Error] Î´ÖªÖ¸Áî»ò×ƒ”µ£¬Õˆ™z²éÄãµÄİ”ÈëÊÇ·ñÕı´_";
+add _$lang.nullcmd = " [Error] æœªçŸ¥æŒ‡ä»¤æˆ–è®Šæ•¸ï¼Œè«‹æª¢æŸ¥ä½ çš„è¼¸å…¥æ˜¯å¦æ­£ç¢º";
 
-add _$lang.logfail = " [WARNING] ÈÕÕI™n„“½¨Ê§”¡£¬¿ÉÄÜ•şÓ°í‘Õ{Ô‡­h¾³£¬™nÂ·½ £º ";
+add _$lang.logfail = " [WARNING] æ—¥èªŒæª”å‰µå»ºå¤±æ•—ï¼Œå¯èƒ½æœƒå½±éŸ¿èª¿è©¦ç’°å¢ƒï¼Œæª”è·¯å¾‘ ï¼š ";
 
-add _$lang.pause = "°´EnteræIÀ^Àm ";
+add _$lang.pause = "æŒ‰Enteréµç¹¼çºŒ ";
 
-add _$lang.runargs = "ß\ĞĞ…¢”µ ";
+add _$lang.runargs = "é‹è¡Œåƒæ•¸ ";
 
 //Extend
 
-add _$lang.loadfail = "‡LÔ‡İdÈëÎÄ¼şÊ§”¡";
-add _$lang.complete = "Íê³É";
+add _$lang.loadfail = "å˜—è©¦è¼‰å…¥æ–‡ä»¶å¤±æ•—";
+add _$lang.complete = "å®Œæˆ";
 
 //Exit
 _return("Ok");

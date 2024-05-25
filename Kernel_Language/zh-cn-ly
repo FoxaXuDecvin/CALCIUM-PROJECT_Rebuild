@@ -5,56 +5,56 @@ _$nolog;
 
 _var add = "_var";
 
-add _$lang.about="¼òÌåÖĞÎÄ (Literary) GB2312"¡£
-add _$lang.language= "Óï"¡£
+add _$lang.about="ç®€ä½“ä¸­æ–‡ (Literary)"ã€‚
+add _$lang.language= "è¯­"ã€‚
 
 //Public Char
-add _$lang.presskey = "°´ Enter"¡£
+add _$lang.presskey = "æŒ‰ Enter"ã€‚
 
 //Crash Info
 
-add _$lang.crash.title = "   :(  Calcium ÄÚºËÀ£"¡£
-add _$lang.crash.t1 = "ÎáÇÒÎŞÒÔÖªÖ®"¡£
-add _$lang.crash.t2 = "Èô¶ûÓÃÖ®"¡£
-add _$lang.crash.t3 = "Çë¸æ https://www.foxaxu.com/contact"¡£
-add _$lang.crash.errcode = "´íÎó´úÂë : "¡£
-add _$lang.crash.kcode = "ÄÚºË·µ»ØÖµ"¡£
-add _$lang.crash.report = "Çëº¬Æä·Ç";
+add _$lang.crash.title = "   :(  Calcium å†…æ ¸æºƒ"ã€‚
+add _$lang.crash.t1 = "å¾ä¸”æ— ä»¥çŸ¥ä¹‹"ã€‚
+add _$lang.crash.t2 = "è‹¥å°”ç”¨ä¹‹"ã€‚
+add _$lang.crash.t3 = "è¯·å‘Š https://www.foxaxu.com/contact"ã€‚
+add _$lang.crash.errcode = "é”™è¯¯ä»£ç  : "ã€‚
+add _$lang.crash.kcode = "å†…æ ¸è¿”å›å€¼"ã€‚
+add _$lang.crash.report = "è¯·å«å…¶é";
 
 //FoxaXu
-add _$lang.foxaxu.t1 = "¸Ğ¾ıÖ®Á¦"¡£
+add _$lang.foxaxu.t1 = "æ„Ÿå›ä¹‹åŠ›"ã€‚
 
 //Kernel
 
-add _$lang.runfail = "Calcium Script ĞĞ°Ü"¡£
-add _$lang.filenotfound = "ÎÄÎ´µÃ"¡£
-add _$lang.stoprun = "Calcium ÄÚºËÖÕĞĞ"¡£
+add _$lang.runfail = "Calcium Script è¡Œè´¥"ã€‚
+add _$lang.filenotfound = "æ–‡æœªå¾—"ã€‚
+add _$lang.stoprun = "Calcium å†…æ ¸ç»ˆè¡Œ"ã€‚
 
-add _$lang.sys.t1 = "ÒÑ½û³ÌĞòµ÷ÓÃÏµÍ³Ö¸Áî";
-add _$lang.sys.t2 = "¶û¹Ü²»ĞíÓÃ´ËÁî";
-add _$lang.sys.t3 = "ÇëÓÃÖ¸Áî"¡£
+add _$lang.sys.t1 = "å·²ç¦ç¨‹åºè°ƒç”¨ç³»ç»ŸæŒ‡ä»¤";
+add _$lang.sys.t2 = "å°”ç®¡ä¸è®¸ç”¨æ­¤ä»¤";
+add _$lang.sys.t3 = "è¯·ç”¨æŒ‡ä»¤"ã€‚
 
-add _$lang.cfgedit.r = "ÈêÖÃÒÑ¸Ä,ÓÃ _reload ÒÔÖØ¼ÓÔØÖîÖÃ"¡£
-add _$lang.reloading = "ÇëÉÙ´ı...  ·½¸´¼ÓÔØCalcium"¡£
-add _$lang.reload = "_Rcapi ÅäÖÃÒÑ¸´¼ÓÔØ"¡£
-add _$lang.notNum = "·ÇĞ§ÊıÒ²"¡£
+add _$lang.cfgedit.r = "æ±ç½®å·²æ”¹,ç”¨ _reload ä»¥é‡åŠ è½½è¯¸ç½®"ã€‚
+add _$lang.reloading = "è¯·å°‘å¾…...  æ–¹å¤åŠ è½½Calcium"ã€‚
+add _$lang.reload = "_Rcapi é…ç½®å·²å¤åŠ è½½"ã€‚
+add _$lang.notNum = "éæ•ˆæ•°ä¹Ÿ"ã€‚
 
-add _$lang.if.err.t1 = "[Warning] _if Áî¹ı"¡£
-add _$lang.if.err.t2 = "[Warning] µ±·´Ò»²»×ãÒÔ¾ötruefalseÖ®Ö±"¡£
-add _$lang.calc.zero = "[Calc] 0 ²»Ğí"¡£
+add _$lang.if.err.t1 = "[Warning] _if ä»¤è¿‡"ã€‚
+add _$lang.if.err.t2 = "[Warning] å½“åä¸€ä¸è¶³ä»¥å†³truefalseä¹‹ç›´"ã€‚
+add _$lang.calc.zero = "[Calc] 0 ä¸è®¸"ã€‚
 
-add _$lang.nullcmd = "[ Error] Î´ÖªÖ¸±äÁ¿,ÇëÑéÊäÊÇ·ñ";
+add _$lang.nullcmd = "[ Error] æœªçŸ¥æŒ‡å˜é‡,è¯·éªŒè¾“æ˜¯å¦";
 
-add _$lang.logfail = "[ WARNING] ÈÕÖ¾ÎÄ´´°Ü,»òÓ°Ïìµ÷ÊÔ,ÎÄ¾¶ : ";
+add _$lang.logfail = "[ WARNING] æ—¥å¿—æ–‡åˆ›è´¥,æˆ–å½±å“è°ƒè¯•,æ–‡å¾„ : ";
 
-add _$lang.pause = "ÈçEnter¼ü "¡£
+add _$lang.pause = "å¦‚Enteré”® "ã€‚
 
-add _$lang.runargs = "ĞĞ²ÎÊı "¡£
+add _$lang.runargs = "è¡Œå‚æ•° "ã€‚
 
 //Extend
 
-add _$lang.loadfail = "³¢ÊÔ¼ÓÔØÎÄ°Ü"¡£
-add _$lang.complete = "³É"¡£
+add _$lang.loadfail = "å°è¯•åŠ è½½æ–‡è´¥"ã€‚
+add _$lang.complete = "æˆ"ã€‚
 
 //Exit
 _return("Ok");

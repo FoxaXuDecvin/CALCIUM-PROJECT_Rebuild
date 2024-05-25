@@ -162,7 +162,7 @@
     <ResourceCompile Include="CALCIUM-PROJECT_Rebuild.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Logo Design.ico" />
+    <Image Include="..\NewLogo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

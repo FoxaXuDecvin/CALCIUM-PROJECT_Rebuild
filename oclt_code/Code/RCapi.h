@@ -32,6 +32,8 @@ bool _rcset_aosr;
 
 bool _rcset_shell_log;
 
+bool _rcset_crash_reload;
+
 string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autorun,_rcbind_autorunargs;
 string _rcbind_logrec;
 string _rcbind_langpath;
@@ -73,7 +75,7 @@ bool _api_request_download(string Address,string Save) {
 	_p("api server :  " + _rcbind_serverapi);
 	_p("request some files...   please wait");
 	_p("url :  " + url_cache);
-	if (!URLDown(url_cache, Save)){
+	if (!_urldown_api_nocache(url_cache, Save)){
 		_p("URL Request Failed");
 		return false;
 	}
@@ -89,6 +91,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write(" //BuildShell SipCfg  --Use  true/false");
 		_soildwrite_write("$EnableSystemCommand=false;");
 		_soildwrite_write("$EnableAntiCrash=true;");
+		_soildwrite_write("$EnableCrashReload=true;");
 		_soildwrite_write("$EnableLogRecord=true;");
 		_soildwrite_write("$AllowSuperUser=false;");
 		_soildwrite_write("$AllowDirectoryEdit=false;");
@@ -122,6 +125,7 @@ bool _RcApiLoadConfig() {
 	}
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
 	_rcset_anticrash = _RcLoad_TransApi("EnableAntiCrash");
+	_rcset_crash_reload = _RcLoad_TransApi("EnableCrashReload");
 	_rcset_logrec = _RcLoad_TransApi("EnableLogRecord");
 	_rcset_allowsu = _RcLoad_TransApi("AllowSuperUser");
 	_rcset_allowdiredit = _RcLoad_TransApi("AllowDirectoryEdit");

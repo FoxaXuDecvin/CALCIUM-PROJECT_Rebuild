@@ -14,7 +14,6 @@ const string Linux_kernel = "Linux";
 const std::string pathsign = "\\";
 string RunPlatfom = "Windows (MSVC 64Bit)";//Must Include Windows/Linux one
 string _Run_SysKernel = Win32_kernel;
-
 //Linux s   Windows  ms
 //Default Use s
 void sleepapi(int num) {
@@ -154,3 +153,5 @@ void removeDirectoryAPIX(string dir) {
 	_rmdir(dir.c_str());
 	return;
 }
+
+bool _windows_active_65001 = false;
