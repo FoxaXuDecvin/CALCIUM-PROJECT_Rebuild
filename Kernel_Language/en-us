@@ -51,5 +51,10 @@ add _$lang.pause = "Press Enter to continue ";
 
 add _$lang.runargs = "Run Argument ";
 
+//Extend
+
+add _$lang.loadfail = "Load File Failed";
+add _$lang.complete = "Complete";
+
 //Exit
-_exit;
+_return("Ok");

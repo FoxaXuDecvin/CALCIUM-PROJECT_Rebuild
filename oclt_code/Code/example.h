@@ -96,6 +96,10 @@ void argsApi(string args$api) {
 		_direct_read_script = true;
 	}
 
+	if (args$api == "-nolang") {
+		_skipcheck_language = true;
+	}
+
 	//auto set args
 	if (_setnextargs_runscript == true) {
 		runscript = args$api;
@@ -157,9 +161,16 @@ bool CK_Shell_open(void) {
 		}
 
 		if (_stop_exec_script == true) {
-			_pn();
-			_p("  -Shell Closed :   return data = " + _api_result);
-			return 0;
+			if (_shell_lock) {
+				_pn();
+				_p("  -Stop_exec_Script is true  :   return data = " + _api_result);
+				_stop_exec_script = false;
+			}
+			else {
+				_pn();
+				_p("  -Shell Closed :   return data = " + _api_result);
+				return 0;
+			}
 		}
 
 		continue;
@@ -171,6 +182,7 @@ bool CK_Shell_open(void) {
 
 int AntiCrash_Return_Code;
 string ckapi_result;
+string langpackfile;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
@@ -185,17 +197,24 @@ int _HeadMainLoad() {
 		_pause();
 		return -1;
 	}
-	if (!LanguageLoad()) {
-		_p("Missing Language File... calcium running on no lang mode :  " + langfile);
+	if (_skipcheck_language == false) {
+		if (!LanguageLoad()) {
+			langpackfile = _$GetSelfPath + "/" + "temp_languagepack.pack";
+			_p("Install Language Pack ?");
+			_prts("type y/n >");
 
-		_soildwrite_open(langfile);
-		_soildwrite_write("//Missing language file");
-		_soildwrite_write("_var add = \"_var\"; ");
-		_soildwrite_write("add _$lang.about=\"Missing Language()\";");
-		_soildwrite_write("add _$lang.language= \"Missing Language\";");
-		_soildwrite_write("_exit;");
-		_soildwrite_close();
-		LanguageLoad();
+			if (_getline_type() != "n") {
+				if (!_api_request_download("lang.txt", langpackfile)) {
+					_p("Install Failed");
+				}
+				else {
+					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _$GetSelfPath + "/Lang\"");
+					_p("Complete Install Language");
+					_fileapi_del(langpackfile);
+				}
+			}
+			LanguageLoad();
+		}
 	}
 
 	_gf_cg = 0;

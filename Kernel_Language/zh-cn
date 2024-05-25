@@ -51,5 +51,10 @@ add _$lang.pause = "按Enter键继续 ";
 
 add _$lang.runargs = "运行参数 ";
 
+//Extend
+
+add _$lang.loadfail = "尝试加载文件失败";
+add _$lang.complete = "完成";
+
 //Exit
-_exit;
+_return("Ok");

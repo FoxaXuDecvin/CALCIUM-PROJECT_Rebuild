@@ -1,0 +1,60 @@
+_$directmode;
+_$nolog;
+//Language File
+// Simplified Chinese
+
+_var add = "_var";
+
+add _$lang.about="繁體中文 （中國） GB2312";
+add _$lang.language= "語言";
+
+//Public Char
+add _$lang.presskey = "按 Enter";
+
+//Crash Info
+
+add _$lang.crash.title = "   :(  Calcium 內核崩潰了";
+add _$lang.crash.t1 = "我們暫時無法分析造成此問題的原因";
+add _$lang.crash.t2 = "如果這個問題影響了你的使用";
+add _$lang.crash.t3 = "請向我們報告 https://www.foxaxu.com/contact";
+add _$lang.crash.errcode = "錯誤代碼 ： ";
+add _$lang.crash.kcode = "內核返回值";
+add _$lang.crash.report = "請在報告中包含重現此錯誤的方式";
+
+//FoxaXu
+add _$lang.foxaxu.t1 = "感謝你的支援";
+
+//Kernel
+
+add _$lang.runfail = "Calcium Script 運行失敗";
+add _$lang.filenotfound = "檔未找到";
+add _$lang.stoprun = "Calcium 內核終止運行";
+
+add _$lang.sys.t1 = "已禁止程序調用系統指令";
+add _$lang.sys.t2 = "你的管理員不允許使用此命令";
+add _$lang.sys.t3 = "請使用指令";
+
+add _$lang.cfgedit.r = "你的設置已經更改，使用 _reload 以重新載入所有配置";
+add _$lang.reloading = "請稍等...  正在重新載入Calcium」";
+add _$lang.reload = "_Rcapi 配置已重新載入";
+add _$lang.notNum = "不是個有效的數位";
+
+add _$lang.if.err.t1 = "[Warning] _if 指令錯誤";
+add _$lang.if.err.t2 = "[Warning] 該指令返回了一個無法用於判斷true或false的值";
+add _$lang.calc.zero = "[Calc] 0 不被允許";
+
+add _$lang.nullcmd = " [Error] 未知指令或變數，請檢查你的輸入是否正確";
+
+add _$lang.logfail = " [WARNING] 日誌檔創建失敗，可能會影響調試環境，檔路徑 ： ";
+
+add _$lang.pause = "按Enter鍵繼續 ";
+
+add _$lang.runargs = "運行參數 ";
+
+//Extend
+
+add _$lang.loadfail = "嘗試載入文件失敗";
+add _$lang.complete = "完成";
+
+//Exit
+_return("Ok");

@@ -329,6 +329,7 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 }
 
 string langfile;
+bool _skipcheck_language = false;
 bool LanguageLoad() {
 	langfile = _rcbind_langpath + "/" + _rcset_lang;
 	if (!check_file_existence(langfile)) {
@@ -336,6 +337,7 @@ bool LanguageLoad() {
 	}
 	_logrec_write("Loading  Language :   " + langfile);
 	_ckapi_scriptload(langfile, "langmode");
+	_stop_exec_script = false;
 	return true;
 }
 
@@ -347,6 +349,7 @@ int intCutA, intCutB, intCutC;
 int dbA, dbB, dbC, dbD;
 bool _debug_type_detected = false;
 bool _var_auto_void = false;
+bool _shell_lock = false;
 string _runcode_api(string command) {
 	_logrec_write("[Reset] --------------------------------New Command---------------------------------------------------------");
 	if (_gf_hsc == true) {
@@ -681,10 +684,6 @@ string _runcode_api(string command) {
 		cleanConsole();
 		return "ok";
 	}
-	if (SizeRead(command, 12) == "_kernelcrash") {
-		string abcapi = NULL;
-		_p(abcapi);
-	}
 	if (SizeRead(command, 7) == "_script") {
 
 		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1)));
@@ -800,6 +799,9 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 8) == "_getfile") {
 		return _global_scriptload;
+	}
+	if (SizeRead(command, 8) == "_getexec") {
+		return _$GetSelfFull;
 	}
 
 	//Debug
@@ -963,6 +965,10 @@ string _runcode_api(string command) {
 		_rcset_logrec = false;
 		return "ok";
 	}
+	if (SizeRead(command, 12) == "_$shell_lock") {
+		_shell_lock = true;
+		return "ok";
+	}
 
 	//System
 	if (SizeRead(command, 11) == "_file_exist") {
@@ -1016,6 +1022,20 @@ string _runcode_api(string command) {
 		else {
 			return "false";
 		}
+	}
+
+	//Toolkit
+	if (SizeRead(command, 10) == "_file_read") {
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
+
+		_logrec_write("[API] File Read :   " + _rc_varid + "  Line :  " + _rc_varinfo);
+
+		charCutA = _fileapi_textread(_rc_varid, atoi(_rc_varinfo.c_str()));
+
+		_logrec_write("[API] File Read Return :   " + charCutA);
+
+		return charCutA;
 	}
 
 	if (_var_auto_void == true) {

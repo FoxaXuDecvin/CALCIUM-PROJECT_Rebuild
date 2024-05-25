@@ -1,0 +1,60 @@
+_$directmode;
+_$nolog;
+//Language File
+// Simplified Chinese
+
+_var add = "_var";
+
+add _$lang.about="简体中文 (Literary) GB2312"。
+add _$lang.language= "语"。
+
+//Public Char
+add _$lang.presskey = "按 Enter"。
+
+//Crash Info
+
+add _$lang.crash.title = "   :(  Calcium 内核溃"。
+add _$lang.crash.t1 = "吾且无以知之"。
+add _$lang.crash.t2 = "若尔用之"。
+add _$lang.crash.t3 = "请告 https://www.foxaxu.com/contact"。
+add _$lang.crash.errcode = "错误代码 : "。
+add _$lang.crash.kcode = "内核返回值"。
+add _$lang.crash.report = "请含其非";
+
+//FoxaXu
+add _$lang.foxaxu.t1 = "感君之力"。
+
+//Kernel
+
+add _$lang.runfail = "Calcium Script 行败"。
+add _$lang.filenotfound = "文未得"。
+add _$lang.stoprun = "Calcium 内核终行"。
+
+add _$lang.sys.t1 = "已禁程序调用系统指令";
+add _$lang.sys.t2 = "尔管不许用此令";
+add _$lang.sys.t3 = "请用指令"。
+
+add _$lang.cfgedit.r = "汝置已改,用 _reload 以重加载诸置"。
+add _$lang.reloading = "请少待...  方复加载Calcium"。
+add _$lang.reload = "_Rcapi 配置已复加载"。
+add _$lang.notNum = "非效数也"。
+
+add _$lang.if.err.t1 = "[Warning] _if 令过"。
+add _$lang.if.err.t2 = "[Warning] 当反一不足以决truefalse之直"。
+add _$lang.calc.zero = "[Calc] 0 不许"。
+
+add _$lang.nullcmd = "[ Error] 未知指变量,请验输是否";
+
+add _$lang.logfail = "[ WARNING] 日志文创败,或影响调试,文径 : ";
+
+add _$lang.pause = "如Enter键 "。
+
+add _$lang.runargs = "行参数 "。
+
+//Extend
+
+add _$lang.loadfail = "尝试加载文败"。
+add _$lang.complete = "成"。
+
+//Exit
+_return("Ok");

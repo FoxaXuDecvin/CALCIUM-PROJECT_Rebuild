@@ -36,6 +36,7 @@ string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autoru
 string _rcbind_logrec;
 string _rcbind_langpath;
 string _rcset_lang;
+string _rcbind_serverapi;
 
 void _pv(string info) {
 	_p(_Old_VSAPI_TransVar(info));
@@ -64,6 +65,19 @@ bool _RcLoad_TransApi(string _Rc_ID) {
 	_p("Trans Api cannot identify \"" + _RcApi_TapiBuffer + "\"");
 	_p("TransApi Return false");
 	return false;
+}
+
+string url_cache;
+bool _api_request_download(string Address,string Save) {
+	url_cache = _rcbind_serverapi + "/" + Address;
+	_p("api server :  " + _rcbind_serverapi);
+	_p("request some files...   please wait");
+	_p("url :  " + url_cache);
+	if (!URLDown(url_cache, Save)){
+		_p("URL Request Failed");
+		return false;
+	}
+	return true;
 }
 
 string file;
@@ -100,6 +114,10 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_write("//Display Settings");
 		_soildwrite_write("$Language=en-us;");
+		_soildwrite_write("");
+		_soildwrite_write("//Server");
+		_soildwrite_write("$RootAPIServer=https://calciumservices.foxaxu.com/api;");
+		_soildwrite_write("");
 		_soildwrite_close();
 	}
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
@@ -125,6 +143,7 @@ bool _RcApiLoadConfig() {
 	_rcbind_langpath = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultLanguagePath"));
 
 	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Language"));
+	_rcbind_serverapi = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "RootAPIServer"));
 
 	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
@@ -248,11 +267,11 @@ bool _cstp_maker(string make_file_header,string file) {
 }
 
 int readptr = 1;
-bool _$cstp_unpackapi(string file,string resourcefile,int startline) {
+bool _$cstp_unpackapi(string file,string resourcefile,int startline,string extract_dir) {
 	readptr++;
-	_p("Create File :  " + file);
+	_p("Extract File :  " + file);
 	creatpath(file);
-	_soildwrite_open(file);
+	_soildwrite_open(extract_dir + "/" + file);
 	for (; true; readptr++) {
 		cachecstp = LineReader(resourcefile, readptr);
 		if (cachecstp == "overline") {
@@ -267,10 +286,19 @@ bool _$cstp_unpackapi(string file,string resourcefile,int startline) {
 		_soildwrite_write(cachecstp);
 	}
 	_soildwrite_close();
+	if (!check_file_existence(extract_dir + "/" + file)) {
+		_p("failed to write file " + file);
+		return false;
+	}
+	else {
+		return true;
+	}
+
+	return false;
 }
 
 bool _cstp_unpack(string unpack_path, string file) {
-	_p("Execute to " + file);
+	_p("Extract Package " + file);
 	if (!check_file_existence(file)) {
 		_pv("Cstp Unpack failed :   _$lang.filenotfound " + file);
 		return false;
@@ -285,7 +313,7 @@ bool _cstp_unpack(string unpack_path, string file) {
 		}
 		if (SizeRead(cachecstp,17) == "$sign_file_output") {
 			getfile = PartReadA(cachecstp, "(", ")", 1);
-			if (!_$cstp_unpackapi(getfile,file, readptr)) {
+			if (!_$cstp_unpackapi(getfile,file, readptr,unpack_path)) {
 				_pv("Failed :  " + getfile);
 			}
 		}

@@ -1,0 +1,60 @@
+_$directmode;
+_$nolog;
+//言語ファイル
+//日本語
+
+_var add = "_var";
+
+add _$lang.about="日本語 (Beta) GBK ";
+add _$lang.language= "言語";
+
+//公共Char
+add _$lang.presskey = "Enter キーを押します";
+
+//クラッシュ情報
+
+add $lang.crash.title = " :(を追加します。  カルシウムカーネルがクラッシュする」";
+add _$lang.crash.t1 = "現時点では、この問題の原因を分析できません";
+add _$lang.crash.t2 = "この問題が使用に影響する場合";
+add _$lang.crash.t3 = "https://www.foxaxu.com/contact 報告してください";
+add _$lang.crash.errcode = "エラーコード : ";
+add _$lang.crash.kcode = "カーネルの戻り値";
+add _$lang.crash.report = "このエラーを再現する方法をレポートに含めてください";
+
+//フォックスサシュ
+add _$lang.foxaxu.t1 = "ご支援ありがとうございます";
+
+//カーネル
+
+add _$lang.runfail = "Calcium Script runfailed";
+add _$lang.filenotfound = "ファイルが見つかりません";
+add _$lang.stoprun = "カルシウムカーネルの終了";
+
+add _$lang.sys.t1 = "プログラムはシステム命令の呼び出しを禁止されています";
+add _$lang.sys.t2 = "管理者がこのコマンドを許可していません";
+add _$lang.sys.t3 = "ディレクティブを使用してください";
+
+add _$lang.cfgedit.r = "設定が変更されました。_reloadを使用してすべての設定をリロードしてください";
+add _$lang.reloading = "お待ちください...  カルシウムのリロード」";
+add _$lang.reload = "_Rcapi configuration reloaded";
+add _$lang.notNum = "有効な番号ではありません";
+
+add _$lang.if.err.t1 = "[警告] _if命令エラー";
+add _$lang.if.err.t2 = "[警告] このディレクティブは、真か偽かの判断に使用できない値を返します";
+add _$lang.calc.zero = "[Calc] 0 は許可されません";
+
+add _$lang.nullcmd = "[エラー] 不明な命令または変数、入力が正しいかどうかを確認してください";
+
+add _$lang.logfail = "[警告] ログファイルの作成に失敗しました。デバッグ環境に影響を与える可能性があります, ファイルパス : ";
+
+add _$lang.pause = "続行するにはEnterキーを押してください";
+
+add_$lang.runargs = "実行パラメータを追加します"。
+
+//延ばす
+
+add _$lang.loadfail = "ファイルの読み込みに失敗しました";
+add _$lang.complete = "complete";
+
+//出口
+_return("Ok");
