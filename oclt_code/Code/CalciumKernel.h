@@ -595,21 +595,6 @@ string _runcode_api(string command) {
 		_pause();
 		return"ok";
 	}
-	if (SizeRead(command, 10) == "_textprint") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
-		charCutB = _runcode_api(charCutA);
-
-		_logrec_write("[Exec] Print Text File   " + charCutB);
-
-		if (!check_file_existenceA(charCutB)) {
-			_pv("_$lang.filenotfound   " + charCutB);
-			_p("Null._textprint()");
-			return "nofile";
-		}
-
-		_textapi_typetext(charCutB);
-		return "ok";
-	}
 	if (SizeRead(command, 6) == "_sleep") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		if (charCutA == "0") {
@@ -1036,6 +1021,21 @@ string _runcode_api(string command) {
 		_logrec_write("[API] File Read Return :   " + charCutA);
 
 		return charCutA;
+	}
+	if (SizeRead(command, 10) == "_textprint") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
+		_logrec_write("[Exec] Print Text File   " + charCutB);
+
+		if (!check_file_existenceA(charCutB)) {
+			_pv("_$lang.filenotfound   " + charCutB);
+			_p("Null._textprint()");
+			return "nofile";
+		}
+
+		_textapi_typetext(charCutB);
+		return "ok";
 	}
 
 	if (_var_auto_void == true) {
