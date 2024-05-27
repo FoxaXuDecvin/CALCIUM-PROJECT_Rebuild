@@ -55,6 +55,7 @@ add _$lang.runargs = "Run Argument ";
 
 add _$lang.loadfail = "Load File Failed";
 add _$lang.complete = "Complete";
+add _$lang.fail = "Fail";
 
 //Exit
 _return("Ok");

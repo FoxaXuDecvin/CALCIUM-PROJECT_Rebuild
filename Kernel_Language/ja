@@ -55,6 +55,7 @@ add_$lang.runargs = "実行パラメータを追加します";
 
 add _$lang.loadfail = "ファイルの読み込みに失敗しました";
 add _$lang.complete = "complete";
+add _$lang.fail = "失敗する";
 
 //出口
 _return("Ok");

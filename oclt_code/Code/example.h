@@ -212,6 +212,8 @@ int _HeadMainLoad() {
 					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _$GetSelfPath + "/Lang\"");
 					_p("Complete Install Language");
 					_fileapi_del(langpackfile);
+					sleepapi(1);
+					cleanConsole();
 				}
 			}
 			LanguageLoad();

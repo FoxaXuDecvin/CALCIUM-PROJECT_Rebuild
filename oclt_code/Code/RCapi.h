@@ -274,6 +274,9 @@ int readptr = 1;
 bool _$cstp_unpackapi(string file,string resourcefile,int startline,string extract_dir) {
 	readptr++;
 	_p("Extract File :  " + file);
+	if (check_file_existence(extract_dir + "/" + file)) {
+		_fileapi_del(extract_dir + "/" + file);
+	}
 	creatpath(file);
 	_soildwrite_open(extract_dir + "/" + file);
 	for (; true; readptr++) {
@@ -324,5 +327,19 @@ bool _cstp_unpack(string unpack_path, string file) {
 		continue;
 	}
 	_pv("cstp unpack _$lang.complete");
+	return true;
+}
+
+string dircache;
+bool _packsetup(string packid) {
+	dircache = _$GetSelfPath + "/Setup_" + packid;
+	if (!_api_request_download(packid,dircache)) {
+		_pv("_packsetup _$lang.fail :  " + packid);
+		return false;
+	}
+
+	_cstp_unpack(_rcbind_pluginscript, dircache);
+	_p("complete ...");
+
 	return true;
 }

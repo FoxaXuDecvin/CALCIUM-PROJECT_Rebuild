@@ -40,11 +40,11 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
-string _KV_gen = "4";//(General)
+string _KV_gen = "5";//(General)
 
-string _KV_rv = "3";//(Release Version)
+string _KV_rv = "1";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Stable;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -1035,6 +1035,39 @@ string _runcode_api(string command) {
 		}
 
 		_textapi_typetext(charCutB);
+		return "ok";
+	}
+	if (SizeRead(command, 8) == "_url_get") {
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
+
+		_logrec_write("[Internet] Request _url_get");
+		_logrec_write("[Internet] URL :  " + _rc_varid);
+		_logrec_write("[Internet] Save Path :  " + _rc_varinfo);
+
+		if (!_urldown_api_nocache(_rc_varid, _rc_varinfo)) {
+			_logrec_write("[ERROR] Get url failed");
+			_p("_URL_GET failed access url :  " + _rc_varid);
+			return "false";
+		}
+		if (!check_file_existence(_rc_varinfo)) {
+			_logrec_write("[ERROR] Save file failed");
+			_p("_url_get save file failed :  " + _rc_varid);
+			return "false";
+		}
+
+		return "ok";
+	}
+	if (SizeRead(command, 10) == "_packsetup") {
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+		if (!_packsetup(_rc_varid)) {
+			_p("_packsetup failed");
+			return "false";
+		}
+		else {
+			return "ok";
+		}
+
 		return "ok";
 	}
 

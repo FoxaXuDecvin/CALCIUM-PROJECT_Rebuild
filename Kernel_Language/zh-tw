@@ -55,6 +55,8 @@ add _$lang.runargs = "運行參數 ";
 
 add _$lang.loadfail = "嘗試載入文件失敗";
 add _$lang.complete = "完成";
+add _$lang.fail = "失敗";
+
 
 //Exit
 _return("Ok");
