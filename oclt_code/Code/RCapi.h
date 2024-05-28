@@ -361,7 +361,7 @@ bool _packsetup(string packid) {
 string active_id;
 string at_cache;
 bool _active_calcium(string Key_Register) {
-	if (_KV_relver$int > 5) {
+	if (_KV_relver$int > 4) {
 		//No Verify
 		return true;
 	}

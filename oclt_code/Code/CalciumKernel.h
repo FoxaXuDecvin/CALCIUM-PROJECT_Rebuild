@@ -44,7 +44,7 @@ string _KV_gen = "2";//(General)
 
 string _KV_rv = "6";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Debug;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
