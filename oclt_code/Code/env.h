@@ -36,3 +36,6 @@ string InsideVersion = "1000";
 string last_return;
 
 //Here
+bool _kernel_active = false;
+int _KV_relver$int;
+bool _language_mode = false;

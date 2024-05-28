@@ -13,38 +13,38 @@
 const string _KV_rV_Debug = "1";
 const string _KV_rV_Preview = "2";
 const string _KV_rV_preRelease = "3";
-const string _KV_rV_Release = "4";
-const string _KV_rV_Stable = "5";
+const string _KV_rV_Demo = "4";
+const string _KV_rV_Release = "5";
+const string _KV_rV_Stable = "6";
 
 //Other Version
-const string _KV_rV_Custom = "6";
-const string _KV_rV_Embed = "7";
-const string _KV_rV_Demo = "8";
+const string _KV_rV_Custom = "7";
+const string _KV_rV_Embed = "8";
 
 //Main Char
 string _kv_text_debug = "Debug";
 string _kv_text_preview = "Preview";
 string _kv_text_prerelease = "Prerelease";
+string _kv_text_demo = "Demo";
 string _kv_text_release = "Release";
 string _kv_text_stable = "stable";
 
 //OV
 string _kv_text_custom = "Custom";
 string _kv_text_embed = "Embed";
-string _kv_text_demo = "Demo";
 //rVK END
 
-//RunID
+//RunIDs
 string _KV_rV_Text;
 string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
-string _KV_gen = "5";//(General)
+string _KV_gen = "2";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "6";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Stable;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Debug;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -53,6 +53,7 @@ string _KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk
 //DEFINE
 
 void _KernelVersion_LoadText(void) {
+	_KV_relver$int = atoi(_KV_releaseVer.c_str());
 	_KV_rV_Text = "{Unknown KrV ;  " + _KV_releaseVer + " }";
 
 	if (_KV_releaseVer == _KV_rV_Debug) {
@@ -63,6 +64,9 @@ void _KernelVersion_LoadText(void) {
 	}
 	if (_KV_releaseVer == _KV_rV_preRelease) {
 		_KV_rV_Text = _kv_text_prerelease;
+	}
+	if (_KV_releaseVer == _KV_rV_Demo) {
+		_KV_rV_Text = _kv_text_demo;
 	}
 	if (_KV_releaseVer == _KV_rV_Release) {
 		_KV_rV_Text = _kv_text_release;
@@ -77,9 +81,6 @@ void _KernelVersion_LoadText(void) {
 	}
 	if (_KV_releaseVer == _KV_rV_Embed) {
 		_KV_rV_Text = _kv_text_embed;
-	}
-	if (_KV_releaseVer == _KV_rV_Demo) {
-		_KV_rV_Text = _kv_text_demo;
 	}
 
 	return;
@@ -252,6 +253,15 @@ string _api_result;
 string _global_scriptload;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script,string Sargs) {
+	if (!_language_mode) {
+		if (!_kernel_active) {
+			_pv("_$lang.nda");
+			_pv("_$lang.notactive");
+			_pv("_$lang.activehelp");
+			_pv("ScriptAPI is Access Denied : ");
+			return "ok";
+		}
+	}
 	//_p("Speed check point 1");
 	_global_scriptload = load_Script;
 	script_args = Sargs;
@@ -328,15 +338,29 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 	return _api_result;
 }
 
+
+void _gfL_reset(void) {
+	_gf_cg = 0;
+	_gf_cgmax = 1;
+	_gf_line = 1;
+	return;
+}
 string langfile;
+string seclangfile;
 bool _skipcheck_language = false;
 bool LanguageLoad() {
 	langfile = _rcbind_langpath + "/" + _rcset_lang;
+	seclangfile = _rcbind_langpath + "/" + _rcset_seclang;
 	if (!check_file_existence(langfile)) {
 		return false;
 	}
 	_logrec_write("Loading  Language :   " + langfile);
+	_language_mode = true;
+	_ckapi_scriptload(seclangfile, "langmode");
+	_gfL_reset();
 	_ckapi_scriptload(langfile, "langmode");
+	_gfL_reset();
+	_language_mode = false;
 	_stop_exec_script = false;
 	return true;
 }
@@ -445,6 +469,40 @@ string _runcode_api(string command) {
 		return "ok";
 	}
 
+	if (SizeRead(command, 5) == "_exit") {
+		_logrec_write("[Shutdown] Execute _Exit");
+		return "runid.exit";
+	}
+	if (SizeRead(command, 7) == "_return") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
+		_logrec_write("_Exec Return Data :  " + charCutB);
+		_stop_exec_script = true;
+		return charCutB;
+	}
+
+	//Verify PRODUCT
+	if (SizeRead(command, 8) == "_$active") {
+		charCutA = PartReadA(oldcmd, "(", ")", 1);
+		if (!_active_request(charCutA)) {
+			_p("Active Failed");
+		}
+		else {
+			_p("Calcium is Active");
+		}
+		return "ok";
+	}
+	if (!_language_mode) {
+		if (!_kernel_active) {
+			_pv("_$lang.nda");
+			_pv("_$lang.notactive");
+			_pv("_$lang.activehelp");
+			_pv("Forbidden : " + command);
+			return "ok";
+		}
+	}
+
 	//Open Command
 	oldcmd = command;
 
@@ -471,18 +529,6 @@ string _runcode_api(string command) {
 		_logrec_write("[Exec] COUT :  " + _$quo + charCutB + _$quo);
 		_p(charCutB);
 		return "ok.print:<" + charCutB + ">";
-	}
-	if (SizeRead(command, 5) == "_exit") {
-		_logrec_write("[Shutdown] Execute _Exit");
-		return "runid.exit";
-	}
-	if (SizeRead(command, 7) == "_return") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
-		charCutB = _runcode_api(charCutA);
-
-		_logrec_write("_Exec Return Data :  " + charCutB);
-		_stop_exec_script = true;
-		return charCutB;
 	}
 	if (SizeRead(command, 7) == "_foxaxu") {
 		_logrec_write("[Exec] owo  pwp wow");
@@ -542,7 +588,7 @@ string _runcode_api(string command) {
 		}
 		return "falseproblem";
 	}
-	if(SizeRead(command,9) == "_cfgread ") {
+	if (SizeRead(command,9) == "_cfgread ") {
 		_logrec_write("[KernelManager] Config Read");
 
 		if (_CK_ShellMode == false) {

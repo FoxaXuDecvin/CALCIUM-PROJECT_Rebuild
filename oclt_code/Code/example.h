@@ -300,6 +300,9 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	//main
+	if (_active_request(_rc_active_key) == false) {
+		_p("You Need Activity your calcium");
+	}
 	if (_runmode == _runmode_null) {
 		TypeHelpMenu();
 		_pause();

@@ -38,7 +38,9 @@ string _rcbind_pluginscript, _rcbind_pluginpath,_rcbind_thirdbind,_rcbind_autoru
 string _rcbind_logrec;
 string _rcbind_langpath;
 string _rcset_lang;
+string _rcset_seclang;
 string _rcbind_serverapi;
+string _rc_active_key;
 
 void _pv(string info) {
 	_p(_Old_VSAPI_TransVar(info));
@@ -82,6 +84,15 @@ bool _api_request_download(string Address,string Save) {
 	return true;
 }
 
+bool _api_request_clear(string Address, string Save) {
+	url_cache = _rcbind_serverapi + "/" + Address;
+	if (!_urldown_api_nocache(url_cache, Save)) {
+		return false;
+	}
+	return true;
+}
+
+
 string file;
 bool _direct_read_script = false;
 bool _RcApiLoadConfig() {
@@ -117,9 +128,11 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_write("//Display Settings");
 		_soildwrite_write("$Language=en-us;");
+		_soildwrite_write("$SecondLanguage=en-us;");
 		_soildwrite_write("");
 		_soildwrite_write("//Server");
 		_soildwrite_write("$RootAPIServer=https://calciumservices.foxaxu.com/api;");
+		_soildwrite_write("$KernelActive={NotActive};");
 		_soildwrite_write("");
 		_soildwrite_close();
 	}
@@ -147,7 +160,9 @@ bool _RcApiLoadConfig() {
 	_rcbind_langpath = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultLanguagePath"));
 
 	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Language"));
+	_rcset_seclang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "SecondLanguage"));
 	_rcbind_serverapi = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "RootAPIServer"));
+	_rc_active_key= _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "KernelActive"));
 
 	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
@@ -168,7 +183,6 @@ bool _RcApiLoadConfig() {
 
 	//Auto Set
 	_direct_read_script = _rcset_directmode;
-
 
 	//End
 
@@ -342,4 +356,44 @@ bool _packsetup(string packid) {
 	_p("complete ...");
 
 	return true;
+}
+
+string active_id;
+string at_cache;
+bool _active_calcium(string Key_Register) {
+	if (_KV_relver$int > 5) {
+		//No Verify
+		return true;
+	}
+	if (SizeRead(Key_Register, 10) != "USER-SIGN-") {
+		return false;
+	}
+	active_id = PartReadA(Key_Register, "(", ")", 1);
+
+	if (!_api_request_clear("activeRequest/" + active_id, "ActiveSign.tmp")) {
+		_p("Cannot Verify your Active Code is Valid");
+		return false;
+	}
+
+	at_cache = _fileapi_textread("ActiveSign.tmp", 1);
+	_fileapi_del("ActiveSign.tmp");
+
+	if (Key_Register == at_cache) {
+		return true;
+	}
+
+	_p("Invalid Activity Key");
+	return false;
+}
+
+
+bool _active_request(string key_reg) {
+	_kernel_active = _active_calcium(key_reg);
+	if (_kernel_active == true) {
+		if (key_reg != "{NotActive}") {
+			_write_sipcfg(buildshell, "KernelActive", key_reg);
+		}
+	}
+
+	return _kernel_active;
 }
