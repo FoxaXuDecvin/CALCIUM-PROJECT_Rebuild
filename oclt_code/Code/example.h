@@ -8,7 +8,11 @@ bool PreLaunchLoad(void) {
 	//
 
 	__settings_displaylaunchscreen = false;
-	_windows_active_65001 = true;
+
+	if (_Run_SysKernel == Win32_kernel) {
+		//Execute Code
+		system("chcp 65001 >nul");
+	}
 
 	//End
 	return true;
@@ -134,6 +138,9 @@ bool CK_Shell_open(void) {
 	_pn();
 	_p("----------------------------------------------------------");
 	_p("Calcium Shell Console");
+	if (_kernel_activate == false) {
+		_pv("_$lang.act_info .  _use _$activate(%Key%) to Activate");
+	}
 	_p("----------------------------------------------------------");
 	_pv("_$lang.language :  _$lang.about .....  " + _rcset_lang);
 	_p("type command,   use \"_exit\" to exit.");
@@ -300,7 +307,7 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	//main
-	if (_active_request(_rc_active_key) == false) {
+	if (_activate_request(_rc_activate_key) == false) {
 		_p("You Need Activity your calcium");
 	}
 	if (_runmode == _runmode_null) {

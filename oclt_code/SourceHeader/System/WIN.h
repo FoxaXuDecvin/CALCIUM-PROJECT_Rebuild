@@ -153,5 +153,3 @@ void removeDirectoryAPIX(string dir) {
 	_rmdir(dir.c_str());
 	return;
 }
-
-bool _windows_active_65001 = false;

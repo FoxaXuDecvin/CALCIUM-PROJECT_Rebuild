@@ -40,7 +40,7 @@ string _rcbind_langpath;
 string _rcset_lang;
 string _rcset_seclang;
 string _rcbind_serverapi;
-string _rc_active_key;
+string _rc_activate_key;
 
 void _pv(string info) {
 	_p(_Old_VSAPI_TransVar(info));
@@ -132,7 +132,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_write("//Server");
 		_soildwrite_write("$RootAPIServer=https://calciumservices.foxaxu.com/api;");
-		_soildwrite_write("$KernelActive={NotActive};");
+		_soildwrite_write("$Kernelactivate={Notactivate};");
 		_soildwrite_write("");
 		_soildwrite_close();
 	}
@@ -162,7 +162,7 @@ bool _RcApiLoadConfig() {
 	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Language"));
 	_rcset_seclang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "SecondLanguage"));
 	_rcbind_serverapi = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "RootAPIServer"));
-	_rc_active_key= _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "KernelActive"));
+	_rc_activate_key= _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Kernelactivate"));
 
 	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
@@ -358,9 +358,9 @@ bool _packsetup(string packid) {
 	return true;
 }
 
-string active_id;
+string activate_id;
 string at_cache;
-bool _active_calcium(string Key_Register) {
+bool _activate_calcium(string Key_Register) {
 	if (_KV_relver$int > 4) {
 		//No Verify
 		return true;
@@ -368,32 +368,31 @@ bool _active_calcium(string Key_Register) {
 	if (SizeRead(Key_Register, 10) != "USER-SIGN-") {
 		return false;
 	}
-	active_id = PartReadA(Key_Register, "(", ")", 1);
+	activate_id = PartReadA(Key_Register, "(", ")", 1);
 
-	if (!_api_request_clear("activeRequest/" + active_id, "ActiveSign.tmp")) {
-		_p("Cannot Verify your Active Code is Valid");
+	if (!_api_request_clear("activateRequest/" + activate_id, "activateSign.tmp")) {
+		_p("Your activation code is invalid");
 		return false;
 	}
 
-	at_cache = _fileapi_textread("ActiveSign.tmp", 1);
-	_fileapi_del("ActiveSign.tmp");
+	at_cache = _fileapi_textread("activateSign.tmp", 1);
+	_fileapi_del("activateSign.tmp");
 
 	if (Key_Register == at_cache) {
 		return true;
 	}
 
-	_p("Invalid Activity Key");
+	_p("You entered an activation code that is not the current product");
 	return false;
 }
 
-
-bool _active_request(string key_reg) {
-	_kernel_active = _active_calcium(key_reg);
-	if (_kernel_active == true) {
-		if (key_reg != "{NotActive}") {
-			_write_sipcfg(buildshell, "KernelActive", key_reg);
+bool _activate_request(string key_reg) {
+	_kernel_activate = _activate_calcium(key_reg);
+	if (_kernel_activate == true) {
+		if (key_reg != "{Notactivate}") {
+			_write_sipcfg(buildshell, "Kernelactivate", key_reg);
 		}
 	}
 
-	return _kernel_active;
+	return _kernel_activate;
 }

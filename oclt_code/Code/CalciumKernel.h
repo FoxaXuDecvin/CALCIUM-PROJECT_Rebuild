@@ -42,7 +42,7 @@ string _KV_softwareVersion = "110"; //(Software Version)
 
 string _KV_gen = "2";//(General)
 
-string _KV_rv = "6";//(Release Version)
+string _KV_rv = "7";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -254,11 +254,10 @@ string _global_scriptload;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script,string Sargs) {
 	if (!_language_mode) {
-		if (!_kernel_active) {
-			_pv("_$lang.nda");
-			_pv("_$lang.notactive");
-			_pv("_$lang.activehelp");
-			_pv("ScriptAPI is Access Denied : ");
+		if (!_kernel_activate) {
+			_pv("_$lang.notactivate");
+			_pv("_$lang.activatehelp");
+			_pv("ScriptAPI _$lang.Access_Denied : ");
 			return "ok";
 		}
 	}
@@ -482,23 +481,114 @@ string _runcode_api(string command) {
 		return charCutB;
 	}
 
-	//Verify PRODUCT
-	if (SizeRead(command, 8) == "_$active") {
-		charCutA = PartReadA(oldcmd, "(", ")", 1);
-		if (!_active_request(charCutA)) {
-			_p("Active Failed");
+	//CONFIG
+	if (SizeRead(command, 9) == "_cfgedit ") {
+		_logrec_write("[KernelManager] CFGEDIT");
+
+		if (_CK_ShellMode == false) {
+			//ScriptMode
+			if (_rcset_scriptedit == false) {
+				_pv("_$lang.sys.t1  " + buildshell);
+				_p("Please set AllowScriptEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
+				return "denied";
+			}
+		}
+		if (_CK_ShellMode == true) {
+			//ShellMode
+			if (_rcset_shelledit == false) {
+				_pv("_$lang.sys.t1  " + buildshell);
+				_p("Please set AllowShellEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
+				return "denied";
+			}
+		}
+		if (checkChar(command, "=")) {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
+			_write_sipcfg(buildshell, _rc_varid, _rc_varinfo);
+			_logrec_write("[KernelManager] Set :  " + _rc_varid + " = " + _rc_varinfo);
+			_pv("_$lang.cfgedit.r");
+			return "ok";
 		}
 		else {
-			_p("Calcium is Active");
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+			_p("Config " + _rc_varid + " == " + _load_sipcfg(buildshell, _rc_varid));
+			return "ok";
 		}
+		return "falseproblem";
+	}
+	if (SizeRead(command, 9) == "_cfgread ") {
+		_logrec_write("[KernelManager] Config Read");
+
+		if (_CK_ShellMode == false) {
+			//ScriptMode
+			if (_rcset_scriptedit == false) {
+				_pv("_$lang.sys.t1  " + buildshell);
+				_p("Please set AllowScriptEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
+				return "denied";
+			}
+		}
+		if (_CK_ShellMode == true) {
+			//ShellMode
+			if (_rcset_shelledit == false) {
+				_pv("_$lang.sys.t1  " + buildshell);
+				_p("Please set AllowShellEdit  == true");
+				_logrec_write("[KernelManager][WARNING] Access is Denied");
+				return "denied";
+			}
+		}
+		_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+		_logrec_write("[KernelManager] Read Settings :  " + _rc_varid);
+		charCutA = _load_sipcfg(buildshell, _rc_varid);
+		_logrec_write("[KernelManager] Return Value -->  " + charCutA);
+		return charCutA;
+	}
+	if (SizeRead(command, 7) == "_reload") {
+		_logrec_write("[KernelManager] RCapi Reload");
+		_pv("_$lang.reloading");
+		_gf_cg = 0;
+		_gf_cgmax = 1;
+		_gf_line = 1;
+		_sipcfg_reset();
+		if (!_RcApiLoadConfig()) {
+			_p("Failed to Load RCapi.");
+			_p("Config file is missing :  " + buildshell);
+			_p("try to repair and try again.");
+			_pause();
+			return "false";
+		}
+		LanguageLoad();
+		_pv("_$lang.reload");
 		return "ok";
 	}
+
+	//Verify PRODUCT
+	if (SizeRead(command, 10) == "_$activate") {
+		if (_kernel_activate == false) {
+			if (command == "_$activate;") {
+				_prts("Write your activation code here >");
+				charCutA = _getline_type();
+			}
+			else {
+				charCutA = PartReadA(oldcmd, "(", ")", 1);
+			}
+			if (!_activate_request(charCutA)) {
+				_pv("_$lang.act_fail");
+			}
+			else {
+				_pv("_$lang.act_succ_t1");
+				_pv("_$lang.act_succ.t2");
+			}
+			return "ok";
+		}
+	}
 	if (!_language_mode) {
-		if (!_kernel_active) {
-			_pv("_$lang.nda");
-			_pv("_$lang.notactive");
-			_pv("_$lang.activehelp");
-			_pv("Forbidden : " + command);
+		if (!_kernel_activate) {
+			_pv("_$lang.notactivate");
+			_pv("_$lang.activatehelp");
+			_pv("_$lang.act_need : " + command);
 			return "ok";
 		}
 	}
@@ -550,87 +640,6 @@ string _runcode_api(string command) {
 		_str_system(charCutA);
 		_logrec_write("[Exec] Run System Command   --> " + charCutA);
 
-		return "ok";
-	}
-	if (SizeRead(command, 9) == "_cfgedit ") {
-		_logrec_write("[KernelManager] CFGEDIT");
-
-		if (_CK_ShellMode == false) {
-			//ScriptMode
-			if (_rcset_scriptedit == false) {
-				_pv("_$lang.sys.t1  " + buildshell);
-				_p("Please set AllowScriptEdit  == true");
-				_logrec_write("[KernelManager][WARNING] Access is Denied");
-				return "denied";
-			}
-		}
-		if (_CK_ShellMode == true) {
-			//ShellMode
-			if (_rcset_shelledit == false) {
-				_pv("_$lang.sys.t1  " + buildshell);
-				_p("Please set AllowShellEdit  == true");
-				_logrec_write("[KernelManager][WARNING] Access is Denied");
-				return "denied";
-			}
-		}
-		if (checkChar(command, "=")) {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
-			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
-			_write_sipcfg(buildshell,_rc_varid,_rc_varinfo);
-			_logrec_write("[KernelManager] Set :  " + _rc_varid + " = " + _rc_varinfo);
-			_pv("_$lang.cfgedit.r");
-			return "ok";
-		}
-		else {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
-			_p("Config " + _rc_varid + " == " + _load_sipcfg(buildshell, _rc_varid));
-			return "ok";
-		}
-		return "falseproblem";
-	}
-	if (SizeRead(command,9) == "_cfgread ") {
-		_logrec_write("[KernelManager] Config Read");
-
-		if (_CK_ShellMode == false) {
-			//ScriptMode
-			if (_rcset_scriptedit == false) {
-				_pv("_$lang.sys.t1  " + buildshell);
-				_p("Please set AllowScriptEdit  == true");
-				_logrec_write("[KernelManager][WARNING] Access is Denied");
-				return "denied";
-			}
-		}
-		if (_CK_ShellMode == true) {
-			//ShellMode
-			if (_rcset_shelledit == false) {
-				_pv("_$lang.sys.t1  " + buildshell);
-				_p("Please set AllowShellEdit  == true");
-				_logrec_write("[KernelManager][WARNING] Access is Denied");
-				return "denied";
-			}
-		}
-		_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
-		_logrec_write("[KernelManager] Read Settings :  " + _rc_varid);
-		charCutA = _load_sipcfg(buildshell, _rc_varid);
-		_logrec_write("[KernelManager] Return Value -->  " + charCutA);
-		return charCutA;
-	}
-	if (SizeRead(command, 7) == "_reload") {
-		_logrec_write("[KernelManager] RCapi Reload");
-		_pv("_$lang.reloading");
-		_gf_cg = 0;
-		_gf_cgmax = 1;
-		_gf_line = 1;
-		_sipcfg_reset();
-		if (!_RcApiLoadConfig()) {
-			_p("Failed to Load RCapi.");
-			_p("Config file is missing :  " + buildshell);
-			_p("try to repair and try again.");
-			_pause();
-			return "false";
-		}
-		LanguageLoad();
-		_pv("_$lang.reload");
 		return "ok";
 	}
 	if (SizeRead(command, 9) == "_getrunid") {
