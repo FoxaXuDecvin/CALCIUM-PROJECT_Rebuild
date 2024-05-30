@@ -829,6 +829,34 @@ string _runcode_api(string command) {
 		_pv("_$lang.if.err.t2");
 		return "NullReturn";
 	}
+	if (SizeRead(command, 5) == "_if_!") {
+
+		//_p("LaoDeng");
+		CharCutD = "(" + PartRead(oldcmd, "(", "|", true);
+
+		charCutA = _Old_VSAPI_TransVar(PartRead(CharCutD, "(", ")", true));
+
+		//_p("Ready to XinDeng");
+
+		charCutB = _runcode_api(charCutA);
+
+		//_p("XinDeng");
+
+		if (charCutB == "false") {
+			CharCutC = _Old_VSAPI_TransVar(PartRead(command, "|", "$FROMEND$", true));
+
+			CharCutD = _runcode_api(CharCutC);
+
+			return CharCutD;
+		}
+		if (charCutB == "true") {
+			return "notrue";
+		}
+
+		_pv("_$lang.if.err.t1");
+		_pv("_$lang.if.err.t2");
+		return "NullReturn";
+	}
 
 	//Get
 	if (SizeRead(command, 8) == "_getline") {
@@ -986,7 +1014,7 @@ string _runcode_api(string command) {
 		charCutA = to_string(intCutC);
 		return charCutA;
 	}
-	if (SizeRead(command, 7) == "_getkernel") {
+	if (SizeRead(command, 10) == "_getkernel") {
 		return InsideVersion;
 	}
 	if (SizeRead(command, 8) == "_getpath") {
