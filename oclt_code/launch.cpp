@@ -73,6 +73,11 @@ int main(int argc, char* argv[]) {
             return 0;
         }
 
+        if (readbuffer == "--dir-test") {
+            CreateFileMap_txt("dirmap.txt", _$GetSelfPath);
+            return 0;
+        }
+
         argsApi(readbuffer);
     }
 

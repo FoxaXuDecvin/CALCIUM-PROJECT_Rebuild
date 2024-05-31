@@ -23,6 +23,18 @@ const std::string pathsign = "/";
 string RunPlatfom = "Linux (GCC 64Bit)";//Must Include Windows/Linux one
 string _Run_SysKernel = Linux_kernel;
 
+char* stringtochar;
+char* StringToCharX(string tomessage) {
+
+	const int len = tomessage.length();
+
+	stringtochar = new char[len + 1];
+
+	strcpy(stringtochar, tomessage.c_str());
+
+	return stringtochar;
+}
+
 //Linux s   Windows  ms
 void sleepapi(int num) {
 	sleep(num);
@@ -295,4 +307,38 @@ bool CopyFile(string FileName, string CopyPath, int antiformatunsupport) {
 	close(fdDst);
 
 	return true;
+}
+
+string Process_cache;
+void _fileapi_write(string _fa_file, string _fa_info);
+string p1_filepath = GetFilePath();
+void CreateFileMap_txt(string savefile, string path_str) {
+	const char* path = StringToCharX(path_str);
+	DIR* dir;
+	struct dirent* dirinfo;
+	struct stat statbuf;
+	char filepath[256] = { 0 };
+	lstat(path, &statbuf);
+
+	if (S_ISREG(statbuf.st_mode))//判断是否是常规文件
+	{
+		Process_cache = path;
+		Process_cache = ReplaceChar(Process_cache, p1_filepath, "");
+		//cout << file_path.c_str() << endl;
+		_fileapi_write(savefile, ReplaceChar(Process_cache, "\\", "/"));
+	}
+	else if (S_ISDIR(statbuf.st_mode))//判断是否是目录
+	{
+		if ((dir = opendir(path)) == NULL)
+			return;
+		while ((dirinfo = readdir(dir)) != NULL)
+		{
+			Getfilepath(path, dirinfo->d_name, filepath);
+			if (strcmp(dirinfo->d_name, ".") == 0 || strcmp(dirinfo->d_name, "..") == 0)//判断是否是特殊目录
+				continue;
+			CreateFileMap_txt(savefile, filepath);
+		}
+		closedir(dir);
+	}
+	return;
 }
