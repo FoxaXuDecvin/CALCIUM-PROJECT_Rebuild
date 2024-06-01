@@ -144,7 +144,6 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA) 
 	getStart = readptr;
 	//cout << "Start Mark : " << getStart << endl;
 
-SKIPGETMARKSTART:
 	readbufferD = "";
 	//GetEnd
 	for (; readbufferD != EndMark; readptr++) {
@@ -217,7 +216,6 @@ string PartRead_A(string Info, string StartMark, string EndMark, int RPartSizeA)
 	getStart = readptr;
 	//cout << "Start Mark : " << getStart << endl;
 
-SKIPGETMARKSTART:
 	readbufferD = "";
 	//GetEnd
 	for (; readbufferD != EndMark; readptr++) {
@@ -246,10 +244,8 @@ SKIPGETMARKSTART:
 
 //ReadSize
 // FoxaXu good work 3 = Fox
+//No Error Report
 string SizeRead(string Info, int Size) {
-	if (Size > Info.size()) {
-		return "SizeRead.OverSize";
-	}
 
 	string TempInfo;
 	for (int ReadCharSize = 0; ReadCharSize != Size; ReadCharSize++) {
@@ -286,7 +282,7 @@ int TextGetSizeAddress(string Info, string MarkSize, int NumBit) {
 	string TempInfo, charRead;
 
 	while (CurrentNumBit != NumBit) {
-		for (int EndRead; charRead != MarkSize; StartRead++) {
+		for (; charRead != MarkSize; StartRead++) {
 			charRead = Info[StartRead];
 		}
 		CurrentNumBit++;
@@ -333,6 +329,7 @@ string PartReadSize(string Info, int StartSize, int EndSize) {
 //Read  :
 //
 //      LineReader(ExampleFile,3) return FOXAXU
+// Running on Linux / Windows warning
 string LineReader(string File, int line_number) {
 	if (check_file_existence(File)) {}
 	else {
@@ -470,6 +467,8 @@ string HeadSpaceClean(string Info) {
 //This api include clean end space
 string fullread, tempget;
 int finget;
+//var
+string getendchar(string infos);
 string HeadSpaceCleanA(string Info) {
 	tempget = fullread = "";
 	//_p("HSC Input :  " + Info);
@@ -479,7 +478,9 @@ string HeadSpaceCleanA(string Info) {
 	while (true) {
 		finget--;
 		tempget = Info[finget];
-		if (tempget != " ") break;
+		if (tempget != " ") {
+			if (getendchar(fullread) != ";")break;
+		}
 	}
 
 	finget++;
@@ -492,6 +493,7 @@ string HeadSpaceCleanA(string Info) {
 	}
 
 	//_p("HSC Return :  " + fullread);
+
 	return fullread;
 }
 

@@ -92,6 +92,14 @@ bool _api_request_clear(string Address, string Save) {
 	return true;
 }
 
+bool _api_request_clear_cache(string Address, string Save) {
+	url_cache = _rcbind_serverapi + "/" + Address;
+	if (!_urldown_api(url_cache, Save)) {
+		return false;
+	}
+	return true;
+}
+
 
 string file;
 bool _direct_read_script = false;
@@ -225,13 +233,16 @@ string _Char_Filter_EndFileName(string fitchar) {
 
 
 string cachecstp;
+string filiter_mfh;
+string cache_filepath;
 string _cstp_file_write = "a.cstp";
 bool _$cstp_writeapi(string file) {
 	if (!check_file_existence(file)) {
 		_pv("Cstp _$lang.loadfail :  _$lang.filenotfound");
 		return false;
 	}
-	_soildwrite_write("$sign_file_output(" + file + ");");
+	cache_filepath = ReplaceChar(file, filiter_mfh, "");
+	_soildwrite_write("$sign_file_output(" + cache_filepath + ");");
 
 	for (int readptr = 1; true; readptr++) {
 		cachecstp = LineReader(file, readptr);
@@ -250,8 +261,11 @@ bool _$cstp_writeapi(string file) {
 
 string getfile;
 bool _cstp_maker(string make_file_header,string file) {
+	CreateFileMap_txt("makedirmap.txt", make_file_header);
 	_cstp_file_write = file;
-	_p("Execute to " + _cstp_file_write);
+	filiter_mfh = make_file_header;
+	make_file_header = "makedirmap.txt";
+	_p("Execute Pack Directory " + _cstp_file_write);
 	if (check_file_existence(_cstp_file_write)) {
 		_fileapi_del(_cstp_file_write);
 	}
@@ -280,7 +294,8 @@ bool _cstp_maker(string make_file_header,string file) {
 		continue;
 	}
 	_pv("cstp make _$lang.complete");
-
+	_fileapi_del("makedirmap.txt");
+	_fileapi_del("empty.txt");
 	return true;
 }
 
@@ -346,14 +361,18 @@ bool _cstp_unpack(string unpack_path, string file) {
 
 string dircache;
 bool _packsetup(string packid) {
-	dircache = _$GetSelfPath + "/Setup_" + packid;
+	dircache = _$GetSelfPath + "/Setup_" + _get_random_s(1,10000);
 	if (!_api_request_download(packid,dircache)) {
-		_pv("_packsetup _$lang.fail :  " + packid);
-		return false;
+		if (!_api_request_clear_cache(packid, dircache)) {
+			_pv("_packsetup _$lang.fail :  " + packid);
+			return false;
+		}
 	}
 
 	_cstp_unpack(_rcbind_pluginscript, dircache);
 	_p("complete ...");
+
+	_fileapi_del(dircache);
 
 	return true;
 }

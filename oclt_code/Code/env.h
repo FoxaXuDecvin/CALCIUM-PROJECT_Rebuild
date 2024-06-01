@@ -39,3 +39,9 @@ string last_return;
 bool _kernel_activate = false;
 int _KV_relver$int;
 bool _language_mode = false;
+
+string kernelcmdVid;
+string gethookVid;
+string mathapiVid;
+string sysexecVid;
+string ThirdExecVid;

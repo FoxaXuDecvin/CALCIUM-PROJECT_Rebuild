@@ -6,6 +6,8 @@
 #include"../shload.h"
 #include"../Code/RCapi.h"
 
+
+const string _CTitle = "Calcium_Project_Rebuild";
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -44,7 +46,7 @@ string _KV_gen = "2";//(General)
 
 string _KV_rv = "7";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Stable;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -409,7 +411,7 @@ string _runcode_api(string command) {
 		}
 		return"empty";
 	}
-	if (command == ";") {
+	if (SizeRead(command, 1) == ";") {
 		if (_debug_type_detected == true) {
 			_p("command is empty with ;(EndMark)");
 		}
@@ -430,6 +432,7 @@ string _runcode_api(string command) {
 
 	//Memory Control
 	if (SizeRead(command, 5) == "_var ") {
+		string _rc_varbind;
 		if (checkChar(command, "=")) {
 			//Detecd illegal char = 
 
@@ -439,9 +442,8 @@ string _runcode_api(string command) {
 				return "false";
 			}
 
-			_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=", 1));
-			_rc_varinfo = HeadSpaceCleanA(PartReadA(oldcmd, "=", ";", 1));
-			_rc_varinfo = _runcode_api(_rc_varinfo);
+			_rc_varbind = HeadSpaceCleanA(PartReadA(oldcmd, " ", "=", 1));
+			_rc_varinfo = _runcode_api(HeadSpaceCleanA(PartReadA(oldcmd, "=", "$FROMEND$", 1)));
 
 			if (checkChar(_rc_varinfo, "=")) {
 				_p("Detect illegal Character :   =");
@@ -451,17 +453,17 @@ string _runcode_api(string command) {
 
 		}
 		else {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+			_rc_varbind = HeadSpaceCleanA(PartReadA(command, " ", "$FROMEND$", 1));
 			_rc_varinfo = "{null}";
 		}
 		_logrec_write("[Exec] Create VarSpace");
-		_varspaceadd(_rc_varid, _rc_varinfo);
-		_logrec_write("[INFO]  varid --> " + _rc_varid + "   varinfo --> " + _rc_varinfo);
+		_varspaceadd(_rc_varbind, _rc_varinfo);
+		_logrec_write("[INFO]  varid --> " + _rc_varbind + "   varinfo --> " + _rc_varinfo);
 
 		return "ok";
 	}
 	if (SizeRead(command, 6) == "_free ") {
-		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", ";", 1));
+		_rc_varid = HeadSpaceCleanA(PartReadA(oldcmd, " ", "$FROMEND$", 1));
 		_varspacedelete(_rc_varid);
 		_logrec_write("VarSpace Delete  --> " + _rc_varid);
 
@@ -473,12 +475,11 @@ string _runcode_api(string command) {
 		return "runid.exit";
 	}
 	if (SizeRead(command, 7) == "_return") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
-		charCutB = _runcode_api(charCutA);
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
 
-		_logrec_write("_Exec Return Data :  " + charCutB);
+		_logrec_write("_Exec Return Data :  " + charCutA);
 		_stop_exec_script = true;
-		return charCutB;
+		return charCutA;
 	}
 
 	//CONFIG
@@ -505,14 +506,17 @@ string _runcode_api(string command) {
 		}
 		if (checkChar(command, "=")) {
 			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
-			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", ";", 1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", "$FROMEND$", 1));
+
+			_rc_varinfo = ReplaceChar(_rc_varinfo, ";", "");
+
 			_write_sipcfg(buildshell, _rc_varid, _rc_varinfo);
 			_logrec_write("[KernelManager] Set :  " + _rc_varid + " = " + _rc_varinfo);
 			_pv("_$lang.cfgedit.r");
 			return "ok";
 		}
 		else {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "$FROMEND$", 1));
 			_p("Config " + _rc_varid + " == " + _load_sipcfg(buildshell, _rc_varid));
 			return "ok";
 		}
@@ -539,7 +543,7 @@ string _runcode_api(string command) {
 				return "denied";
 			}
 		}
-		_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", ";", 1));
+		_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "$FROMEND$", 1));
 		_logrec_write("[KernelManager] Read Settings :  " + _rc_varid);
 		charCutA = _load_sipcfg(buildshell, _rc_varid);
 		_logrec_write("[KernelManager] Return Value -->  " + charCutA);
@@ -596,6 +600,7 @@ string _runcode_api(string command) {
 	//Open Command
 	oldcmd = command;
 
+	kernelcmdVid = "1.10";
 	if (SizeRead(command, 1) == "\"") {
 		charCutA = PartReadA(command, "\"", "\"", 1);
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
@@ -668,7 +673,7 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 8) == "_execute") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ")", ";", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ")", "$FROMEND$", 1)));
 
 		//_p("Execute Command :   " + _rc_varid + " " + _rc_varinfo);
 		if (!check_file_existence(_rc_varid)) {
@@ -691,7 +696,7 @@ string _runcode_api(string command) {
 			_p("Please use this command on script");
 			return "false";
 		}
-		charCutA = PartReadA(oldcmd, " ", ";", 1);
+		charCutA = PartRead(oldcmd, " ", "$FROMEND$", false);
 		intCutA = FindCharLine(1, _global_scriptload, charCutA);
 		if (intCutA == _gf_line) {
 			intCutB = _gf_line;
@@ -727,7 +732,7 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 7) == "_script") {
 
 		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1)));
-		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ">", ";", 1)));
+		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ">", "$FROMEND$", 1)));
 
 		if (!check_file_existenceA(charCutB)) {
 			charCutB = _rcbind_pluginscript + "/" + charCutB;
@@ -747,6 +752,7 @@ string _runcode_api(string command) {
 		bool _old$_rcset_logrec = _rcset_logrec;
 		string _old$_args = script_args;
 		string _old$_logfile = _$logfile;
+		bool _old$_CK_ShellMode = _CK_ShellMode;
 
 		//Create New Space
 
@@ -755,6 +761,7 @@ string _runcode_api(string command) {
 		_gf_line = 1;
 		_gf_charget = "";
 		_direct_read_script = false;
+		_CK_ShellMode = false;
 
 		//Run
 
@@ -773,7 +780,7 @@ string _runcode_api(string command) {
 		_direct_read_script = _old$_direct_read_script;
 		_rcset_logrec = _old$_rcset_logrec;
 		_$logfile = _old$_logfile;
-
+		_CK_ShellMode = _old$_CK_ShellMode;
 
 		if (CharCutC == "runid.exit") {
 			return CharCutC;
@@ -797,6 +804,24 @@ string _runcode_api(string command) {
 		}
 		else {
 			return "false";
+		}
+
+		return "FAIL";
+	}
+	if (SizeRead(command, 9) == "_!compare") {
+
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
+
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", ",", ")", 1)));
+
+		//_p("1 = " + _rc_varid);
+		//_p("2 = " + _rc_varinfo);
+
+		if (_rc_varid == _rc_varinfo) {
+			return "false";
+		}
+		else {
+			return "true";
 		}
 
 		return "FAIL";
@@ -826,39 +851,11 @@ string _runcode_api(string command) {
 		}
 
 		_pv("_$lang.if.err.t1");
-		_pv("_$lang.if.err.t2");
+		_pv("_$lang.if.err.t2 " + charCutB);
 		return "NullReturn";
 	}
-	if (SizeRead(command, 5) == "_if_!") {
-
-		//_p("LaoDeng");
-		CharCutD = "(" + PartRead(oldcmd, "(", "|", true);
-
-		charCutA = _Old_VSAPI_TransVar(PartRead(CharCutD, "(", ")", true));
-
-		//_p("Ready to XinDeng");
-
-		charCutB = _runcode_api(charCutA);
-
-		//_p("XinDeng");
-
-		if (charCutB == "false") {
-			CharCutC = _Old_VSAPI_TransVar(PartRead(command, "|", "$FROMEND$", true));
-
-			CharCutD = _runcode_api(CharCutC);
-
-			return CharCutD;
-		}
-		if (charCutB == "true") {
-			return "notrue";
-		}
-
-		_pv("_$lang.if.err.t1");
-		_pv("_$lang.if.err.t2");
-		return "NullReturn";
-	}
-
 	//Get
+	gethookVid = "1.10";
 	if (SizeRead(command, 8) == "_getline") {
 		return _getline_type();
 	}
@@ -919,6 +916,7 @@ string _runcode_api(string command) {
 	}
 
 	//calculator
+	mathapiVid = "1.10";
 	if (SizeRead(command, 2) == "_+") {
 		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
 		_logrec_write("Calculator Function +");
@@ -1039,6 +1037,7 @@ string _runcode_api(string command) {
 	}
 
 	//System
+	sysexecVid = "1.12";
 	if (SizeRead(command, 11) == "_file_exist") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
 		_logrec_write("[File] Check File Exist..  command -->  " + charCutA);
@@ -1093,6 +1092,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
+	ThirdExecVid = "1.13";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1153,12 +1153,56 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
+	if (SizeRead(command, 4) == "_sma") {
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(command, "(", ")", 1)));
+
+		if (charCutA == "test") {
+			return "true";
+		}
+		if (charCutA == "help") {
+			_p("Calcium SMA Command :  Self-Monitoring Analysis");
+			_p("This is kernel api");
+			return "ok";
+		}
+		if (charCutA == "cname") {
+			return _CTitle;
+		}
+		if (charCutA == "codename") {
+			return $codename;
+		}
+		if (charCutA == "kerV") {
+			return InsideVersion;
+		}
+		if (charCutA == "ocltV") {
+			return $version_title + "  " + $version_msg;
+		}
+		//Get VID
+		if (charCutA == "kcvid") {
+			return kernelcmdVid;
+		}
+		if (charCutA == "ghvid") {
+			return gethookVid;
+		}
+		if (charCutA == "mavid") {
+			return mathapiVid;
+		}
+		if (charCutA == "sevid") {
+			return sysexecVid;
+		}
+		if (charCutA == "tevid") {
+			return ThirdExecVid;
+		}
+
+
+
+		return "null";
+	}
 
 	if (_var_auto_void == true) {
 		_logrec_write("[WARNING] Return Value :  -->  " + command);
 		return command;
 	}
-	_logrec_write("[ERROR]Unknown COMMAND");
+	_logrec_write("[ERROR]Unknown COMMAND   " + command);
 	_pv("_$lang.nullcmd   :  <" + _global_scriptload + ">  Line " + to_string(_gf_line) + "  INFO --> " + command + "    (Resource -->  " + oldcmd +  ")");
-	return "unknown.command(" + command + ")";
+	return "unknown.command";
 }
