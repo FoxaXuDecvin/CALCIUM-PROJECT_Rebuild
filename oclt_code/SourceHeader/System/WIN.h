@@ -9,7 +9,8 @@
 
 const string Win32_kernel = "Win32";
 const string Linux_kernel = "Linux";
-
+string _windows_userprofile = getenv("userprofile");
+const string _Build_Path = _windows_userprofile + "/.OpenCppLangTab";
 
 char* stringtochar;
 char* StringToCharX(string tomessage) {
@@ -206,4 +207,13 @@ void CreateFileMap_txt(string savefile,string dir) {
 	_findclose(handle);
 
 	return;
+}
+
+char *envbuffer;
+string _SystemAPI_getenv(string Environment) {
+	envbuffer = getenv(Environment.c_str());
+	if (envbuffer == NULL) {
+		return "Null.SystemAPI.getenv --> NullEnv";
+	}
+	return envbuffer;
 }

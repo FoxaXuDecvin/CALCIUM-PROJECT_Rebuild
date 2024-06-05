@@ -141,12 +141,15 @@ bool CK_Shell_open(void) {
 	if (_kernel_activate == false) {
 		_pv("_$lang.act_info .  _use _$activate(%Key%) to Activate");
 	}
+	if (_TrustedServer == false) {
+		_pv("_$lang.untrusted.server");
+	}
 	_p("----------------------------------------------------------");
 	_pv("_$lang.language :  _$lang.about .....  " + _rcset_lang);
 	_p("type command,   use \"_exit\" to exit.");
 
 	while (true) {
-		
+		_global_scriptload = "{ShellMode}";
 		_pn();
 		_prts("Calcium Kernel  " + _KernelVersion + "   Shell Console>");
 		_user_typebuffer = _getline_type() + ";";
@@ -194,6 +197,12 @@ string langpackfile;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
+	if (!_dapi_ExistFolder_check(_$GetSelfPath)) {
+		_p("Unable to access the currently running directory");
+		_p("Calcium cannot be run in the current directory");
+		_pause();
+		return 1;
+	}
 	if (_anticrash_services == false) {
 		_p("Calcium Script " + _KernelVersion + "...   Startup");
 	}
@@ -308,7 +317,7 @@ int _HeadMainLoad() {
 	}
 	//main
 	if (_activate_request(_rc_activate_key) == false) {
-		_p("You Need Activity your calcium");
+		_p("Activate Calcium");
 	}
 	if (_runmode == _runmode_null) {
 		TypeHelpMenu();

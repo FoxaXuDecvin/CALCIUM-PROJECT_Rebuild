@@ -18,6 +18,8 @@
 
 const string Win32_kernel = "Win32";
 const string Linux_kernel = "Linux";
+string _linux_userprofile = getenv("USER");
+const string _Build_Path = "/home/" + _linux_userprofile + "/.OpenCppLangTab";
 
 const std::string pathsign = "/";
 string RunPlatfom = "Linux (GCC 64Bit)";//Must Include Windows/Linux one
@@ -341,4 +343,13 @@ void CreateFileMap_txt(string savefile, string path_str) {
 		closedir(dir);
 	}
 	return;
+}
+
+char* envbuffer;
+string _SystemAPI_getenv(string Environment) {
+	envbuffer = getenv(Environment.c_str());
+	if (envbuffer == NULL) {
+		return "Null.SystemAPI.getenv --> NullEnv";
+	}
+	return envbuffer;
 }

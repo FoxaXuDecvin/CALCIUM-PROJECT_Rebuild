@@ -25,6 +25,7 @@ bool _rcset_allowtp;
 bool _rcset_anticrash;
 bool _rcset_logrec;
 bool _rcset_directmode;
+bool _rcset_trustcheck;
 
 bool _rcset_shelledit,_rcset_scriptedit;
 
@@ -41,6 +42,7 @@ string _rcset_lang;
 string _rcset_seclang;
 string _rcbind_serverapi;
 string _rc_activate_key;
+string _rc_exec_address;
 
 void _pv(string info) {
 	_p(_Old_VSAPI_TransVar(info));
@@ -118,6 +120,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AllowShellEdit=true;");
 		_soildwrite_write("$AllowScriptEdit=false;");
 		_soildwrite_write("$UseDirectRead=false;");
+		_soildwrite_write("$TrustedServerCheck=true;");
 		_soildwrite_write("");
 		_soildwrite_write("//ShellSettings");
 		_soildwrite_write("$AutoOpenShellAfterRun=true;");
@@ -141,6 +144,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("//Server");
 		_soildwrite_write("$RootAPIServer=https://calciumservices.foxaxu.com/api;");
 		_soildwrite_write("$Kernelactivate={Notactivate};");
+		_soildwrite_write("$ExecuteFile=" + _$GetSelfFull + ";");
 		_soildwrite_write("");
 		_soildwrite_close();
 	}
@@ -154,6 +158,7 @@ bool _RcApiLoadConfig() {
 	_rcset_shelledit = _RcLoad_TransApi("AllowShellEdit");
 	_rcset_scriptedit = _RcLoad_TransApi("AllowScriptEdit");
 	_rcset_directmode = _RcLoad_TransApi("UseDirectRead");
+	_rcset_trustcheck = _RcLoad_TransApi("TrustedServerCheck");
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 	_rcset_shell_log = _RcLoad_TransApi("EnableShellLog");
@@ -171,6 +176,7 @@ bool _RcApiLoadConfig() {
 	_rcset_seclang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "SecondLanguage"));
 	_rcbind_serverapi = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "RootAPIServer"));
 	_rc_activate_key= _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Kernelactivate"));
+	_rc_exec_address = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "ExecuteFile"));
 
 	//Create Directory
 	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
@@ -301,6 +307,7 @@ bool _cstp_maker(string make_file_header,string file) {
 
 int readptr = 1;
 bool _$cstp_unpackapi(string file,string resourcefile,int startline,string extract_dir) {
+	_dapi_create_full_path(extract_dir + "/" + file);
 	readptr++;
 	_p("Extract File :  " + file);
 	if (check_file_existence(extract_dir + "/" + file)) {
@@ -379,15 +386,44 @@ bool _packsetup(string packid) {
 
 string activate_id;
 string at_cache;
+bool _TrustedServer;
 bool _activate_calcium(string Key_Register) {
+	if (_rcset_trustcheck == true) {
+		if (!_urldown_api_nocache("https://calciumservices.foxaxu.com/trusted/TrustedServer.txt", "TrustedList.txt")) {
+			_TrustedServer = false;
+		}
+		else {
+			if (FindCharLine(1, "TrustedList.txt", _rcbind_serverapi) == -4) {
+				_TrustedServer = false;
+			}
+			else {
+				_TrustedServer = true;
+			}
+			_fileapi_del("TrustedList.txt");
+		}
+	}
+	else {
+		_TrustedServer = false;
+	}
+	
 	if (_KV_relver$int > 4) {
 		//No Verify
+		if (_rc_exec_address != _$GetSelfFull) {
+			_write_sipcfg(buildshell, "ExecuteFile", _$GetSelfFull);
+			_rc_exec_address = _Old_VSAPI_TransVar(_load_sipcfg(buildshell, "ExecuteFile"));
+		}
 		return true;
 	}
 	if (SizeRead(Key_Register, 10) != "USER-SIGN-") {
 		return false;
 	}
 	activate_id = PartReadA(Key_Register, "(", ")", 1);
+
+	if (_TrustedServer == false) {
+		_p("You are trying to activate Calcium using an untrusted server.");
+		_p("Please use a trusted server. you can read this list https://calciumservices.foxaxu.com/trusted/TrustedServer.txt");
+		return false;
+	}
 
 	if (!_api_request_clear("activateRequest/" + activate_id, "activateSign.tmp")) {
 		_p("Your activation code is invalid");

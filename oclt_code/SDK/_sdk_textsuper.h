@@ -27,6 +27,8 @@ bool check_file_existence(const std::string& filename) {
 }
 
 //Read Env NEW
+const string PartRead_FMstart = "$FROMSTART$";
+const string PartRead_FMend = "$FROMEND$";
 string PartRead(string Info, string StartMark, string EndMark,bool EndSearch) {
 	//_p("EndSearch is " + to_string(EndSearch) + "  info :  " + Info );
 	int MaxInfoSize = Info.size();

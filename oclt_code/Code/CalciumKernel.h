@@ -22,6 +22,7 @@ const string _KV_rV_Stable = "6";
 //Other Version
 const string _KV_rV_Custom = "7";
 const string _KV_rV_Embed = "8";
+const string _KV_rV_Deluxe = "9";
 
 //Main Char
 string _kv_text_debug = "Debug";
@@ -34,6 +35,7 @@ string _kv_text_stable = "stable";
 //OV
 string _kv_text_custom = "Custom";
 string _kv_text_embed = "Embed";
+string _kv_text_deluxe = "X";
 //rVK END
 
 //RunIDs
@@ -44,7 +46,7 @@ string _KV_softwareVersion = "110"; //(Software Version)
 
 string _KV_gen = "2";//(General)
 
-string _KV_rv = "7";//(Release Version)
+string _KV_rv = "8";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Stable;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -83,6 +85,9 @@ void _KernelVersion_LoadText(void) {
 	}
 	if (_KV_releaseVer == _KV_rV_Embed) {
 		_KV_rV_Text = _kv_text_embed;
+	}
+	if (_KV_releaseVer == _KV_rV_Deluxe) {
+		_KV_rV_Text = _kv_text_deluxe;
 	}
 
 	return;
@@ -595,12 +600,17 @@ string _runcode_api(string command) {
 			_pv("_$lang.act_need : " + command);
 			return "ok";
 		}
+		if (_rc_exec_address != _$GetSelfFull) {
+			_p("Detected Path is modified");
+			_p("please reactivate calcium");
+			return "ok";
+		}
 	}
 
 	//Open Command
 	oldcmd = command;
 
-	kernelcmdVid = "1.10";
+	kernelcmdVid = "1.13";
 	if (SizeRead(command, 1) == "\"") {
 		charCutA = PartReadA(command, "\"", "\"", 1);
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
@@ -690,6 +700,10 @@ string _runcode_api(string command) {
 
 		return to_string(intCutA);
 	}
+	if (SizeRead(command, 7) == "_getenv") {
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+		return _SystemAPI_getenv(charCutA);
+	}
 	if (SizeRead(command, 6) == "_goto ") {
 		if (_CK_ShellMode == true) {
 			_p("Calcium Kernel is running on Shell Mode");
@@ -753,6 +767,7 @@ string _runcode_api(string command) {
 		string _old$_args = script_args;
 		string _old$_logfile = _$logfile;
 		bool _old$_CK_ShellMode = _CK_ShellMode;
+		string _old$_global_scriptload = _global_scriptload;
 
 		//Create New Space
 
@@ -781,6 +796,7 @@ string _runcode_api(string command) {
 		_rcset_logrec = _old$_rcset_logrec;
 		_$logfile = _old$_logfile;
 		_CK_ShellMode = _old$_CK_ShellMode;
+		_global_scriptload = _old$_global_scriptload;
 
 		if (CharCutC == "runid.exit") {
 			return CharCutC;

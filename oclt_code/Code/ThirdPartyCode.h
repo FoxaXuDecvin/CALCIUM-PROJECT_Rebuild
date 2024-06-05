@@ -4,8 +4,6 @@
 //Here
 #include"../shload.h"
 
-bool cp_true = false;
-
 bool creatpath(string fileaddress) {
 	string tempdata, outdata;
 
