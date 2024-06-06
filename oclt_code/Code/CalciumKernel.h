@@ -1185,7 +1185,7 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
-	if (SizeRead(command, 5) == "_sma") {
+	if (SizeRead(command, 4) == "_sma") {
 		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(command, "(", ")", 1)));
 
 		if (charCutA == "test") {
@@ -1234,7 +1234,9 @@ string _runcode_api(string command) {
 		if (charCutA == "ksvid") {
 			return kernelSecureVid;
 		}
-
+		if (charCutA == "getsys") {
+			return _Run_SysKernel;
+		}
 
 		return "null";
 	}
