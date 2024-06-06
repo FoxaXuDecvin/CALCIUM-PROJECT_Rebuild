@@ -451,3 +451,20 @@ bool _activate_request(string key_reg) {
 
 	return _kernel_activate;
 }
+
+void _var_typetext(string file) {
+	if (_existfile(file)) {
+		int maxdocsize = getdocmax(file);
+
+		maxdocsize++;
+
+		for (int startRoll = 1; maxdocsize != startRoll; startRoll++) {
+			_p(_Old_VSAPI_TransVar(_fileapi_textread(file, startRoll)));
+		}
+		return;
+	}
+	else {
+		_sh_throw_error("FileAPI.TypeText :  File Not Exist");
+		return;
+	}
+}

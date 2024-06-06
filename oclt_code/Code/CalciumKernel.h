@@ -44,11 +44,11 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "110"; //(Software Version)
 
-string _KV_gen = "2";//(General)
+string _KV_gen = "3";//(General)
 
-string _KV_rv = "8";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Stable;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -574,6 +574,7 @@ string _runcode_api(string command) {
 	}
 
 	//Verify PRODUCT
+	kernelSecureVid = "1.11";
 	if (SizeRead(command, 10) == "_$activate") {
 		if (_kernel_activate == false) {
 			if (command == "_$activate;") {
@@ -1108,7 +1109,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
-	ThirdExecVid = "1.13";
+	ThirdExecVid = "1.16";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1134,6 +1135,21 @@ string _runcode_api(string command) {
 		}
 
 		_textapi_typetext(charCutB);
+		return "ok";
+	}
+	if (SizeRead(command, 9) == "_typefile") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutB = _runcode_api(charCutA);
+
+		_logrec_write("[Exec] Print Text File   " + charCutB);
+
+		if (!check_file_existenceA(charCutB)) {
+			_pv("_$lang.filenotfound   " + charCutB);
+			_p("Null._textprint()");
+			return "nofile";
+		}
+
+		_var_typetext(charCutB);
 		return "ok";
 	}
 	if (SizeRead(command, 8) == "_url_get") {
@@ -1169,7 +1185,7 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
-	if (SizeRead(command, 4) == "_sma") {
+	if (SizeRead(command, 5) == "_sma") {
 		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(command, "(", ")", 1)));
 
 		if (charCutA == "test") {
@@ -1192,6 +1208,13 @@ string _runcode_api(string command) {
 		if (charCutA == "ocltV") {
 			return $version_title + "  " + $version_msg;
 		}
+		//KernelMSG
+		if (charCutA == "kvget") {
+			return _KernelVersion;
+		}
+		if (charCutA == "rcvget") {
+			return _RCapi_Version;
+		}
 		//Get VID
 		if (charCutA == "kcvid") {
 			return kernelcmdVid;
@@ -1208,7 +1231,9 @@ string _runcode_api(string command) {
 		if (charCutA == "tevid") {
 			return ThirdExecVid;
 		}
-
+		if (charCutA == "ksvid") {
+			return kernelSecureVid;
+		}
 
 
 		return "null";

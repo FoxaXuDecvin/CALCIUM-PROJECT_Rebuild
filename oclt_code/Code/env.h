@@ -41,6 +41,7 @@ int _KV_relver$int;
 bool _language_mode = false;
 
 string kernelcmdVid;
+string kernelSecureVid;
 string gethookVid;
 string mathapiVid;
 string sysexecVid;

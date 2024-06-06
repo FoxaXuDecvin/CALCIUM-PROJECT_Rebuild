@@ -141,8 +141,13 @@ bool CK_Shell_open(void) {
 	if (_kernel_activate == false) {
 		_pv("_$lang.act_info .  _use _$activate(%Key%) to Activate");
 	}
-	if (_TrustedServer == false) {
-		_pv("_$lang.untrusted.server");
+	if (_rcset_trustcheck == true) {
+		if (_TrustedServer == false) {
+			_pv("_$lang.untrusted.server");
+		}
+	}
+	else {
+		_pv("_$lang.trustoff");
 	}
 	_p("----------------------------------------------------------");
 	_pv("_$lang.language :  _$lang.about .....  " + _rcset_lang);
