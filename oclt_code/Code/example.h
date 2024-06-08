@@ -6,6 +6,8 @@
 bool PreLaunchLoad(void) {
 	//Put Preload code here
 	//
+	_KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
+	_CTitle = "Calcium_Project_Rebuild";
 
 	__settings_displaylaunchscreen = false;
 
@@ -226,16 +228,23 @@ int _HeadMainLoad() {
 			_prts("type y/n >");
 
 			if (_getline_type() != "n") {
-				if (!_api_request_download("lang.txt", langpackfile)) {
-					_p("Install Failed");
+				if (_Run_SysKernel == Linux_kernel) {
+					_p("Install Linux Language");
+					if (!_api_request_download("lang/linux.txt", langpackfile)) {
+						_p("Install Failed");
+					}
 				}
-				else {
-					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _$GetSelfPath + "/Lang\"");
+				if (_Run_SysKernel == Win32_kernel) {
+					_p("Install Windows Language");
+					if (!_api_request_download("lang/win.txt", langpackfile)) {
+						_p("Install Failed");
+					}
+				}
+					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _$GetSelfPath + "/lang\"");
 					_p("Complete Install Language");
 					_fileapi_del(langpackfile);
 					sleepapi(1);
 					cleanConsole();
-				}
 			}
 			LanguageLoad();
 		}
@@ -265,6 +274,9 @@ int _HeadMainLoad() {
 			if (AntiCrash_Return_Code == 34304) {
 				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
 			}
+			if (AntiCrash_Return_Code == 35584) {
+				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
+			}
 			if (AntiCrash_Return_Code == -1073740791) {
 				AC_FAILCODE = "MEMORY_ACCESS_CRASH";
 			}
@@ -276,7 +288,7 @@ int _HeadMainLoad() {
 			_pv("     _$lang.crash.t1");
 			_pv("       _$lang.crash.t2");
 			_pv("       _$lang.crash.t3");
-			_pv("       _$lang.crash.errcode" + AC_FAILCODE);
+			_pv("       _$lang.crash.errcode --> " + AC_FAILCODE);
 			_pv("       _$lang.crash.kcode :  " + to_string(AntiCrash_Return_Code));
 			_pv("     _$lang.runargs :  " + native_argument);
 			_pn();

@@ -7,7 +7,6 @@
 #include"../Code/RCapi.h"
 
 
-const string _CTitle = "Calcium_Project_Rebuild";
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -39,20 +38,17 @@ string _kv_text_deluxe = "Deluxe";
 //rVK END
 
 //RunIDs
-string _KV_rV_Text;
 string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "112"; //(Software Version)
 
 string _KV_gen = "1";//(General)
 
-string _KV_rv = "2";//(Release Version)
+string _KV_rv = "3";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
-
-string _KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
 
 //DEFINE
 
@@ -101,11 +97,8 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 bool _gf_hsc = true;
 void _gfL_reset(void);
 //GetFULL API
-const int _gf_line_maxallow = 512;
+const int _gf_line_maxallow = 1024;
 bool _gf_status;
-int _gf_cg = 0;
-int _gf_cgmax = 1;
-int _gf_line = 1;
 string _gf_FLMark = ";";
 string _gf_charget;
 string _gf_makebuffer,_gf_getbuffer;
@@ -258,7 +251,6 @@ bool _CK_ShellMode = false;
 string _cmd_marks = "_";
 string cmdbuffer;
 string _api_result;
-string _global_scriptload;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script,string Sargs) {
 	if (!_language_mode) {
@@ -576,6 +568,11 @@ string _runcode_api(string command) {
 		}
 		LanguageLoad();
 		_pv("_$lang.reload");
+		return "ok";
+	}
+	if (SizeRead(command, 10) == "_$analysis") {
+		_Create_Analysis_File(_$GetSelfPath + "/~Calcium_Analysis_File.log");
+		_p("File is created on " + _$GetSelfPath + "/~Calcium_Analysis_File.log");
 		return "ok";
 	}
 

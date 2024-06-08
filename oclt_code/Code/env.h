@@ -46,3 +46,12 @@ string gethookVid;
 string mathapiVid;
 string sysexecVid;
 string ThirdExecVid;
+
+//RCapi
+string _KernelVersion;
+string _CTitle;
+string _KV_rV_Text;
+string _global_scriptload;
+int _gf_cg = 0;
+int _gf_cgmax = 1;
+int _gf_line = 1;

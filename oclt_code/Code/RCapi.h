@@ -468,3 +468,39 @@ void _var_typetext(string file) {
 		return;
 	}
 }
+
+void _Create_Analysis_File(string savefile) {
+	_soildwrite_open(savefile);
+	_soildwrite_write("::Calcium Analysis File");
+	_soildwrite_write("::Copyright FoxaXu " + $year_message);
+	_soildwrite_write(":: Memory Map");
+	_soildwrite_write("-Execute File Path :   " + _$GetSelfFull);
+	_soildwrite_write("-System :  " + _Run_SysKernel);
+	_soildwrite_write("-Calcium Activate Status :  " + to_string(_kernel_activate));
+	_soildwrite_write("-Version :  " + _KernelVersion);
+	_soildwrite_write("");
+	_soildwrite_write("");
+	_soildwrite_write("");
+	_soildwrite_write("----Project ID----");
+	_soildwrite_write("-CID  :    " + _CTitle);
+	_soildwrite_write("-VerText :     " + _KV_rV_Text);
+	_soildwrite_write("-InsideVersion :     " + InsideVersion);
+	_soildwrite_write("----OpenCppLangTab----");
+	_soildwrite_write("-OCLT ID :  " + $version_title);
+	_soildwrite_write("-OCLT Release :  " + $version_msg);
+	_soildwrite_write("-OCLT CodeName :   " + $codename);
+	_soildwrite_write("-OCLT RID :    " + $version_code_str);
+	_soildwrite_write("-OCLT BuildTime :  " + $buildtime);
+	_soildwrite_write("+ Debug ++++++++++++++++++++++++++++++++");
+	_soildwrite_write("---- VarSpace Map-----");
+	_soildwrite_write(VarSpace);
+	_soildwrite_write("----End varspace ----");
+	_soildwrite_write("");
+	_soildwrite_write("----Execute Address----");
+	_soildwrite_write("File :  " + _global_scriptload + " on :  " + to_string(_gf_line) + "  size :  " + to_string(_gf_cg));
+	_soildwrite_write("---- End address----");
+	_soildwrite_write("");
+	_soildwrite_write("---- Log File ----");
+	_soildwrite_write(_$logfile);
+	_soildwrite_write("---- End Logfile ----");
+}
