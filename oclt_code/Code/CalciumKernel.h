@@ -35,16 +35,16 @@ string _kv_text_stable = "stable";
 //OV
 string _kv_text_custom = "Custom";
 string _kv_text_embed = "Embed";
-string _kv_text_deluxe = "X";
+string _kv_text_deluxe = "Deluxe";
 //rVK END
 
 //RunIDs
 string _KV_rV_Text;
 string _CK_Runid = _get_random_s(100000, 999999);
 
-string _KV_softwareVersion = "110"; //(Software Version)
+string _KV_softwareVersion = "112"; //(Software Version)
 
-string _KV_gen = "3";//(General)
+string _KV_gen = "1";//(General)
 
 string _KV_rv = "2";//(Release Version)
 
@@ -99,7 +99,7 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 
 //HeadSpaceClean .  Default = true
 bool _gf_hsc = true;
-
+void _gfL_reset(void);
 //GetFULL API
 const int _gf_line_maxallow = 512;
 bool _gf_status;
@@ -109,7 +109,7 @@ int _gf_line = 1;
 string _gf_FLMark = ";";
 string _gf_charget;
 string _gf_makebuffer,_gf_getbuffer;
-string _get_fullLine(string load_script,string EndMark) {
+string _get_fullLine(string load_script, string EndMark) {
 	_gf_FLMark = EndMark;
 	if (!check_file_existence(load_script)) {
 		return "badfound";
@@ -118,9 +118,9 @@ string _get_fullLine(string load_script,string EndMark) {
 	_gf_makebuffer = "";
 
 	//get and make
-	for (;true; _gf_line++) {
+	for (; true; _gf_line++) {
 		//Reset Char
-		for (;true;_gf_cg ++) {
+		for (; true; _gf_cg++) {
 			//_p("Road Fresh    Line :   " + to_string(_gf_line));
 			//Textread
 			_gf_getbuffer = _fileapi_textread(load_script, _gf_line);
@@ -135,7 +135,7 @@ string _get_fullLine(string load_script,string EndMark) {
 			}
 
 			if (_gf_hsc == true) {
-				_gf_getbuffer = HeadSpaceCleanA(_gf_getbuffer);
+				_gf_getbuffer = HeadSpaceClean_NoSEM(_gf_getbuffer);
 			}
 
 			if (SizeRead(_gf_getbuffer, 2) == "//") {
@@ -232,6 +232,7 @@ string _get_direct_read(string load_script) {;
 		}
 
 		if (_gf_getbuffer == "") {
+			_logrec_write("[Engine Direct] Find Empty Line --> on :  " + to_string(_gf_line) + "  size :  " + to_string(_gf_cg));
 			_gf_line++;
 			continue;
 		}
@@ -285,6 +286,8 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 
 	_logrec_write("[Start] PreCheck Script Run Environment");
 	_logrec_write("[Log] Log file is Bind :  " + _$logfile);
+	_gfL_reset();
+	_logrec_write("[Notice] Memory Address is Reset");
 
 	//_p("Speed check point 4");
 
@@ -298,19 +301,22 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 
 	while (true) {
 		_logrec_write("[Notice]Start to Execute script :  " + load_Script);
+		_logrec_write("[Exec] Execute Start on :  " + to_string(_gf_line) + "  size :  " + to_string(_gf_cg));
 		_global_scriptload = load_Script;
-		_logrec_write("[Exec]Complete Read Script");
+		_logrec_write("[Exec]Complete Read Script   --> on :  " + to_string(_gf_line) + "  size :  " + to_string(_gf_cg));
 		//_p("Speed check point 6");
 		if (_direct_read_script == false) {
+			_logrec_write("[Script Read] Use Full Mode");
 			cmdbuffer = _get_fullLine(load_Script, ";");
 		}
 		else {
+			_logrec_write("[Script Read] Use Direct Mode");
 			cmdbuffer = _get_direct_read(load_Script);
 		}
-		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer);
+		_logrec_write("[Exec]Get Full Command :  -->  " + cmdbuffer + "  <-- on :  " + to_string(_gf_line) + "  size :  " + to_string(_gf_cg));
 		if (_gf_status == false) {
 			_pv("_$lang.stoprun.  Return status code :  " + cmdbuffer + "  . Args :  " + _global_scriptload + "   Line :  " + to_string(_gf_line) + " + " + to_string(_gf_cg));
-			_logrec_write("[ERROR]Kernel stop Running");
+			_logrec_write("[ERROR]Kernel stop Running. address :  " + to_string(_gf_line) + " size :  " + to_string(_gf_cg) + "    on file: " + load_Script);
 			return "ok";
 		}
 
@@ -400,7 +406,7 @@ string _runcode_api(string command) {
 	}
 	//Command Process
 
-	_logrec_write("[Parsing] Command :   " + command);
+	_logrec_write("[Parsing] Command :   " + command + "   Old :  " + oldcmd);
 	if (atoi(command.c_str()) != 0) {
 		return command;
 	}
@@ -577,7 +583,7 @@ string _runcode_api(string command) {
 	kernelSecureVid = "1.11";
 	if (SizeRead(command, 10) == "_$activate") {
 		if (_kernel_activate == false) {
-			if (command == "_$activate;") {
+			if (command == "_$activate") {
 				_prts("Write your activation code here >");
 				charCutA = _getline_type();
 			}
@@ -590,6 +596,8 @@ string _runcode_api(string command) {
 			else {
 				_pv("_$lang.act_succ_t1");
 				_pv("_$lang.act_succ.t2");
+				_write_sipcfg(buildshell, "ExecuteFile", _$GetSelfFull);
+				_rc_exec_address = _Old_VSAPI_TransVar(_load_sipcfg(buildshell, "ExecuteFile"));
 			}
 			return "ok";
 		}
@@ -602,8 +610,9 @@ string _runcode_api(string command) {
 			return "ok";
 		}
 		if (_rc_exec_address != _$GetSelfFull) {
-			_p("Detected Path is modified");
-			_p("please reactivate calcium");
+			_pv("_$lang.activateModified");
+			_pv("_$lang.activateRe");
+			_kernel_activate = false;
 			return "ok";
 		}
 	}

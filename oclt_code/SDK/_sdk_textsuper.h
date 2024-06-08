@@ -481,7 +481,7 @@ string HeadSpaceCleanA(string Info) {
 		finget--;
 		tempget = Info[finget];
 		if (tempget != " ") {
-			if (getendchar(fullread) != ";")break;
+			if (tempget != ";")break;
 		}
 	}
 
@@ -498,6 +498,35 @@ string HeadSpaceCleanA(string Info) {
 
 	return fullread;
 }
+
+string HeadSpaceClean_NoSEM(string Info) {
+	tempget = fullread = "";
+	//_p("HSC Input :  " + Info);
+	Info = HeadSpaceClean(Info);
+	finget = Info.size();
+
+	while (true) {
+		finget--;
+		tempget = Info[finget];
+		if (tempget != " ") {
+			break;
+		}
+	}
+
+	finget++;
+
+	//_p("finget size ;  " + to_string(finget));
+
+	for (int rp_temp = 0; rp_temp != finget; rp_temp++) {
+		fullread = fullread + Info[rp_temp];
+		//_p("build char =  " + fullread);
+	}
+
+	//_p("HSC Return :  " + fullread);
+
+	return fullread;
+}
+
 
 int charTotal(string info, string markchar) {
 	int charsize = info.size();
