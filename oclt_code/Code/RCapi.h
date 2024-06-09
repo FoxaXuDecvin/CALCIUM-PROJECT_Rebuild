@@ -206,14 +206,18 @@ bool _RcApiLoadConfig() {
 }
 
 string _$logfile;
+string LogWriteCache;
 bool _logrec_write(string INFO) {
 	if (_rcset_logrec == false) {
 		return false;
 	}
 	if (!check_file_existence(_$logfile)) {
 		_fileapi_createmark(_$logfile, "//Calcium Kernel LogFile");
+		_fileapi_write(_$logfile, "//Log Record on :  " + __GetFullTime());
 	}
-	_fileapi_write(_$logfile,INFO);
+
+	LogWriteCache = "[" + __GetFullClock() + "]" + INFO;
+	_fileapi_write(_$logfile,LogWriteCache);
 
 	return true;
 }
@@ -478,6 +482,7 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_write("-System :  " + _Run_SysKernel);
 	_soildwrite_write("-Calcium Activate Status :  " + to_string(_kernel_activate));
 	_soildwrite_write("-Version :  " + _KernelVersion);
+	_soildwrite_write("-Created Time :  " + __GetFullTime());
 	_soildwrite_write("");
 	_soildwrite_write("");
 	_soildwrite_write("");
