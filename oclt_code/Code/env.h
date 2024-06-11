@@ -31,7 +31,7 @@ string _runmode = _runmode_null;
 
 bool _anticrash_services = false;
 
-string InsideVersion = "1000";
+string InsideVersion = "A102";
 
 string last_return;
 
@@ -41,6 +41,7 @@ int _KV_relver$int;
 bool _language_mode = false;
 
 string kernelcmdVid;
+string kernelenvVid;
 string kernelSecureVid;
 string gethookVid;
 string mathapiVid;

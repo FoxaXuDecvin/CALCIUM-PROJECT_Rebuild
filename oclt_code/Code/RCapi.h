@@ -477,7 +477,7 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_open(savefile);
 	_soildwrite_write("::Calcium Analysis File");
 	_soildwrite_write("::Copyright FoxaXu " + $year_message);
-	_soildwrite_write(":: Memory Map");
+	_soildwrite_write("::Kernel Message");
 	_soildwrite_write("-Execute File Path :   " + _$GetSelfFull);
 	_soildwrite_write("-System :  " + _Run_SysKernel);
 	_soildwrite_write("-Calcium Activate Status :  " + to_string(_kernel_activate));
@@ -497,12 +497,13 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_write("-OCLT RID :    " + $version_code_str);
 	_soildwrite_write("-OCLT BuildTime :  " + $buildtime);
 	_soildwrite_write("+ Debug ++++++++++++++++++++++++++++++++");
+	_soildwrite_write("");
 	_soildwrite_write("---- VarSpace Map-----");
 	_soildwrite_write(VarSpace);
 	_soildwrite_write("----End varspace ----");
 	_soildwrite_write("");
 	_soildwrite_write("----Execute Address----");
-	_soildwrite_write("File :  " + _global_scriptload + " on :  " + to_string(_gf_line) + "  size :  " + to_string(_gf_cg));
+	_soildwrite_write("Script File :  " + _global_scriptload + " Line :  " + to_string(_gf_line) + "  breakpoint :  " + to_string(_gf_cg));
 	_soildwrite_write("---- End address----");
 	_soildwrite_write("");
 	_soildwrite_write("---- Log File ----");

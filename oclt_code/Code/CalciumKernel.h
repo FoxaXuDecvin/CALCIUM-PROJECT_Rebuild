@@ -42,9 +42,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "112"; //(Software Version)
 
-string _KV_gen = "2";//(General)
+string _KV_gen = "3";//(General)
 
-string _KV_rv = "3";//(Release Version)
+string _KV_rv = "1";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -97,7 +97,7 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 bool _gf_hsc = true;
 void _gfL_reset(void);
 //GetFULL API
-const int _gf_line_maxallow = 1024;
+const int _gf_line_maxallow = 2048;
 bool _gf_status;
 string _gf_FLMark = ";";
 string _gf_charget;
@@ -434,6 +434,7 @@ string _runcode_api(string command) {
 	}
 
 	//Memory Control
+	kernelenvVid = "2.21";
 	if (SizeRead(command, 5) == "_var ") {
 		string _rc_varbind;
 		if (checkChar(command, "=")) {
@@ -478,7 +479,7 @@ string _runcode_api(string command) {
 		return "runid.exit";
 	}
 	if (SizeRead(command, 7) == "_return") {
-		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1)));
 
 		_logrec_write("_Exec Return Data :  " + charCutA);
 		_stop_exec_script = true;
@@ -617,14 +618,14 @@ string _runcode_api(string command) {
 	//Open Command
 	oldcmd = command;
 
-	kernelcmdVid = "1.13";
+	kernelcmdVid = "2.11";
 	if (SizeRead(command, 1) == "\"") {
 		charCutA = PartReadA(command, "\"", "\"", 1);
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
 		return charCutA;
 	}
 	if (SizeRead(command, 4) == "_prt") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 		
@@ -634,7 +635,7 @@ string _runcode_api(string command) {
 		return "ok.print:<" + charCutB + ">";
 	}
 	if (SizeRead(command, 5) == "_cout") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 
@@ -643,7 +644,7 @@ string _runcode_api(string command) {
 		return "ok.print:<" + charCutB + ">";
 	}
 	if (SizeRead(command, 7) == "_foxaxu") {
-		_logrec_write("[Exec] owo  pwp wow");
+		_logrec_write("[Exec] foxaxu");
 		_pv("_$lang.foxaxu.t1");
 		_p("https://www.foxaxu.com/fwlink?linkid=calcium_kernel_surprise");
 		return "ok";
@@ -657,10 +658,10 @@ string _runcode_api(string command) {
 
 			return "denied";
 		}
-		charCutA = HeadSpaceCleanA(PartReadA(oldcmd, "\"", "\"", 1));
-		charCutA = _Old_VSAPI_TransVar(charCutA);
-		_str_system(charCutA);
-		_logrec_write("[Exec] Run System Command   --> " + charCutA);
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
+		charCutB = _runcode_api(charCutA);
+		_logrec_write("[Exec] Run System Command   --> " + charCutB);
+		_str_system(charCutB);
 
 		return "ok";
 	}
@@ -673,7 +674,7 @@ string _runcode_api(string command) {
 		return"ok";
 	}
 	if (SizeRead(command, 6) == "_sleep") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		if (charCutA == "0") {
 			_pv("Error :  _sleep(0) _$lang.notNum");
 			return "ok";
@@ -717,18 +718,17 @@ string _runcode_api(string command) {
 			_p("Please use this command on script");
 			return "false";
 		}
-		charCutA = PartRead(oldcmd, " ", "$FROMEND$", false);
-		intCutA = FindCharLine(1, _global_scriptload, charCutA);
-		if (intCutA == _gf_line) {
-			intCutB = _gf_line;
-
-			intCutB++;
-
-			intCutA = FindCharLine(intCutB, _global_scriptload, charCutA);
+		charCutA = PartRead(oldcmd, " ", PartRead_FMend, false);
+		if (_direct_read_script == true) {
+			_gf_line--;
+		}
+		intCutA = FindCharLineA(1,_gf_line,_global_scriptload, charCutA);
+		if (_direct_read_script == true) {
+			_gf_line++;
 		}
 		if (intCutA == -4) {
-			_p("_goto Command Error");
-			_p("Cannot Find Head :   ---> " + charCutA);
+			_p("_goto Error");
+			_p("No Head :   ---> " + charCutA);
 			_p("Execution termination");
 			return "runid.exit";
 		}
@@ -813,7 +813,7 @@ string _runcode_api(string command) {
 		}
 		return CharCutC;
 	}
-	if (SizeRead(command, 8) == "_compare") {
+	if (SizeRead(command, 3) == "_cp") {
 
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
 
@@ -831,7 +831,7 @@ string _runcode_api(string command) {
 
 		return "FAIL";
 	}
-	if (SizeRead(command, 9) == "_!compare") {
+	if (SizeRead(command, 4) == "_!cp") {
 
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
 
@@ -878,7 +878,7 @@ string _runcode_api(string command) {
 		return "NullReturn";
 	}
 	//Get
-	gethookVid = "1.10";
+	gethookVid = "1.12";
 	if (SizeRead(command, 8) == "_getline") {
 		return _getline_type();
 	}
@@ -913,18 +913,6 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 11) == "_entershell") {
 		return"runid.entershell";
-	}
-	if (SizeRead(command, 7) == "_getrow") {
-		return to_string(_gf_line);
-	}
-	if (SizeRead(command, 12) == "_varapi.list") {
-		_logrec_write("[Debug] List VarSpace");
-
-		_p("VarSpace Size :  " + to_string(VarSpaceMax));
-		_p("VarSpace List :  ");
-		_p(VarSpace);
-		_pn();
-		return "ok";
 	}
 	if (SizeRead(command, 9) == "_pathlist") {
 		_logrec_write("[Debug] List Path");
@@ -1060,9 +1048,9 @@ string _runcode_api(string command) {
 	}
 
 	//System
-	sysexecVid = "1.12";
+	sysexecVid = "2.11";
 	if (SizeRead(command, 11) == "_file_exist") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[File] Check File Exist..  command -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 		_logrec_write("[File] check file :  " + charCutB);
@@ -1075,7 +1063,7 @@ string _runcode_api(string command) {
 		}
 	}
 	if (SizeRead(command, 9) == "_dir_make") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[Dir] Create Directory ..  command -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 		_logrec_write("[Dir] Directory :  " + charCutB);
@@ -1088,7 +1076,7 @@ string _runcode_api(string command) {
 		}
 	}
 	if (SizeRead(command, 11) == "_dir_remove") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[Dir] Remove Directory ..  command -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 		_logrec_write("[Dir] Directory :  " + charCutB);
@@ -1101,7 +1089,7 @@ string _runcode_api(string command) {
 		}
 	}
 	if (SizeRead(command, 10) == "_dir_exist") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[Dir] Check Directory Exist..  command -->  " + charCutA);
 		charCutB = _runcode_api(charCutA);
 		_logrec_write("[Dir] check directory :  " + charCutB);
@@ -1115,7 +1103,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
-	ThirdExecVid = "1.16";
+	ThirdExecVid = "2.11";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1129,7 +1117,7 @@ string _runcode_api(string command) {
 		return charCutA;
 	}
 	if (SizeRead(command, 10) == "_textprint") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		charCutB = _runcode_api(charCutA);
 
 		_logrec_write("[Exec] Print Text File   " + charCutB);
@@ -1144,7 +1132,7 @@ string _runcode_api(string command) {
 		return "ok";
 	}
 	if (SizeRead(command, 9) == "_typefile") {
-		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1));
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		charCutB = _runcode_api(charCutA);
 
 		_logrec_write("[Exec] Print Text File   " + charCutB);
@@ -1179,8 +1167,8 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
-	if (SizeRead(command, 10) == "_packsetup") {
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+	if (SizeRead(command, 11) == "_packsetup ") {
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1)));
 		if (!_packsetup(_rc_varid)) {
 			_p("_packsetup failed");
 			return "false";
@@ -1191,8 +1179,8 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
-	if (SizeRead(command, 4) == "_sma") {
-		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(command, "(", ")", 1)));
+	if (SizeRead(command, 5) == "_sma ") {
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(command, " ", PartRead_FMend, 1)));
 
 		if (charCutA == "test") {
 			return "true";
@@ -1224,6 +1212,9 @@ string _runcode_api(string command) {
 		//Get VID
 		if (charCutA == "kcvid") {
 			return kernelcmdVid;
+		}
+		if (charCutA == "kevid") {
+			return kernelenvVid;
 		}
 		if (charCutA == "ghvid") {
 			return gethookVid;

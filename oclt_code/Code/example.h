@@ -22,15 +22,16 @@ bool PreLaunchLoad(void) {
 
 void TypeHelpMenu() {
 	_p("----------------------------------------------------------");
-	_p("OCLT Version   " + $version_title + "  Base version : " + $version_code_str);
-	_p("OS Kernel :    " + _Run_SysKernel);
+	_p("OpenCppLangTab  " + $version_title + " " + $version_code_str);
+	_p("System :    " + _Run_SysKernel);
 	_p("----------------------------------------------------------");
 	_p("Kernel Version :    " + _KernelVersion + "  " + _KV_rV_Text);
 	_p("RCapi Version :     " + _RCapi_Version);
-	_p("Copyright FoxaXu " + $year_message);
-	_p("Calcium Script    .....");
+	_p("OpenCalcium Script Platform    .....");
 	_p("Github : https://github.com/FoxaXuDecvin/Calcium-Project");
 	_p("Language   " + _rcset_lang);
+	_p("Copyright FoxaXu " + $year_message);
+	return;
 }
 
 
@@ -264,6 +265,12 @@ int _HeadMainLoad() {
 	_gf_cgmax = 1;
 	_gf_line = 1;
 	_gf_charget = "";
+
+	if (check_file_existence(_$GetSelfPath + "/CALCIUM-PROJECT_Rebuild.pdb")) {
+		//Debug Mode
+		_rcset_anticrash = false;
+		_p("Detected PDB File.  AntiCrash Service is Disabled");
+	}
 
 	if (_rcset_anticrash == true) {
 		if (_anticrash_services == false) {

@@ -1,5 +1,0 @@
-lang/en-us
-lang/ja
-lang/zh-cn
-lang/zh-cn-ly
-lang/zh-tw

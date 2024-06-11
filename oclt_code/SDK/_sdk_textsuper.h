@@ -592,6 +592,37 @@ int FindCharLine(int startline, string file, string charData) {
 	}
 }
 
+// -4 == Not Found
+// Add SkipLine
+int FindCharLineA(int startline, int skipline, string file, string charData) {
+	//cout << "GoRoll. in " << startline << endl;
+	while (true) {
+		//cout << "A" << endl;
+		readbufferA = LineReader(file, startline);
+		//cout << "B" << endl;
+		readbufferA = HeadSpaceCleanA(readbufferA);
+		//cout << "Roll :  " << startline << "  INFO :  " << readbufferA << endl;
+		if (readbufferA == "overline") {
+			return -4;
+		}
+		if (readbufferA == "LineError") {
+			return -4;
+		}
+		if (readbufferA == "FileNotExist") {
+			//cout << "File NULL" << endl;
+			return -4;
+		}
+
+		if (checkChar(readbufferA, charData) == 1) {
+			//cout << "EndRoll :  " << startline << endl;
+			if (startline != skipline) {
+				return startline;
+			}
+		}
+		startline++;
+	}
+}
+
 string readbufferCMDVAR;
 
 string GetURLCode(string URL) {
