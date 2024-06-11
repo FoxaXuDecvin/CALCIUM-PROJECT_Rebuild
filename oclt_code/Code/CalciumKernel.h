@@ -44,9 +44,9 @@ string _KV_softwareVersion = "112"; //(Software Version)
 
 string _KV_gen = "2";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "3";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
 string _mk = ".";
 
@@ -385,7 +385,7 @@ string _runcode_api(string command) {
 	}
 	string oldcmd = command;
 	command = _Old_VSAPI_TransVar(command);
-	_logrec_write("[INFO] _var api :   --> " + oldcmd + " | to |  " + command);
+	//_logrec_write("[INFO] _var api :   --> " + oldcmd + " | to |  " + command);
 	if (oldcmd == command) {
 		_var_auto_void = false;
 	}

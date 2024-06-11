@@ -35,7 +35,6 @@ bool _urldown_api_nocache(string url, string savepath) {
 		return true;
 	}
 	else {
-		_sh_throw_error("OpenHttp.Error :  Failed to Get URL :   " + url);
 		return false;
 	}
 

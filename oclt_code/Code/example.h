@@ -204,6 +204,16 @@ string langpackfile;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
+
+	if (SizeRead(_$GetSelfPath, 2) == "\\\\") {
+		_p("Network Drive Not Support");
+		_p("Calcium Running on Network Path");
+		_p("But Windows Command is not support Network Path");
+		_p("Please use Network mapping and running on mapping path");
+		_pause();
+		return 0;
+	}
+
 	if (!_dapi_ExistFolder_check(_$GetSelfPath)) {
 		_p("Unable to access the currently running directory");
 		_p("Calcium cannot be run in the current directory");
