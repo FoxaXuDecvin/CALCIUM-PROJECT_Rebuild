@@ -450,6 +450,10 @@ bool _activate_calcium(string Key_Register) {
 	if (Key_Register == at_cache) {
 		return true;
 	}
+	if (at_cache == "violation") {
+		_pv("_$lang.false.violation");
+		return false;
+	}
 
 	_p("You entered an activation code that is not the current product");
 	return false;

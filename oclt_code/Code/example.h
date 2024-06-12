@@ -144,7 +144,8 @@ bool CK_Shell_open(void) {
 	_pn();
 	_p("----------------------------------------------------------");
 	if (atoi(_KV_releaseVer.c_str()) < 5) {
-		_p("This version of the Time Bomb will trigger on   " + to_string(tbd_year) + "/" + to_string(tbd_month) + "/" + to_string(tbd_day));
+		_pv("_$lang.cfgver");
+		_pv("_$lang.timebomb " + to_string(tbd_year) + "/" + to_string(tbd_month) + "/" + to_string(tbd_day));
 	}
 	_p("Calcium Shell Console");
 	if (_kernel_activate == false) {
