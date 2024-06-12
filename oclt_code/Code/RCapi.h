@@ -14,7 +14,7 @@ const string _rc_false = "false";
 const string _rc_true = "true";
 
 //Build / Release / Prerelease   -  Release ID 
-const string _RCapi_Version = "B1D1";
+const string _RCapi_Version = "C701";
 const string buildshell = _$GetSelfPath + "/calcium_settings.cfg";
 
 //Rc Config var
@@ -28,6 +28,8 @@ bool _rcset_directmode;
 bool _rcset_trustcheck;
 
 bool _rcset_shelledit,_rcset_scriptedit;
+
+bool _rcset_enforceUTF8;
 
 bool _rcset_aosr;
 
@@ -141,6 +143,9 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$Language=en-us;");
 		_soildwrite_write("$SecondLanguage=en-us;");
 		_soildwrite_write("");
+		_soildwrite_write("//Windows Only");
+		_soildwrite_write("$EnforceUTF-8=true;");
+		_soildwrite_write("");
 		_soildwrite_write("//Server");
 		_soildwrite_write("$RootAPIServer=https://calciumservices.foxaxu.com/api;");
 		_soildwrite_write("$Kernelactivate={Notactivate};");
@@ -174,6 +179,9 @@ bool _RcApiLoadConfig() {
 
 	_rcset_lang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Language"));
 	_rcset_seclang = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "SecondLanguage"));
+	//Lang 
+	_rcset_enforceUTF8 = _RcLoad_TransApi("EnforceUTF-8");
+
 	_rcbind_serverapi = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "RootAPIServer"));
 	_rc_activate_key= _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "Kernelactivate"));
 	_rc_exec_address = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "ExecuteFile"));
@@ -481,6 +489,7 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_write("-Execute File Path :   " + _$GetSelfFull);
 	_soildwrite_write("-System :  " + _Run_SysKernel);
 	_soildwrite_write("-Calcium Activate Status :  " + to_string(_kernel_activate));
+	_soildwrite_write("-Language :  " + _rcset_lang + "    Second Language :  " + _rcset_seclang);
 	_soildwrite_write("-Version :  " + _KernelVersion);
 	_soildwrite_write("-Created Time :  " + __GetFullTime());
 	_soildwrite_write("");

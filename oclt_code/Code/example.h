@@ -11,11 +11,6 @@ bool PreLaunchLoad(void) {
 
 	__settings_displaylaunchscreen = false;
 
-	if (_Run_SysKernel == Win32_kernel) {
-		//Execute Code
-		system("chcp 65001 >nul");
-	}
-
 	//End
 	return true;
 }
@@ -222,7 +217,7 @@ int _HeadMainLoad() {
 		return 1;
 	}
 	if (_anticrash_services == false) {
-		_p("Calcium Script " + _KernelVersion + "...   Startup");
+		_p("Calcium Script " + _KernelVersion + "...   Startup on :    " + _$GetSelfPath);
 	}
 	_RcApi_vp_load();
 	if (!_RcApiLoadConfig()) {
@@ -258,6 +253,13 @@ int _HeadMainLoad() {
 					cleanConsole();
 			}
 			LanguageLoad();
+		}
+	}
+
+	if (_Run_SysKernel == Win32_kernel) {
+		//Execute Code
+		if (_rcset_enforceUTF8 == true) {
+			system("chcp 65001 >nul");
 		}
 	}
 

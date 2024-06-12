@@ -40,11 +40,11 @@ string _kv_text_deluxe = "Deluxe";
 //RunIDs
 string _CK_Runid = _get_random_s(100000, 999999);
 
-string _KV_softwareVersion = "112"; //(Software Version)
+string _KV_softwareVersion = "113"; //(Software Version)
 
-string _KV_gen = "3";//(General)
+string _KV_gen = "2";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/Release  1 - 4)
 
@@ -877,6 +877,7 @@ string _runcode_api(string command) {
 		_pv("_$lang.if.err.t2 " + charCutB);
 		return "NullReturn";
 	}
+
 	//Get
 	gethookVid = "1.12";
 	if (SizeRead(command, 8) == "_getline") {
