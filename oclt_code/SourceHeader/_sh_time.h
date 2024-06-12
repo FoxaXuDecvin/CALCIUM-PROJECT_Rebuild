@@ -75,3 +75,17 @@ std::string __GetFullClock(void) {
 
 	return fullcache;
 }
+
+//Support 
+//__Time_Year
+//__Time_Month
+//__Time_Day
+//__Time_Hour 
+//__Time_Min
+//___Time_Sec
+//_SH_TIME_H
+//Get Current Time API
+//Return Int Number
+int _GetCurrentTimeAPI(string __TimeMode, bool return_RAW) {
+	return atoi(__GetCurrentTimeAPI(__TimeMode, return_RAW).c_str());
+}

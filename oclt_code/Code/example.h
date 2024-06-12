@@ -6,6 +6,14 @@
 bool PreLaunchLoad(void) {
 	//Put Preload code here
 	//
+	
+	//Time Bomb
+	tbd_year = 2024;
+	tbd_month = 6;
+	tbd_day = 12;
+
+
+	//PreLoad
 	_KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
 	_CTitle = "Calcium_Project_Rebuild";
 
@@ -135,6 +143,9 @@ bool CK_Shell_open(void) {
 	_pn();
 	_pn();
 	_p("----------------------------------------------------------");
+	if (atoi(_KV_releaseVer.c_str()) < 5) {
+		_p("This version of the Time Bomb will trigger on   " + to_string(tbd_year) + "/" + to_string(tbd_month) + "/" + to_string(tbd_day));
+	}
 	_p("Calcium Shell Console");
 	if (_kernel_activate == false) {
 		_pv("_$lang.act_info .  _use _$activate(%Key%) to Activate");
@@ -200,6 +211,11 @@ string langpackfile;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
+	if (_Time_Bomb_Detect(_KV_releaseVer)) {
+		string timebomb_cpluscplus = NULL;
+		cout << timebomb_cpluscplus << endl;
+		return 0;
+	}
 
 	if (SizeRead(_$GetSelfPath, 2) == "\\\\") {
 		_p("Network Drive Not Support");

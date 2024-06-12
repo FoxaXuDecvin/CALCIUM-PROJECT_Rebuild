@@ -112,6 +112,7 @@ bool _RcApiLoadConfig() {
 	if (!check_file_existence(file)) {
 		_soildwrite_open(file);
 		_soildwrite_write(" //BuildShell SipCfg  --Use  true/false");
+		_soildwrite_write("$CalciumVersion={null};");
 		_soildwrite_write("$EnableSystemCommand=false;");
 		_soildwrite_write("$EnableAntiCrash=true;");
 		_soildwrite_write("$EnableCrashReload=true;");
@@ -153,6 +154,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_close();
 	}
+	_write_sipcfg(file, "CalciumVersion", _KernelVersion);
 	_rcset_syscmd = _RcLoad_TransApi("EnableSystemCommand");
 	_rcset_anticrash = _RcLoad_TransApi("EnableAntiCrash");
 	_rcset_crash_reload = _RcLoad_TransApi("EnableCrashReload");
@@ -518,4 +520,26 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_write("---- Log File ----");
 	_soildwrite_write(_$logfile);
 	_soildwrite_write("---- End Logfile ----");
+}
+
+
+int tbd_year;
+int tbd_month;
+int tbd_day;
+bool _Time_Bomb_Detect(string CurrentRV) {
+	if (atoi(CurrentRV.c_str()) > 4) {
+		return false;
+	}
+
+	if (tbd_year < _GetCurrentTimeAPI(__Time_Year, false)) {
+		return true;
+	}
+	if (tbd_month < _GetCurrentTimeAPI(__Time_Month, false)) {
+		return true;
+	}
+	if (tbd_day < _GetCurrentTimeAPI(__Time_Day, false)) {
+		return true;
+	}
+
+	return false;
 }
