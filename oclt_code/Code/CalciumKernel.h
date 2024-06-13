@@ -42,11 +42,11 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "113"; //(Software Version)
 
-string _KV_gen = "5";//(General)
+string _KV_gen = "6";//(General)
 
-string _KV_rv = "2";//(Release Version)
+string _KV_rv = "1";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Debug;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
 string _mk = ".";
 
@@ -378,6 +378,7 @@ int dbA, dbB, dbC, dbD;
 bool _debug_type_detected = false;
 bool _var_auto_void = false;
 bool _shell_lock = false;
+bool _if_reverse = false;
 string _runcode_api(string command) {
 	_logrec_write("[Reset] --------------------------------New Command---------------------------------------------------------");
 	if (_gf_hsc == true) {
@@ -578,7 +579,7 @@ string _runcode_api(string command) {
 	}
 
 	//Verify PRODUCT
-	kernelSecureVid = "1.11";
+	kernelSecureVid = "2.21";
 	if (SizeRead(command, 10) == "_$activate") {
 		if (_kernel_activate == false) {
 			if (command == "_$activate") {
@@ -618,7 +619,7 @@ string _runcode_api(string command) {
 	//Open Command
 	oldcmd = command;
 
-	kernelcmdVid = "2.11";
+	kernelcmdVid = "2.31";
 	if (SizeRead(command, 1) == "\"") {
 		charCutA = PartReadA(command, "\"", "\"", 1);
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
@@ -831,30 +832,17 @@ string _runcode_api(string command) {
 
 		return "FAIL";
 	}
-	if (SizeRead(command, 4) == "_!cp") {
-
-		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
-
-		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", ",", ")", 1)));
-
-		//_p("1 = " + _rc_varid);
-		//_p("2 = " + _rc_varinfo);
-
-		if (_rc_varid == _rc_varinfo) {
-			return "false";
-		}
-		else {
-			return "true";
-		}
-
-		return "FAIL";
-	}
 	if (SizeRead(command, 3) == "_if") {
-
+		_if_reverse = false;
 		//_p("LaoDeng");
 		CharCutD = "(" + PartRead(oldcmd, "(", "|", true);
 
 		charCutA = _Old_VSAPI_TransVar(PartRead(CharCutD, "(", ")",true));
+
+		if (SizeRead(charCutA, 1) == "!") {
+			_if_reverse = true;
+			charCutA = _Old_VSAPI_TransVar(PartRead(CharCutD, "!", ")", true));
+		}
 
 		//_p("Ready to XinDeng");
 
@@ -862,14 +850,23 @@ string _runcode_api(string command) {
 
 		//_p("XinDeng");
 
-		if (charCutB == "true") {
+		if (_if_reverse == true) {
+			if (charCutB == _str_true){
+				charCutB = _str_false;
+			}
+			else{
+				charCutB = _str_true;
+			}
+		}
+
+		if (charCutB == _str_true) {
 			CharCutC = _Old_VSAPI_TransVar(PartRead(command, "|", "$FROMEND$",true));
 
 			CharCutD = _runcode_api(CharCutC);
 
 			return CharCutD;
 		}
-		if (charCutB == "false") {
+		if (charCutB == _str_false) {
 			return "notrue";
 		}
 
@@ -1104,7 +1101,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
-	ThirdExecVid = "2.11";
+	ThirdExecVid = "2.12";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1237,6 +1234,14 @@ string _runcode_api(string command) {
 		}
 
 		return "null";
+	}
+	if (SizeRead(command, 5) == "_textfind") {
+		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
+		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
+		if (checkChar(charCutA, chartempB)) {
+			return _str_true;
+		}
+		return _str_false;
 	}
 
 	if (_var_auto_void == true) {

@@ -27,6 +27,9 @@ const string _runmode_optimi = "r5op";
 const string _runmode_cstpmake = "r661";
 const string _runmode_cstpunpack = "r662";
 
+const string _str_true = "true";
+const string _str_false = "false";
+
 string _runmode = _runmode_null;
 
 bool _anticrash_services = false;
