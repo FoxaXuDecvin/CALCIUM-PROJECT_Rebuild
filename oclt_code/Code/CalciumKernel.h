@@ -44,9 +44,9 @@ string _KV_softwareVersion = "113"; //(Software Version)
 
 string _KV_gen = "6";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Debug;//(Debug/Preview/preRelease/demo/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
 string _mk = ".";
 
@@ -621,6 +621,11 @@ string _runcode_api(string command) {
 
 	kernelcmdVid = "2.31";
 	if (SizeRead(command, 1) == "\"") {
+		if (charTotal(command, "\"") < 2) {
+			_p("[ERROR]  Quotation Format illegal  --> " + command);
+			_logrec_write("[ERROR]  Quotation Format illegal-- > " + command);
+			return "illegal_format";
+		}
 		charCutA = PartReadA(command, "\"", "\"", 1);
 		_logrec_write("[INFO] Return char" + _$quo + charCutA + _$quo);
 		return charCutA;
@@ -710,7 +715,7 @@ string _runcode_api(string command) {
 		return to_string(intCutA);
 	}
 	if (SizeRead(command, 7) == "_getenv") {
-		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1)));
 		return _SystemAPI_getenv(charCutA);
 	}
 	if (SizeRead(command, 6) == "_goto ") {
@@ -1046,7 +1051,7 @@ string _runcode_api(string command) {
 	}
 
 	//System
-	sysexecVid = "2.11";
+	sysexecVid = "2.13";
 	if (SizeRead(command, 11) == "_file_exist") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[File] Check File Exist..  command -->  " + charCutA);
@@ -1101,7 +1106,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
-	ThirdExecVid = "2.12";
+	ThirdExecVid = "2.13";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1235,10 +1240,11 @@ string _runcode_api(string command) {
 
 		return "null";
 	}
-	if (SizeRead(command, 5) == "_textfind") {
+	if (SizeRead(command, 9) == "_textfind") {
 		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
-		if (checkChar(charCutA, chartempB)) {
+		//_p("A :  " + charCutB + "   B: " + chartempA);
+		if (checkChar(charCutB, chartempA)) {
 			return _str_true;
 		}
 		return _str_false;
