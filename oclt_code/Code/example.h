@@ -10,7 +10,7 @@ bool PreLaunchLoad(void) {
 	//Time Bomb
 	tbd_year = 2024;
 	tbd_month = 6;
-	tbd_day = 12;
+	tbd_day = 14;
 
 
 	//PreLoad
@@ -212,12 +212,6 @@ string langpackfile;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
-	if (_Time_Bomb_Detect(_KV_releaseVer)) {
-		string timebomb_cpluscplus = NULL;
-		cout << timebomb_cpluscplus << endl;
-		return 0;
-	}
-
 	if (SizeRead(_$GetSelfPath, 2) == "\\\\") {
 		_p("Network Drive Not Support");
 		_p("Calcium Running on Network Path");
@@ -317,6 +311,11 @@ int _HeadMainLoad() {
 				AC_FAILCODE = "MEMORY_ACCESS_CRASH";
 			}
 
+			//TimeBomb
+			if (AntiCrash_Return_Code == -661) {
+				AC_FAILCODE = "END_OF_EVALUATION_PERIOD";
+			}
+
 			cleanConsole();
 			_pn();
 			_pv("_$lang.crash.title");
@@ -345,6 +344,8 @@ int _HeadMainLoad() {
 	else {
 		//_p("Anti Crash Services is " + to_string(_rcset_anticrash));
 	}
+
+	if (_Time_Bomb_Detect(_KV_releaseVer)) return -661;
 
 	if (_rcbind_autorun != "null") {
 		_runmode = _runmode_runscript;

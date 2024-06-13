@@ -42,9 +42,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "113"; //(Software Version)
 
-string _KV_gen = "4";//(General)
+string _KV_gen = "5";//(General)
 
-string _KV_rv = "5";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
