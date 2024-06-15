@@ -10,11 +10,10 @@ bool PreLaunchLoad(void) {
 	//Time Bomb
 	tbd_year = 2024;
 	tbd_month = 6;
-	tbd_day = 15;
+	tbd_day = 17;
 
 
 	//PreLoad
-	_KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
 	_CTitle = "Calcium_Project_Rebuild";
 
 	__settings_displaylaunchscreen = false;
@@ -212,6 +211,7 @@ string langpackfile;
 string AC_FAILCODE = "{Null}";
 //Put Code Here
 int _HeadMainLoad() {
+	//CopyVersion
 	if (SizeRead(_$GetSelfPath, 2) == "\\\\") {
 		_p("Network Drive Not Support");
 		_p("Calcium Running on Network Path");
@@ -219,6 +219,12 @@ int _HeadMainLoad() {
 		_p("Please use Network mapping and running on mapping path");
 		_pause();
 		return 0;
+	}
+
+	if (check_file_existence(_$GetSelfPath + "/use-local-dir.txt")) {
+		_p("Use local dir");
+		buildshell = _$GetSelfPath + "/calcium_settings.cfg";
+		ExecBackups = _$GetSelfFull;
 	}
 
 	if (!_dapi_ExistFolder_check(_$GetSelfPath)) {
@@ -230,6 +236,11 @@ int _HeadMainLoad() {
 	if (_anticrash_services == false) {
 		_p("Calcium Script " + _KernelVersion + "...   Startup on :    " + _$GetSelfPath);
 	}
+	if (!check_file_existence(ExecBackups)) {
+		_p("Create File Path on :   " + _Build_Path + "/" + _KernelVersion);
+		_dapi_create_full_path(_Build_Path + "/" + _KernelVersion);
+		_fileapi_CpFile(_$GetSelfFull, ExecBackups);
+	}
 	_RcApi_vp_load();
 	if (!_RcApiLoadConfig()) {
 		_p("Failed to Load RCapi.");
@@ -238,6 +249,7 @@ int _HeadMainLoad() {
 		_pause();
 		return -1;
 	}
+
 	if (_skipcheck_language == false) {
 		if (!LanguageLoad()) {
 			langpackfile = _$GetSelfPath + "/" + "temp_languagepack.pack";
@@ -257,7 +269,7 @@ int _HeadMainLoad() {
 						_p("Install Failed");
 					}
 				}
-					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _$GetSelfPath + "/lang\"");
+					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _rcbind_langpath + "\"");
 					_p("Complete Install Language");
 					_fileapi_del(langpackfile);
 					sleepapi(1);
@@ -312,7 +324,7 @@ int _HeadMainLoad() {
 			}
 
 			//TimeBomb
-			if (AntiCrash_Return_Code == -661) {
+			if (AntiCrash_Return_Code == 661) {
 				AC_FAILCODE = "END_OF_EVALUATION_PERIOD";
 			}
 
@@ -345,7 +357,7 @@ int _HeadMainLoad() {
 		//_p("Anti Crash Services is " + to_string(_rcset_anticrash));
 	}
 
-	if (_Time_Bomb_Detect(_KV_releaseVer)) return -661;
+	if (_Time_Bomb_Detect(_KV_releaseVer)) return 661;
 
 	if (_rcbind_autorun != "null") {
 		_runmode = _runmode_runscript;

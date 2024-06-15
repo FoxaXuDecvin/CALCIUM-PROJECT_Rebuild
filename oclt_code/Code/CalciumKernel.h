@@ -10,48 +10,6 @@
 //VCODE
 // 110(Software Version).1(General).1(Release Version).1(Debug/Preview/preRelease/Release  1 - 4)
 
-//releaseVerKnd
-const string _KV_rV_Debug = "1";
-const string _KV_rV_Preview = "2";
-const string _KV_rV_preRelease = "3";
-const string _KV_rV_Demo = "4";
-const string _KV_rV_Release = "5";
-const string _KV_rV_Stable = "6";
-
-//Other Version
-const string _KV_rV_Custom = "7";
-const string _KV_rV_Embed = "8";
-const string _KV_rV_Deluxe = "9";
-
-//Main Char
-string _kv_text_debug = "Debug";
-string _kv_text_preview = "Preview";
-string _kv_text_prerelease = "Prerelease";
-string _kv_text_demo = "Demo";
-string _kv_text_release = "Release";
-string _kv_text_stable = "stable";
-
-//OV
-string _kv_text_custom = "Custom";
-string _kv_text_embed = "Embed";
-string _kv_text_deluxe = "Deluxe";
-//rVK END
-
-//RunIDs
-string _CK_Runid = _get_random_s(100000, 999999);
-
-string _KV_softwareVersion = "113"; //(Software Version)
-
-string _KV_gen = "6";//(General)
-
-string _KV_rv = "2";//(Release Version)
-
-string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
-
-string _mk = ".";
-
-//DEFINE
-
 void _KernelVersion_LoadText(void) {
 	_KV_relver$int = atoi(_KV_releaseVer.c_str());
 	_KV_rV_Text = "{Unknown KrV ;  " + _KV_releaseVer + " }";
@@ -97,7 +55,7 @@ string PartReadA(string Info, string StartMark, string EndMark, int RPartSizeA);
 bool _gf_hsc = true;
 void _gfL_reset(void);
 //GetFULL API
-const int _gf_line_maxallow = 2048;
+const int _gf_line_maxallow = 4096;
 bool _gf_status;
 string _gf_FLMark = ";";
 string _gf_charget;

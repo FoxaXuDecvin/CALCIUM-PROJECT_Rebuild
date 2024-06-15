@@ -52,7 +52,7 @@ string sysexecVid;
 string ThirdExecVid;
 
 //RCapi
-string _KernelVersion;
+
 string _CTitle;
 string _KV_rV_Text;
 string _global_scriptload;

@@ -7,6 +7,54 @@
 #include"../shload.h"
 #include"../Code/ThirdPartyCode.h"
 
+
+/// <VERSION>
+//releaseVerKnd
+const string _KV_rV_Debug = "1";
+const string _KV_rV_Preview = "2";
+const string _KV_rV_preRelease = "3";
+const string _KV_rV_Demo = "4";
+const string _KV_rV_Release = "5";
+const string _KV_rV_Stable = "6";
+
+//Other Version
+const string _KV_rV_Custom = "7";
+const string _KV_rV_Embed = "8";
+const string _KV_rV_Deluxe = "9";
+
+//Main Char
+string _kv_text_debug = "Debug";
+string _kv_text_preview = "Preview";
+string _kv_text_prerelease = "Prerelease";
+string _kv_text_demo = "Demo";
+string _kv_text_release = "Release";
+string _kv_text_stable = "stable";
+
+//OV
+string _kv_text_custom = "Custom";
+string _kv_text_embed = "Embed";
+string _kv_text_deluxe = "Deluxe";
+//rVK END
+
+//RunIDs
+string _CK_Runid = _get_random_s(100000, 999999);
+
+string _KV_softwareVersion = "113"; //(Software Version)
+
+string _KV_gen = "7";//(General)
+
+string _KV_rv = "3";//(Release Version)
+
+string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
+
+string _mk = ".";
+
+string _KernelVersion = _KV_softwareVersion + _mk + _KV_gen + _mk + _KV_rv + _mk + _KV_releaseVer;
+
+//DEFINE
+/// </VERSION>
+/// 
+
 void _KernelVersion_LoadText(void);
 //Define
 
@@ -15,7 +63,8 @@ const string _rc_true = "true";
 
 //Build / Release / Prerelease   -  Release ID 
 const string _RCapi_Version = "C701";
-const string buildshell = _$GetSelfPath + "/calcium_settings.cfg";
+string buildshell = _Build_Path + "/" + _KernelVersion + "/calcium_settings.cfg";
+string ExecBackups = _Build_Path + "/" + _KernelVersion + "/calcium.exe";
 
 //Rc Config var
 bool _rcset_syscmd;
@@ -53,6 +102,8 @@ void _pv(string info) {
 
 void _RcApi_vp_load(void) {
 	_varspaceadd("{path}", _$GetSelfPath);
+	_varspaceadd("{oclt_path}", _Build_Path);
+	_varspaceadd("{VersionID}", _KernelVersion);
 }
 
 string _RcApi_TapiBuffer;
@@ -108,8 +159,11 @@ bool _api_request_clear_cache(string Address, string Save) {
 string file;
 bool _direct_read_script = false;
 bool _RcApiLoadConfig() {
+	_p("Loading Config");
 	file = buildshell;
 	if (!check_file_existence(file)) {
+		_p("Create New Config");
+		_dapi_create_full_path(file);
 		_soildwrite_open(file);
 		_soildwrite_write(" //BuildShell SipCfg  --Use  true/false");
 		_soildwrite_write("$CalciumVersion={null};");
@@ -134,11 +188,10 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AutoRunArgs=null;");
 		_soildwrite_write("");
 		_soildwrite_write("//PathBind");
-		_soildwrite_write("$ThirdBind={path};");
 		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
 		_soildwrite_write("$DefaultPluginScript={path}/script;");
-		_soildwrite_write("$DefaultLogRecord={path}/logs;");
-		_soildwrite_write("$DefaultLanguagePath={path}/lang;");
+		_soildwrite_write("$DefaultLogRecord={oclt_path}/{VersionID}/logs;");
+		_soildwrite_write("$DefaultLanguagePath={oclt_path}/{VersionID}/lang;");
 		_soildwrite_write("");
 		_soildwrite_write("//Display Settings");
 		_soildwrite_write("$Language=en-us;");
@@ -173,7 +226,6 @@ bool _RcApiLoadConfig() {
 	//String
 	_rcbind_autorun = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "AutoRun"));
 	_rcbind_autorunargs = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "AutoRunArgs"));
-	_rcbind_thirdbind = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "ThirdBind"));
 	_rcbind_pluginpath = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultPluginPath"));
 	_rcbind_pluginscript = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultPluginScript"));
 	_rcbind_logrec = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "DefaultLogRecord"));
@@ -189,20 +241,17 @@ bool _RcApiLoadConfig() {
 	_rc_exec_address = _Old_VSAPI_TransVar(_load_sipcfg_noreturn(file, "ExecuteFile"));
 
 	//Create Directory
-	if (!_dapi_ExistFolder_check(_rcbind_thirdbind)) {
-		_dapi_mkdir(_rcbind_thirdbind);
-	}
 	if (!_dapi_ExistFolder_check(_rcbind_pluginpath)) {
-		_dapi_mkdir(_rcbind_pluginpath);
+		_dapi_create_full_path(_rcbind_pluginpath + "/a.txt");
 	}
 	if (!_dapi_ExistFolder_check(_rcbind_pluginscript)) {
-		_dapi_mkdir(_rcbind_pluginscript);
+		_dapi_create_full_path(_rcbind_pluginscript + "/a.txt");
 	}
 	if (!_dapi_ExistFolder_check(_rcbind_logrec)) {
-		_dapi_mkdir(_rcbind_logrec);
+		_dapi_create_full_path(_rcbind_logrec + "/a.txt");
 	}
 	if (!_dapi_ExistFolder_check(_rcbind_langpath)) {
-		_dapi_mkdir(_rcbind_langpath);
+		_dapi_create_full_path(_rcbind_langpath + "/a.txt");
 	}
 
 	//Auto Set
