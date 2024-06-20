@@ -322,6 +322,8 @@ bool LanguageLoad() {
 	_gfL_reset();
 	_ckapi_scriptload(langfile, "langmode");
 	_gfL_reset();
+	_ckapi_scriptload(_rcbind_langpath + "/errcode_list.txt", "langmode");
+	_gfL_reset();
 	_language_mode = false;
 	_stop_exec_script = false;
 	return true;

@@ -18,7 +18,7 @@ const std::string __Time_Sec = "TIMESEC";
 //Get Current Time API
 int tmcache;
 string tmscache;
-std::string __GetCurrentTimeAPI(string __TimeMode,bool return_RAW) {
+std::string __GetCurrentTimeAPI(string __TimeMode, bool return_RAW) {
 	time_t now = time(NULL);
 	tm* tm_t = localtime(&now);
 
@@ -32,6 +32,9 @@ std::string __GetCurrentTimeAPI(string __TimeMode,bool return_RAW) {
 	}
 	if (__TimeMode == __Time_Month) {
 		tmcache = tm_t->tm_mon;
+		if (!return_RAW) {
+			tmcache = tmcache + 1;
+		}
 	}
 	if (__TimeMode == __Time_Day) {
 		tmcache = tm_t->tm_mday;
@@ -46,7 +49,7 @@ std::string __GetCurrentTimeAPI(string __TimeMode,bool return_RAW) {
 	if (__TimeMode == __Time_Sec) {
 		tmcache = tm_t->tm_sec;
 	}
-	
+
 	tmscache = to_string(tmcache);
 
 	if (!return_RAW) {
@@ -57,7 +60,6 @@ std::string __GetCurrentTimeAPI(string __TimeMode,bool return_RAW) {
 
 	return tmscache;
 }
-
 std::string fullcache;
 
 //Return 
@@ -75,6 +77,15 @@ std::string __GetFullClock(void) {
 
 	return fullcache;
 }
+
+//Return
+// Year/Month/Day
+std::string __GetFullDate(void) {
+	fullcache = __GetCurrentTimeAPI(__Time_Year, false) + "/" + __GetCurrentTimeAPI(__Time_Month, false) + "/" + __GetCurrentTimeAPI(__Time_Day, false);
+
+	return fullcache;
+}
+
 
 //Support 
 //__Time_Year

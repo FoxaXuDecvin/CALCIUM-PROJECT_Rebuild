@@ -41,9 +41,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "113"; //(Software Version)
 
-string _KV_gen = "7";//(General)
+string _KV_gen = "8";//(General)
 
-string _KV_rv = "3";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -62,7 +62,7 @@ const string _rc_false = "false";
 const string _rc_true = "true";
 
 //Build / Release / Prerelease   -  Release ID 
-const string _RCapi_Version = "C701";
+const string _RCapi_Version = "C802";
 string buildshell = _Build_Path + "/" + _KernelVersion + "/calcium_settings.cfg";
 string ExecBackups = _Build_Path + "/" + _KernelVersion + "/calcium.exe";
 
@@ -447,6 +447,44 @@ bool _packsetup(string packid) {
 	return true;
 }
 
+int tbd_year;
+int tbd_month;
+int tbd_day;
+bool _TBD_WARNING;
+string TBD_STR;
+string TBD_cache;
+bool _Time_Bomb_Detect(string CurrentRV) {
+	TBD_STR = to_string(tbd_year) + "/" + to_string(tbd_month) + "/" + to_string(tbd_day);
+	TBD_cache = __GetCurrentTimeAPI(__Time_Year, false) + "/" + to_string(_GetCurrentTimeAPI(__Time_Month, false)) + "/" + to_string(_GetCurrentTimeAPI(__Time_Day, false));
+
+	_TBD_WARNING = false;
+	if (atoi(CurrentRV.c_str()) > 4) {
+		return false;
+	}
+
+	//P1
+	_p("TBD Notification  :     Current Time :  <" + TBD_cache + ">     TBD Date :   <" + TBD_STR + ">");
+	if (TBD_STR == TBD_cache) {
+		_TBD_WARNING = true;
+		return false;
+	}
+
+	//P2
+
+
+	if (tbd_year < _GetCurrentTimeAPI(__Time_Year, false)) {
+		return true;
+	}
+	if (tbd_month < _GetCurrentTimeAPI(__Time_Month, false)) {
+		return true;
+	}
+	if (tbd_day < _GetCurrentTimeAPI(__Time_Day, false)) {
+		return true;
+	}
+
+	return false;
+}
+
 string activate_id;
 string at_cache;
 bool _TrustedServer;
@@ -485,6 +523,10 @@ bool _activate_calcium(string Key_Register) {
 	if (_TrustedServer == false) {
 		_p("You are trying to activate Calcium using an untrusted server.");
 		_p("Please use a trusted server. you can read this list https://calciumservices.foxaxu.com/trusted/TrustedServer.txt");
+		return false;
+	}
+	if (_TBD_WARNING == true) {
+		_p("ERROR :  End of evaluation period");
 		return false;
 	}
 
@@ -573,26 +615,4 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_write("---- Log File ----");
 	_soildwrite_write(_$logfile);
 	_soildwrite_write("---- End Logfile ----");
-}
-
-
-int tbd_year;
-int tbd_month;
-int tbd_day;
-bool _Time_Bomb_Detect(string CurrentRV) {
-	if (atoi(CurrentRV.c_str()) > 4) {
-		return false;
-	}
-
-	if (tbd_year < _GetCurrentTimeAPI(__Time_Year, false)) {
-		return true;
-	}
-	if (tbd_month < _GetCurrentTimeAPI(__Time_Month, false)) {
-		return true;
-	}
-	if (tbd_day < _GetCurrentTimeAPI(__Time_Day, false)) {
-		return true;
-	}
-
-	return false;
 }

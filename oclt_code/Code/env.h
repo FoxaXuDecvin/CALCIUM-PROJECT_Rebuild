@@ -34,7 +34,7 @@ string _runmode = _runmode_null;
 
 bool _anticrash_services = false;
 
-string InsideVersion = "A102";
+string InsideVersion = "B104";
 
 string last_return;
 

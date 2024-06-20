@@ -10,7 +10,7 @@ bool PreLaunchLoad(void) {
 	//Time Bomb
 	tbd_year = 2024;
 	tbd_month = 6;
-	tbd_day = 17;
+	tbd_day = 24;
 
 
 	//PreLoad
@@ -144,7 +144,10 @@ bool CK_Shell_open(void) {
 	_p("----------------------------------------------------------");
 	if (atoi(_KV_releaseVer.c_str()) < 5) {
 		_pv("_$lang.cfgver");
-		_pv("_$lang.timebomb " + to_string(tbd_year) + "/" + to_string(tbd_month) + "/" + to_string(tbd_day));
+		_pv("_$lang.timebomb " + TBD_STR);
+	}
+	if (_TBD_WARNING == true) {
+		_pv("_$lang.tbd.warning ");
 	}
 	_p("Calcium Shell Console");
 	if (_kernel_activate == false) {
@@ -304,28 +307,11 @@ int _HeadMainLoad() {
 			if (AntiCrash_Return_Code == 0) {
 				return 0;
 			}
-			if (AntiCrash_Return_Code == 1) {
-				AC_FAILCODE = "SYSTEM_NULL_COMMAND";
-			}
-			if (AntiCrash_Return_Code == -1001) {
-				AC_FAILCODE = "SYSTEM_API_EXCEPTION";
-			}
-			if (AntiCrash_Return_Code == -1073741819) {
-				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
-			}
-			if (AntiCrash_Return_Code == 34304) {
-				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
-			}
-			if (AntiCrash_Return_Code == 35584) {
-				AC_FAILCODE = "SYSTEM_KERNEL_CONFLICT";
-			}
-			if (AntiCrash_Return_Code == -1073740791) {
-				AC_FAILCODE = "MEMORY_ACCESS_CRASH";
-			}
 
-			//TimeBomb
-			if (AntiCrash_Return_Code == 661) {
-				AC_FAILCODE = "END_OF_EVALUATION_PERIOD";
+			AC_FAILCODE = _Old_VSAPI_TransVar("_erc_" + to_string(AntiCrash_Return_Code));
+
+			if (AC_FAILCODE == "_erc_" + to_string(AntiCrash_Return_Code)) {
+				AC_FAILCODE = "UNKNOWN_KERNEL_STATUS";
 			}
 
 			cleanConsole();
@@ -357,8 +343,6 @@ int _HeadMainLoad() {
 		//_p("Anti Crash Services is " + to_string(_rcset_anticrash));
 	}
 
-	if (_Time_Bomb_Detect(_KV_releaseVer)) return 661;
-
 	if (_rcbind_autorun != "null") {
 		_runmode = _runmode_runscript;
 		runscript = _rcbind_autorun;
@@ -382,6 +366,7 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	//main
+	if (_Time_Bomb_Detect(_KV_releaseVer)) return 661;
 	if (_activate_request(_rc_activate_key) == false) {
 		_p("Activate Calcium");
 	}
