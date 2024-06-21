@@ -39,13 +39,13 @@ string _kv_text_deluxe = "Deluxe";
 //RunIDs
 string _CK_Runid = _get_random_s(100000, 999999);
 
-string _KV_softwareVersion = "113"; //(Software Version)
+string _KV_softwareVersion = "114"; //(Software Version)
 
-string _KV_gen = "8";//(General)
+string _KV_gen = "1";//(General)
 
-string _KV_rv = "2";//(Release Version)
+string _KV_rv = "3";//(Release Version)
 
-string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
+string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
 string _mk = ".";
 
@@ -62,7 +62,7 @@ const string _rc_false = "false";
 const string _rc_true = "true";
 
 //Build / Release / Prerelease   -  Release ID 
-const string _RCapi_Version = "C802";
+const string _RCapi_Version = "D101";
 string buildshell = _Build_Path + "/" + _KernelVersion + "/calcium_settings.cfg";
 string ExecBackups = _Build_Path + "/" + _KernelVersion + "/calcium.exe";
 

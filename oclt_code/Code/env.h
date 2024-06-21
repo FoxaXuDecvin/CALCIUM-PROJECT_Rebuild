@@ -34,7 +34,7 @@ string _runmode = _runmode_null;
 
 bool _anticrash_services = false;
 
-string InsideVersion = "B104";
+string InsideVersion = "C201";
 
 string last_return;
 
@@ -47,7 +47,6 @@ string kernelcmdVid;
 string kernelenvVid;
 string kernelSecureVid;
 string gethookVid;
-string mathapiVid;
 string sysexecVid;
 string ThirdExecVid;
 

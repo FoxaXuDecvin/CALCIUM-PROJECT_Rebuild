@@ -395,7 +395,7 @@ string _runcode_api(string command) {
 	}
 
 	//Memory Control
-	kernelenvVid = "2.21";
+	kernelenvVid = "3.17";
 	if (SizeRead(command, 5) == "_var ") {
 		string _rc_varbind;
 		if (checkChar(command, "=")) {
@@ -539,7 +539,7 @@ string _runcode_api(string command) {
 	}
 
 	//Verify PRODUCT
-	kernelSecureVid = "2.21";
+	kernelSecureVid = "3.41";
 	if (SizeRead(command, 10) == "_$activate") {
 		if (_kernel_activate == false) {
 			if (command == "_$activate") {
@@ -579,7 +579,7 @@ string _runcode_api(string command) {
 	//Open Command
 	oldcmd = command;
 
-	kernelcmdVid = "2.31";
+	kernelcmdVid = "3.12";
 	if (SizeRead(command, 1) == "\"") {
 		if (charTotal(command, "\"") < 2) {
 			_p("[ERROR]  Quotation Format illegal  --> " + command);
@@ -631,9 +631,6 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
-	if (SizeRead(command, 9) == "_getrunid") {
-		return _CK_Runid;
-	}
 	if (SizeRead(command, 6) == "_pause") {
 		$_pause = _Old_VSAPI_TransVar("_$lang.pause");
 		_pause();
@@ -673,10 +670,6 @@ string _runcode_api(string command) {
 		intCutA = _system_autoRun(_rc_varid, _rc_varinfo);
 
 		return to_string(intCutA);
-	}
-	if (SizeRead(command, 7) == "_getenv") {
-		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1)));
-		return _SystemAPI_getenv(charCutA);
 	}
 	if (SizeRead(command, 6) == "_goto ") {
 		if (_CK_ShellMode == true) {
@@ -839,58 +832,7 @@ string _runcode_api(string command) {
 		_pv("_$lang.if.err.t2 " + charCutB);
 		return "NullReturn";
 	}
-
-	//Get
-	gethookVid = "1.12";
-	if (SizeRead(command, 8) == "_getline") {
-		return _getline_type();
-	}
-	if (SizeRead(command, 8) == "_getargs") {
-		return script_args;
-	}
-	if (SizeRead(command, 8) == "_getfile") {
-		return _global_scriptload;
-	}
-	if (SizeRead(command, 8) == "_getexec") {
-		return _$GetSelfFull;
-	}
-
-	//Debug
-	if (SizeRead(command, 12) == "_detect.mode") {
-		if (_debug_type_detected == true) {
-			_p("Detect Mode is Disabled");
-			_debug_type_detected = false;
-			return "ok";
-		}
-		if (_debug_type_detected == false) {
-			_p("Detect Mode is Enabled");
-			_debug_type_detected = true;
-			return "ok";
-		}
-
-		return " BadEffect";
-	}
-	if (SizeRead(command, 13) == "_get.lastcode") {
-		_p("Last Return is :   <" + last_return + ">");
-		return "ok";
-	}
-	if (SizeRead(command, 11) == "_entershell") {
-		return"runid.entershell";
-	}
-	if (SizeRead(command, 9) == "_pathlist") {
-		_logrec_write("[Debug] List Path");
-
-		_p("PluginPath =   " + _rcbind_pluginpath);
-		_p("PluginScript = " + _rcbind_pluginscript);
-		return "ok";
-	}
-	if (SizeRead(command, 10) == "_var.reset") {
-		_clear_varspace();
-		return "ok";
-	}
-
-	//calculator
-	mathapiVid = "1.10";
+	//OldMath
 	if (SizeRead(command, 2) == "_+") {
 		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
 		_logrec_write("Calculator Function +");
@@ -973,7 +915,27 @@ string _runcode_api(string command) {
 		return charCutA;
 	}
 
-	//Other
+	//Get
+	gethookVid = "2.32";
+	if (SizeRead(command, 7) == "_getenv") {
+		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1)));
+		return _SystemAPI_getenv(charCutA);
+	}
+	if (SizeRead(command, 9) == "_getrunid") {
+		return _CK_Runid;
+	}
+	if (SizeRead(command, 8) == "_getline") {
+		return _getline_type();
+	}
+	if (SizeRead(command, 8) == "_getargs") {
+		return script_args;
+	}
+	if (SizeRead(command, 8) == "_getfile") {
+		return _global_scriptload;
+	}
+	if (SizeRead(command, 8) == "_getexec") {
+		return _$GetSelfFull;
+	}
 	if (SizeRead(command, 8) == "_getrand") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA("(" + PartReadA(oldcmd, "(", ")", 1) + ")", ",", ")", 1)));
@@ -991,6 +953,40 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 8) == "_getpath") {
 		return _$GetSelfPath;
+	}
+
+	//Debug
+	if (SizeRead(command, 12) == "_detect.mode") {
+		if (_debug_type_detected == true) {
+			_p("Detect Mode is Disabled");
+			_debug_type_detected = false;
+			return "ok";
+		}
+		if (_debug_type_detected == false) {
+			_p("Detect Mode is Enabled");
+			_debug_type_detected = true;
+			return "ok";
+		}
+
+		return " BadEffect";
+	}
+	if (SizeRead(command, 13) == "_get.lastcode") {
+		_p("Last Return is :   <" + last_return + ">");
+		return "ok";
+	}
+	if (SizeRead(command, 11) == "_entershell") {
+		return"runid.entershell";
+	}
+	if (SizeRead(command, 9) == "_pathlist") {
+		_logrec_write("[Debug] List Path");
+
+		_p("PluginPath =   " + _rcbind_pluginpath);
+		_p("PluginScript = " + _rcbind_pluginscript);
+		return "ok";
+	}
+	if (SizeRead(command, 10) == "_var.reset") {
+		_clear_varspace();
+		return "ok";
 	}
 
 	//Settings
@@ -1066,7 +1062,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
-	ThirdExecVid = "2.13";
+	ThirdExecVid = "3.11";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1142,6 +1138,17 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
+	if (SizeRead(command, 9) == "_textfind") {
+		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
+		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
+		//_p("A :  " + charCutB + "   B: " + chartempA);
+		if (checkChar(charCutB, chartempA)) {
+			return _str_true;
+		}
+		return _str_false;
+	}
+
+	//Self Monitor Analysis  --API
 	if (SizeRead(command, 5) == "_sma ") {
 		charCutA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(command, " ", PartRead_FMend, 1)));
 
@@ -1182,9 +1189,6 @@ string _runcode_api(string command) {
 		if (charCutA == "ghvid") {
 			return gethookVid;
 		}
-		if (charCutA == "mavid") {
-			return mathapiVid;
-		}
 		if (charCutA == "sevid") {
 			return sysexecVid;
 		}
@@ -1199,15 +1203,6 @@ string _runcode_api(string command) {
 		}
 
 		return "null";
-	}
-	if (SizeRead(command, 9) == "_textfind") {
-		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
-		chartempA = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
-		//_p("A :  " + charCutB + "   B: " + chartempA);
-		if (checkChar(charCutB, chartempA)) {
-			return _str_true;
-		}
-		return _str_false;
 	}
 
 	if (_var_auto_void == true) {
