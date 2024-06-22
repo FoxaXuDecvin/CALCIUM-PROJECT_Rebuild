@@ -41,9 +41,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "114"; //(Software Version)
 
-string _KV_gen = "1";//(General)
+string _KV_gen = "2";//(General)
 
-string _KV_rv = "3";//(Release Version)
+string _KV_rv = "1";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -188,8 +188,8 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AutoRunArgs=null;");
 		_soildwrite_write("");
 		_soildwrite_write("//PathBind");
-		_soildwrite_write("$DefaultPluginPath={path}/plugin;");
-		_soildwrite_write("$DefaultPluginScript={path}/script;");
+		_soildwrite_write("$DefaultPluginPath={oclt_path}/Plugin;");
+		_soildwrite_write("$DefaultPluginScript={oclt_path}/script;");
 		_soildwrite_write("$DefaultLogRecord={oclt_path}/{VersionID}/logs;");
 		_soildwrite_write("$DefaultLanguagePath={oclt_path}/{VersionID}/lang;");
 		_soildwrite_write("");

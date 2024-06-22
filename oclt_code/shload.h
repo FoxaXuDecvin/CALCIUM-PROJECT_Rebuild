@@ -32,6 +32,8 @@
 #include"SDK/_sdk_textsuper.h"
 #include"SDK/_sdk_textapi.h"
 #include"SDK/_sdk_varspace.h"
+//#include"SDK/_sdk_URLCodec.h" Not Support Linux
+
 
 //END
 

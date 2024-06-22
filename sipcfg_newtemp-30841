@@ -1,0 +1,21 @@
+ //BuildShell SipCfg  --Use  true/false
+$CalciumVersion=114.1.3.2;
+$EnableSystemCommand=false;
+$EnableAntiCrash=true;
+$EnableCrashReload=true;
+$EnableLogRecord=true;
+$AllowSuperUser=false;
+$AllowDirectoryEdit=false;
+$AllowThirdPartyPlugin=false;
+$AllowShellEdit=true;
+$AllowScriptEdit=false;
+$UseDirectRead=false;
+$TrustedServerCheck=true;
+
+//ShellSettings
+$AutoOpenShellAfterRun=true;
+$EnableShellLog=true;
+
+//Bind
+$AutoRun=null;
+$AutoRunArgs=null;
