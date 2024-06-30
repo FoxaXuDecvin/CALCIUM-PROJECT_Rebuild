@@ -41,9 +41,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "114"; //(Software Version)
 
-string _KV_gen = "2";//(General)
+string _KV_gen = "3";//(General)
 
-string _KV_rv = "1";//(Release Version)
+string _KV_rv = "2";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -201,7 +201,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$EnforceUTF-8=true;");
 		_soildwrite_write("");
 		_soildwrite_write("//Server");
-		_soildwrite_write("$RootAPIServer=https://calciumservices.foxaxu.com/api;");
+		_soildwrite_write("$RootAPIServer=https://api.foxaxu.com/calcium/serverapi;");
 		_soildwrite_write("$Kernelactivate={Notactivate};");
 		_soildwrite_write("$ExecuteFile=" + _$GetSelfFull + ";");
 		_soildwrite_write("");
@@ -472,17 +472,21 @@ bool _Time_Bomb_Detect(string CurrentRV) {
 	//P2
 
 
-	if (tbd_year < _GetCurrentTimeAPI(__Time_Year, false)) {
-		return true;
+	if (tbd_year > _GetCurrentTimeAPI(__Time_Year, false)) {
+		_p("Year Pass");
+		return false;
 	}
-	if (tbd_month < _GetCurrentTimeAPI(__Time_Month, false)) {
-		return true;
+	if (tbd_month > _GetCurrentTimeAPI(__Time_Month, false)) {
+		_p("Month Pass");
+		return false;
 	}
-	if (tbd_day < _GetCurrentTimeAPI(__Time_Day, false)) {
-		return true;
+	if (tbd_day > _GetCurrentTimeAPI(__Time_Day, false)) {
+		_p("Day Pass");
+		return false;
 	}
 
-	return false;
+	_p(" [TBD]  Out of Date");
+	return true;
 }
 
 string activate_id;
@@ -490,7 +494,7 @@ string at_cache;
 bool _TrustedServer;
 bool _activate_calcium(string Key_Register) {
 	if (_rcset_trustcheck == true) {
-		if (!_urldown_api_nocache("https://calciumservices.foxaxu.com/trusted/TrustedServer.txt", "TrustedList.txt")) {
+		if (!_urldown_api_nocache("https://api.foxaxu.com/calcium/TrustedServer.txt", "TrustedList.txt")) {
 			_TrustedServer = false;
 		}
 		else {
@@ -522,7 +526,7 @@ bool _activate_calcium(string Key_Register) {
 
 	if (_TrustedServer == false) {
 		_p("You are trying to activate Calcium using an untrusted server.");
-		_p("Please use a trusted server. you can read this list https://calciumservices.foxaxu.com/trusted/TrustedServer.txt");
+		_p("Please use a trusted server. you can read this list https://api.foxaxu.com/calcium/TrustedServer.txt");
 		return false;
 	}
 	if (_TBD_WARNING == true) {

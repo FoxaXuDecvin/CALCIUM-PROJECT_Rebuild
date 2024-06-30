@@ -9,8 +9,8 @@ bool PreLaunchLoad(void) {
 	
 	//Time Bomb
 	tbd_year = 2024;
-	tbd_month = 6;
-	tbd_day = 30;
+	tbd_month = 7;
+	tbd_day = 12;
 
 
 	//PreLoad
