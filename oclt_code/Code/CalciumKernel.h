@@ -339,6 +339,8 @@ bool _debug_type_detected = false;
 bool _var_auto_void = false;
 bool _shell_lock = false;
 bool _if_reverse = false;
+
+//KernelCommand
 string _runcode_api(string command) {
 	_logrec_write("[Reset] --------------------------------New Command---------------------------------------------------------");
 	if (_gf_hsc == true) {
@@ -395,7 +397,7 @@ string _runcode_api(string command) {
 	}
 
 	//Memory Control
-	kernelenvVid = "3.17";
+	kernelenvVid = "3.21";
 	if (SizeRead(command, 5) == "_var ") {
 		string _rc_varbind;
 		if (checkChar(command, "=")) {
@@ -579,7 +581,7 @@ string _runcode_api(string command) {
 	//Open Command
 	oldcmd = command;
 
-	kernelcmdVid = "3.12";
+	kernelcmdVid = "3.13";
 	if (SizeRead(command, 1) == "\"") {
 		if (charTotal(command, "\"") < 2) {
 			_p("[ERROR]  Quotation Format illegal  --> " + command);
@@ -608,12 +610,6 @@ string _runcode_api(string command) {
 		_logrec_write("[Exec] COUT :  " + _$quo + charCutB + _$quo);
 		_p(charCutB);
 		return "ok.print:<" + charCutB + ">";
-	}
-	if (SizeRead(command, 7) == "_foxaxu") {
-		_logrec_write("[Exec] foxaxu");
-		_pv("_$lang.foxaxu.t1");
-		_p("https://www.foxaxu.com/fwlink?linkid=calcium_kernel_surprise");
-		return "ok";
 	}
 	if (SizeRead(command, 7) == "_system") {
 		if (_rcset_syscmd == false) {
@@ -832,6 +828,7 @@ string _runcode_api(string command) {
 		_pv("_$lang.if.err.t2 " + charCutB);
 		return "NullReturn";
 	}
+
 	//OldMath
 	if (SizeRead(command, 2) == "_+") {
 		string tempbase = "(" + PartRead(oldcmd, "(", ")", true) + ")";
@@ -953,6 +950,23 @@ string _runcode_api(string command) {
 	}
 	if (SizeRead(command, 8) == "_getpath") {
 		return _$GetSelfPath;
+	}
+
+	//IsTest
+	isGetVid = "4.01";
+	if (SizeRead(command, 7) == "_isNum ") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
+		_logrec_write("[IsGet] _is Num  :  -->  " + charCutA);
+		if (atoi(_runcode_api(charCutA).c_str()) != 0) {
+			_logrec_write("[IsGet] Num is True   " + charCutA);
+			return _rc_true;
+		}
+		else {
+			_logrec_write("[IsGet] Num is False   " + charCutA);
+			return _rc_false;
+		}
+	
+		return "_KernelFail_Status: Unknown";
 	}
 
 	//Debug
@@ -1188,6 +1202,9 @@ string _runcode_api(string command) {
 		}
 		if (charCutA == "ghvid") {
 			return gethookVid;
+		}
+		if (charCutA == "igvid") {
+			return isGetVid;
 		}
 		if (charCutA == "sevid") {
 			return sysexecVid;

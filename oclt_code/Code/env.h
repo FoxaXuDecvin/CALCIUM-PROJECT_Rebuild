@@ -47,6 +47,7 @@ string kernelcmdVid;
 string kernelenvVid;
 string kernelSecureVid;
 string gethookVid;
+string isGetVid;
 string sysexecVid;
 string ThirdExecVid;
 
