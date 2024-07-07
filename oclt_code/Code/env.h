@@ -59,3 +59,5 @@ string _global_scriptload;
 int _gf_cg = 0;
 int _gf_cgmax = 1;
 int _gf_line = 1;
+
+string nt_sipcfg_open;

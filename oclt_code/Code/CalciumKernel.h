@@ -991,6 +991,14 @@ string _runcode_api(string command) {
 	if (SizeRead(command, 11) == "_entershell") {
 		return"runid.entershell";
 	}
+	if (SizeRead(command, 11) == "_shelltitle") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
+		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
+		charCutB = _runcode_api(charCutA);
+		
+		_shellTitle = charCutB;
+		return "ok";
+	}
 	if (SizeRead(command, 9) == "_pathlist") {
 		_logrec_write("[Debug] List Path");
 
@@ -1076,7 +1084,7 @@ string _runcode_api(string command) {
 	}
 
 	//Toolkit
-	ThirdExecVid = "3.11";
+	ThirdExecVid = "4.12";
 	if (SizeRead(command, 10) == "_file_read") {
 		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
 		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
@@ -1160,6 +1168,41 @@ string _runcode_api(string command) {
 			return _str_true;
 		}
 		return _str_false;
+	}
+
+	//SipCfg Native
+	if (SizeRead(command, 13) == "_sipcfg.open ") {
+		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
+		_logrec_write("[Output Exec] Command :  -->  " + charCutA);
+		charCutB = _runcode_api(charCutA);
+
+		if (!check_file_existenceA(charCutB)) {
+			_fileapi_createmark(charCutB,"//default   --Simple Config File");
+		}
+
+		nt_sipcfg_open = charCutB;
+
+		return "ok";
+	}
+
+	if (SizeRead(command, 8) == "_sipcfg ") {
+		_logrec_write("[SipCfg] Native SipCfg");
+
+		if (checkChar(command, "=")) {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
+			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", PartRead_FMend, 1));
+
+			_rc_varinfo = ReplaceChar(_rc_varinfo, ";", "");
+
+			_write_sipcfg(nt_sipcfg_open, _rc_varid, _rc_varinfo);
+			_logrec_write("[SipCfg] Sipcfg Set :  " + _rc_varid + " = " + _rc_varinfo);
+			return "ok";
+		}
+		else {
+			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "$FROMEND$", 1));
+			return _load_sipcfg(nt_sipcfg_open, _rc_varid);
+		}
+		return "falseproblem";
 	}
 
 	//Self Monitor Analysis  --API

@@ -168,7 +168,7 @@ bool CK_Shell_open(void) {
 	while (true) {
 		_global_scriptload = "{ShellMode}";
 		_pn();
-		_prts("Calcium Kernel  " + _KernelVersion + "   Shell Console>");
+		_prts(_shellTitle);
 		_user_typebuffer = _getline_type() + ";";
 
 		_logrec_write("[Exec]Get Full Command :  -->  " + _user_typebuffer);

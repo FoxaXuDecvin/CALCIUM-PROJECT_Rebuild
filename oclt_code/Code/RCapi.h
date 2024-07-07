@@ -71,6 +71,7 @@ const int _hex_nl = 00001010; // HEX 0A
 const string _RCapi_Version = "D102";
 string buildshell = _Build_Path + "/" + _KernelVersion + "/calcium_settings.cfg";
 string ExecBackups = _Build_Path + "/" + _KernelVersion + "/calcium.exe";
+string _shellTitle = "Calcium Kernel  " + _KernelVersion + "   Shell Console>";
 
 //Rc Config var
 bool _rcset_syscmd;
