@@ -41,9 +41,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "114"; //(Software Version)
 
-string _KV_gen = "6";//(General)
+string _KV_gen = "7";//(General)
 
-string _KV_rv = "2";//(Release Version)
+string _KV_rv = "3";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -82,6 +82,7 @@ bool _rcset_anticrash;
 bool _rcset_logrec;
 bool _rcset_directmode;
 bool _rcset_trustcheck;
+bool _rcset_offlangcheck;
 
 bool _rcset_shelledit,_rcset_scriptedit;
 
@@ -185,6 +186,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("$AllowScriptEdit=false;");
 		_soildwrite_write("$UseDirectRead=false;");
 		_soildwrite_write("$TrustedServerCheck=true;");
+		_soildwrite_write("$OffLangCheck=false;");
 		_soildwrite_write("");
 		_soildwrite_write("//ShellSettings");
 		_soildwrite_write("$AutoOpenShellAfterRun=true;");
@@ -209,7 +211,7 @@ bool _RcApiLoadConfig() {
 		_soildwrite_write("");
 		_soildwrite_write("//Server");
 		_soildwrite_write("$RootAPIServer=https://api.foxaxu.com/calcium/serverapi;");
-		_soildwrite_write("$Kernelactivate={Notactivate};");
+		_soildwrite_write("$Kernelactivate={Nokey};");
 		_soildwrite_write("$ExecuteFile=" + _$GetSelfFull + ";");
 		_soildwrite_write("");
 		_soildwrite_close();
@@ -226,6 +228,7 @@ bool _RcApiLoadConfig() {
 	_rcset_scriptedit = _RcLoad_TransApi("AllowScriptEdit");
 	_rcset_directmode = _RcLoad_TransApi("UseDirectRead");
 	_rcset_trustcheck = _RcLoad_TransApi("TrustedServerCheck");
+	_rcset_offlangcheck = _RcLoad_TransApi("OffLangCheck");
 
 	_rcset_aosr = _RcLoad_TransApi("AutoOpenShellAfterRun");
 	_rcset_shell_log = _RcLoad_TransApi("EnableShellLog");
@@ -564,7 +567,7 @@ bool _activate_calcium(string Key_Register) {
 bool _activate_request(string key_reg) {
 	_kernel_activate = _activate_calcium(key_reg);
 	if (_kernel_activate == true) {
-		if (key_reg != "{Notactivate}") {
+		if (key_reg != "{Nokey}") {
 			_write_sipcfg(buildshell, "Kernelactivate", key_reg);
 		}
 	}

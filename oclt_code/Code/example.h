@@ -134,7 +134,12 @@ bool CK_Shell_open(void) {
 	if (_rcset_shell_log == true) {
 		_rcset_logrec = true;
 	}
-	_$logfile = _rcbind_logrec + "/ShellLog.log";
+	if (!_rcset_logrec) {
+		_$logfile = _rcbind_logrec + "/DisabledLogrec.log";
+	}
+	else {
+		_$logfile = _rcbind_logrec + "/ShellLog.log";
+	}
 	if (check_file_existence(_$logfile))_fileapi_del(_$logfile);
 	_global_scriptload = "{ShellMode}";
 	_CK_ShellMode = true;
@@ -253,32 +258,37 @@ int _HeadMainLoad() {
 		return -1;
 	}
 
-	if (_skipcheck_language == false) {
-		if (!LanguageLoad()) {
-			langpackfile = _$GetSelfPath + "/" + "temp_languagepack.pack";
-			_p("Install Language Pack ?");
-			_prts("type y/n >");
+	if (_rcset_offlangcheck) {
+		_skipcheck_language == true;
+	}
+	else {
+		if (_skipcheck_language == false) {
+			if (!LanguageLoad()) {
+				langpackfile = _$GetSelfPath + "/" + "temp_languagepack.pack";
+				_p("Install Language Pack ?");
+				_prts("type y/n >");
 
-			if (_getline_type() != "n") {
-				if (_Run_SysKernel == Linux_kernel) {
-					_p("Install Linux Language");
-					if (!_api_request_download("lang/linux.txt", langpackfile)) {
-						_p("Install Failed");
+				if (_getline_type() != "n") {
+					if (_Run_SysKernel == Linux_kernel) {
+						_p("Install Linux Language");
+						if (!_api_request_download("lang/linux.txt", langpackfile)) {
+							_p("Install Failed");
+						}
 					}
-				}
-				if (_Run_SysKernel == Win32_kernel) {
-					_p("Install Windows Language");
-					if (!_api_request_download("lang/win.txt", langpackfile)) {
-						_p("Install Failed");
+					if (_Run_SysKernel == Win32_kernel) {
+						_p("Install Windows Language");
+						if (!_api_request_download("lang/win.txt", langpackfile)) {
+							_p("Install Failed");
+						}
 					}
-				}
 					_system_autoRun(_$GetSelfFull, "-nolang -unpack \"" + langpackfile + "\" -to \"" + _rcbind_langpath + "\"");
 					_p("Complete Install Language");
 					_fileapi_del(langpackfile);
 					sleepapi(1);
 					cleanConsole();
+				}
+				LanguageLoad();
 			}
-			LanguageLoad();
 		}
 	}
 
