@@ -43,7 +43,7 @@ string _KV_softwareVersion = "114"; //(Software Version)
 
 string _KV_gen = "7";//(General)
 
-string _KV_rv = "3";//(Release Version)
+string _KV_rv = "4";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Preview;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -167,7 +167,7 @@ bool _api_request_clear_cache(string Address, string Save) {
 string file;
 bool _direct_read_script = false;
 bool _RcApiLoadConfig() {
-	_p("Loading Config");
+	//_p("Loading Config");
 	file = buildshell;
 	if (!check_file_existence(file)) {
 		_p("Create New Config");
@@ -629,4 +629,20 @@ void _Create_Analysis_File(string savefile) {
 	_soildwrite_write("---- Log File ----");
 	_soildwrite_write(_$logfile);
 	_soildwrite_write("---- End Logfile ----");
+}
+
+int ExecCache;
+string _PluginExecuteAPI(string execplugin,string script,int address) {
+	if (!check_file_existenceA(execplugin)) {
+		execplugin = _rcbind_pluginpath + "/" + execplugin;
+			if (!check_file_existenceA(execplugin)) {
+				_p("Fail load error:  File not Exist");
+				_p(execplugin);
+				return "pluginnotfound";
+			}
+	}
+
+	ExecCache = _system_autoRun(execplugin, _$quo + script + _$quo + " " + to_string(address));
+
+
 }

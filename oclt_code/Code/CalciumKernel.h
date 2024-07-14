@@ -211,6 +211,8 @@ string cmdbuffer;
 string _api_result;
 bool _stop_exec_script = false;
 string _ckapi_scriptload(string load_Script,string Sargs) {
+	ifstream _SessionLock;
+	_SessionLock.open(load_Script);
 	if (!_language_mode) {
 		if (!_kernel_activate) {
 			_pv("_$lang.notactivate");
@@ -285,7 +287,7 @@ string _ckapi_scriptload(string load_Script,string Sargs) {
 			return "runid.exit";
 		}
 		if (_api_result == "runid.entershell") {
-			return "runid.exit";
+			return "runid.entershell";
 		}
 
 		if (_stop_exec_script == true) {

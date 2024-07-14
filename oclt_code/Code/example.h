@@ -10,7 +10,7 @@ bool PreLaunchLoad(void) {
 	//Time Bomb
 	tbd_year = 2024;
 	tbd_month = 7;
-	tbd_day = 12;
+	tbd_day = 20;
 
 
 	//PreLoad
@@ -242,7 +242,7 @@ int _HeadMainLoad() {
 		return 1;
 	}
 	if (_anticrash_services == false) {
-		_p("Calcium Script " + _KernelVersion + "...   Startup on :    " + _$GetSelfPath);
+		//History Code
 	}
 	if (!check_file_existence(ExecBackups)) {
 		_p("Create File Path on :   " + _Build_Path + "/" + _KernelVersion);
