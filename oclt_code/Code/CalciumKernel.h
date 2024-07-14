@@ -583,7 +583,7 @@ string _runcode_api(string command) {
 	//Open Command
 	oldcmd = command;
 
-	kernelcmdVid = "3.13";
+	kernelcmdVid = "3.22";
 	if (SizeRead(command, 1) == "\"") {
 		if (charTotal(command, "\"") < 2) {
 			_p("[ERROR]  Quotation Format illegal  --> " + command);
@@ -745,6 +745,69 @@ string _runcode_api(string command) {
 		//Run
 
 		CharCutC = _ckapi_scriptload(charCutB,chartempA);
+
+		if (_stop_exec_script == true) {
+			_stop_exec_script = false;
+		}
+
+		//Recovery old GFapi Data;
+		_gf_cg = _old$_gf_cg;
+		_gf_cgmax = _old$_gf_cgmax;
+		_gf_line = _old$_gf_line;
+		_gf_charget = "";
+		script_args = _old$_args;
+		_direct_read_script = _old$_direct_read_script;
+		_rcset_logrec = _old$_rcset_logrec;
+		_$logfile = _old$_logfile;
+		_CK_ShellMode = _old$_CK_ShellMode;
+		_global_scriptload = _old$_global_scriptload;
+
+		if (CharCutC == "runid.exit") {
+			return CharCutC;
+		}
+		if (CharCutC == "runid.entershell") {
+			return CharCutC;
+		}
+		return CharCutC;
+	}
+	if (SizeRead(command, 4) == "_inv") {
+
+		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1)));
+		chartempA = _Old_VSAPI_TransVar(PartReadA(oldcmd, ">", "$FROMEND$", 1));
+
+		if (!check_file_existenceA(charCutB)) {
+			charCutB = _rcbind_pluginscript + "/" + charCutB;
+			if (!check_file_existenceA(charCutB)) {
+				_p("_runscript Error:  File not Exist");
+				_p(charCutB);
+				return "filenotfound";
+			}
+		}
+
+		//Backup old GFapi data;
+
+		int _old$_gf_cg = _gf_cg;
+		int _old$_gf_cgmax = _gf_cgmax;
+		int _old$_gf_line = _gf_line;
+		bool _old$_direct_read_script = _direct_read_script;
+		bool _old$_rcset_logrec = _rcset_logrec;
+		string _old$_args = script_args;
+		string _old$_logfile = _$logfile;
+		bool _old$_CK_ShellMode = _CK_ShellMode;
+		string _old$_global_scriptload = _global_scriptload;
+
+		//Create New Space
+
+		_gf_cg = 0;
+		_gf_cgmax = 1;
+		_gf_line = 1;
+		_gf_charget = "";
+		_direct_read_script = false;
+		_CK_ShellMode = false;
+
+		//Run
+
+		CharCutC = _ckapi_scriptload(charCutB, chartempA);
 
 		if (_stop_exec_script == true) {
 			_stop_exec_script = false;
