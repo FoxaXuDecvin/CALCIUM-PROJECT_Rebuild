@@ -1254,8 +1254,8 @@ string _runcode_api(string command) {
 		_logrec_write("[SipCfg] Native SipCfg");
 
 		if (checkChar(command, "=")) {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "=", 1));
-			_rc_varinfo = HeadSpaceCleanA(PartReadA(command, "=", PartRead_FMend, 1));
+			_rc_varid = _Old_VSAPI_TransVar(HeadSpaceCleanA(PartReadA(command, " ", "=", 1)));
+			_rc_varinfo = _Old_VSAPI_TransVar(HeadSpaceCleanA(PartReadA(command, "=", PartRead_FMend, 1)));
 
 			_rc_varinfo = ReplaceChar(_rc_varinfo, ";", "");
 
@@ -1264,7 +1264,7 @@ string _runcode_api(string command) {
 			return "ok";
 		}
 		else {
-			_rc_varid = HeadSpaceCleanA(PartReadA(command, " ", "$FROMEND$", 1));
+			_rc_varid = _Old_VSAPI_TransVar(HeadSpaceCleanA(PartReadA(command, " ", "$FROMEND$", 1)));
 			return _load_sipcfg(nt_sipcfg_open, _rc_varid);
 		}
 		return "falseproblem";
