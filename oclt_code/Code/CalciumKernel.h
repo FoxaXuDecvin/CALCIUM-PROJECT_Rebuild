@@ -679,7 +679,7 @@ string _runcode_api(string command) {
 		if (_direct_read_script == true) {
 			_gf_line--;
 		}
-		intCutA = FindCharLineA(1,_gf_line,_global_scriptload, charCutA);
+		intCutA = _FindAllLine(1,_gf_line,_global_scriptload, charCutA);
 		if (_direct_read_script == true) {
 			_gf_line++;
 		}

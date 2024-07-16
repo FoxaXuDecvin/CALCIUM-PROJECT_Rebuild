@@ -43,7 +43,7 @@ string _KV_softwareVersion = "114"; //(Software Version)
 
 string _KV_gen = "7";//(General)
 
-string _KV_rv = "5";//(Release Version)
+string _KV_rv = "6";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -645,4 +645,29 @@ string _PluginExecuteAPI(string execplugin,string script,int address) {
 	ExecCache = _system_autoRun(execplugin, _$quo + script + _$quo + " " + to_string(address));
 
 
+}
+
+//New Goto API
+// -4 NotFound
+int fal_cache,cd_cache;
+string fal_buffer;
+int _FindAllLine(int startline, int skipline, string file, string charData) {
+	cd_cache = charData.size();
+	fal_cache = FindCharLineA(startline, skipline, file, charData);
+	if (fal_cache == -4) return -4;
+
+	fal_buffer = LineReader(file, fal_cache);
+	fal_buffer = HeadSpaceClean_NoSEM(fal_buffer);
+
+	if (SizeRead(fal_buffer,cd_cache) != charData) while (true) {
+		fal_cache++;
+		fal_cache = FindCharLineA(fal_cache, skipline, file, charData);
+		if (fal_cache == -4) return -4;
+		fal_buffer = LineReader(file, fal_cache);
+		fal_buffer = HeadSpaceClean_NoSEM(fal_buffer);
+		if (SizeRead(fal_buffer, cd_cache) != charData) continue;
+		break;
+	}
+
+	return fal_cache;
 }
