@@ -43,7 +43,7 @@ string _KV_softwareVersion = "114"; //(Software Version)
 
 string _KV_gen = "7";//(General)
 
-string _KV_rv = "6";//(Release Version)
+string _KV_rv = "8";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 

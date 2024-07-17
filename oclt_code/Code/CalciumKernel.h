@@ -770,7 +770,7 @@ string _runcode_api(string command) {
 		}
 		return CharCutC;
 	}
-	if (SizeRead(command, 4) == "_inv") {
+	if (SizeRead(command, 7) == "_invoke") {
 
 		charCutB = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "<", ">", 1)));
 		chartempA = _Old_VSAPI_TransVar(PartReadA(oldcmd, ">", "$FROMEND$", 1));

@@ -100,7 +100,9 @@ NextRollCR:
 // 0 - OK
 // 1 - Error
 int _varspaceadd(string VarHead, string varinfo) {
+	//cout << "GET " << endl;
 	VarHead = ReplaceCharA(VarHead, " ", "");
+	//cout << "START VAR" << endl;
 
 	readbufferA = _Old_VSAPI_TransVar(VarHead);
 	if (readbufferA == varinfo) {
@@ -109,7 +111,9 @@ int _varspaceadd(string VarHead, string varinfo) {
 	}
 
 	if (varinfo == "") {
-		varinfo = "NULL";
+		//cout << "VAR EMPTY" << endl;
+		varinfo = "{varspace.empty}";
+		return 0;
 	}
 
 	varinfo = ReplaceCharA(varinfo, " ", "%sbar%");
