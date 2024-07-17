@@ -230,7 +230,7 @@ int _HeadMainLoad() {
 	}
 
 	if (check_file_existence(_$GetSelfPath + "/use-local-dir.txt")) {
-		_p("Use local dir");
+		//_p("Use local dir");
 		buildshell = _$GetSelfPath + "/calcium_settings.cfg";
 		ExecBackups = _$GetSelfFull;
 	}

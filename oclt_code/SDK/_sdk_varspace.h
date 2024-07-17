@@ -112,7 +112,7 @@ int _varspaceadd(string VarHead, string varinfo) {
 
 	if (varinfo == "") {
 		//cout << "VAR EMPTY" << endl;
-		varinfo = "{varspace.empty}";
+		_varspaceadd(VarHead, "{varspace.null}");
 		return 0;
 	}
 
