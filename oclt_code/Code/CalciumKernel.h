@@ -1094,7 +1094,7 @@ string _runcode_api(string command) {
 	}
 
 	//System
-	sysexecVid = "2.13";
+	sysexecVid = "2.14";
 	if (SizeRead(command, 11) == "_file_exist") {
 		charCutA = _Old_VSAPI_TransVar(PartReadA(oldcmd, " ", PartRead_FMend, 1));
 		_logrec_write("[File] Check File Exist..  command -->  " + charCutA);
@@ -1144,6 +1144,44 @@ string _runcode_api(string command) {
 			return "true";
 		}
 		else {
+			return "false";
+		}
+	}
+
+	//FileSystemIO
+	if (SizeRead(command, 10) == "_file_copy") {
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ",", 1)));
+		_rc_varinfo = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, ",", ")", 1)));
+
+		if (!check_file_existence(_rc_varid)) {
+			_p("[FileSystemIO] CopyFile A " + _rc_varid + " is not Exist");
+			return "false";
+		}
+
+		_fileapi_CpFile(_rc_varid, _rc_varinfo);
+
+		if (check_file_existence(_rc_varinfo)) {
+			return "true";
+		}
+		else {
+			_p("[FileSystemIO] CopyFile B " + _rc_varinfo + " failed. Access Denied");
+			return "false";
+		}
+	}
+	if (SizeRead(command, 9) == "_file_del") {
+		_rc_varid = _runcode_api(_Old_VSAPI_TransVar(PartReadA(oldcmd, "(", ")", 1)));
+
+		if (!check_file_existence(_rc_varid)) {
+			return "true";
+		}
+
+		_fileapi_del(_rc_varid);
+
+		if (!check_file_existence(_rc_varid)) {
+			return "true";
+		}
+		else {
+			_p("[FileSystemIO] Delete File " + _rc_varinfo + " failed. Access Denied");
 			return "false";
 		}
 	}

@@ -41,9 +41,9 @@ string _CK_Runid = _get_random_s(100000, 999999);
 
 string _KV_softwareVersion = "114"; //(Software Version)
 
-string _KV_gen = "7";//(General)
+string _KV_gen = "8";//(General)
 
-string _KV_rv = "9";//(Release Version)
+string _KV_rv = "3";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -68,7 +68,7 @@ const int _hex_cr = 00001101; // HEX 0D
 const int _hex_nl = 00001010; // HEX 0A
 
 //Build / Release / Prerelease   -  Release ID 
-const string _RCapi_Version = "D102";
+const string _RCapi_Version = "D103";
 string buildshell = _Build_Path + "/" + _KernelVersion + "/calcium_settings.cfg";
 string ExecBackups = _Build_Path + "/" + _KernelVersion + "/calcium.exe";
 string _shellTitle = "Calcium Kernel  " + _KernelVersion + "   Shell Console>";

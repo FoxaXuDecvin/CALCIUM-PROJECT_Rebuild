@@ -9,8 +9,8 @@ bool PreLaunchLoad(void) {
 	
 	//Time Bomb
 	tbd_year = 2024;
-	tbd_month = 7;
-	tbd_day = 20;
+	tbd_month = 8;
+	tbd_day = 15;
 
 
 	//PreLoad
@@ -259,7 +259,7 @@ int _HeadMainLoad() {
 	}
 
 	if (_rcset_offlangcheck) {
-		_skipcheck_language == true;
+		_skipcheck_language = true;
 	}
 	else {
 		if (_skipcheck_language == false) {
