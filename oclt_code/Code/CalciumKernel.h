@@ -1287,7 +1287,15 @@ string _runcode_api(string command) {
 
 		return "ok";
 	}
+	if (SizeRead(command, 15) == "_sipcfg.remove ") {
+		_logrec_write("[SipCfg] Native SipCfg");
+		_rc_varinfo = _Old_VSAPI_TransVar(HeadSpaceCleanA(PartReadA(command, " ", PartRead_FMend, 1)));
+		_rc_varinfo = ReplaceChar(_rc_varinfo, ";", "");
 
+		_remove_sipcfg(nt_sipcfg_open, _rc_varinfo);
+		_logrec_write("[SipCfg] Sipcfg Remove :  " + _rc_varinfo + "");
+		return "ok";
+	}
 	if (SizeRead(command, 8) == "_sipcfg ") {
 		_logrec_write("[SipCfg] Native SipCfg");
 
