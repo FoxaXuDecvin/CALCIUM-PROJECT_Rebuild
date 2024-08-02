@@ -43,7 +43,7 @@ string _KV_softwareVersion = "114"; //(Software Version)
 
 string _KV_gen = "8";//(General)
 
-string _KV_rv = "5";//(Release Version)
+string _KV_rv = "6";//(Release Version)
 
 string _KV_releaseVer = _KV_rV_Release;//(Debug/Preview/preRelease/demo/Release  1 - 4)
 
@@ -481,22 +481,27 @@ bool _Time_Bomb_Detect(string CurrentRV) {
 
 	//P2
 
-
-	if (tbd_year > _GetCurrentTimeAPI(__Time_Year, false)) {
-		_p("Year Pass");
-		return false;
-	}
-	if (tbd_month > _GetCurrentTimeAPI(__Time_Month, false)) {
-		_p("Month Pass");
-		return false;
-	}
-	if (tbd_day > _GetCurrentTimeAPI(__Time_Day, false)) {
-		_p("Day Pass");
-		return false;
+	if (tbd_year < _GetCurrentTimeAPI(__Time_Year, false)) {
+		_p("Year Outdate");
+		_p(" [TBD]  Out of Date");
+		return true;
 	}
 
-	_p(" [TBD]  Out of Date");
-	return true;
+	if (tbd_month < _GetCurrentTimeAPI(__Time_Month, false)) {
+		_p("Month Outdate");
+		_p(" [TBD]  Out of Date");
+		return true;
+	}
+
+	if (tbd_day < _GetCurrentTimeAPI(__Time_Day, false)) {
+		_p("Day Outdate");
+		_p(" [TBD]  Out of Date");
+		return true;
+	}
+
+
+	_p(" [TBD]  Time check pass");
+	return false;
 }
 
 string activate_id;

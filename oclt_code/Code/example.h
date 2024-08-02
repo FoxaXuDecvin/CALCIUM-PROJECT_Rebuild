@@ -10,7 +10,7 @@ bool PreLaunchLoad(void) {
 	//Time Bomb
 	tbd_year = 2024;
 	tbd_month = 8;
-	tbd_day = 15;
+	tbd_day = 12;
 
 
 	//PreLoad
@@ -353,6 +353,11 @@ int _HeadMainLoad() {
 		//_p("Anti Crash Services is " + to_string(_rcset_anticrash));
 	}
 
+	if (_Time_Bomb_Detect(_KV_releaseVer)) return 661;
+	if (_activate_request(_rc_activate_key) == false) {
+		_p("Activate Calcium");
+	}
+
 	if (_rcbind_autorun != "null") {
 		_runmode = _runmode_runscript;
 		runscript = _rcbind_autorun;
@@ -376,10 +381,6 @@ int _HeadMainLoad() {
 		return 0;
 	}
 	//main
-	if (_Time_Bomb_Detect(_KV_releaseVer)) return 661;
-	if (_activate_request(_rc_activate_key) == false) {
-		_p("Activate Calcium");
-	}
 	if (_runmode == _runmode_null) {
 		TypeHelpMenu();
 		_pause();
